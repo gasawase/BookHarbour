@@ -1,0 +1,23 @@
+----UPDATED-----
+
+17/12/2023
+
+----TODO----
+
+- more efficient way of storing data (only initially store coverimage and file url then when modal clicked, gather the data then)
+- ability to read book
+- go through and remove duplicates
+
+----DONE----
+
+
+----FEATURES I'D LIKE----
+- move original bookbinder parsing from kanna to swiftsoup
+- change layout of library to just see the spine
+- make a customizable bookshelf where you can have a list of your books and design your bookshelf
+
+----KNOWN BUGS----
+
+----NOTES----
+
+The manifest stores all of the data such as where the different pictures, covers, and toc are
