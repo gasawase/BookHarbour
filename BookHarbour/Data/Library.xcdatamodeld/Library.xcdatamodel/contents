@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23B92" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Ebooks" representedClassName="Ebooks" syncable="YES" codeGenerationType="class">
+        <attribute name="author" attributeType="String"/>
+        <attribute name="coverImgPath" optional="YES" attributeType="String"/>
+        <attribute name="epubPath" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="opfFilePath" optional="YES" attributeType="String"/>
+        <attribute name="opfFileURL" optional="YES" attributeType="URI"/>
+        <attribute name="synopsis" optional="YES" attributeType="String"/>
+        <attribute name="title" attributeType="String"/>
+    </entity>
+</model>
