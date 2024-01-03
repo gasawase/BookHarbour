@@ -13,6 +13,7 @@ struct BookDetailsModalView: View {
     
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var currentBook: CurrentBook
+    @Environment(\.dismiss) private var dismiss
 
     var ebook : Ebooks
     
@@ -59,8 +60,9 @@ struct BookDetailsModalView: View {
                             Button {
                                 print("Read Button Pressed")
                                 setBookDetails()
-                                appState.showReaderView = true
-                                appState.showBookDetails = false
+                                appState.showReaderView.toggle()
+                                //appState.showBookDetails.toggle()
+                                dismiss()
                                 
                             } label: {
                                 Text("Read")

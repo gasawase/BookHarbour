@@ -22,6 +22,7 @@
 		8EB358022B4413AC004ACDA8 /* UnzipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB358012B4413AC004ACDA8 /* UnzipHelper.swift */; };
 		8EB358042B4413C0004ACDA8 /* EpubParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB358032B4413C0004ACDA8 /* EpubParser.swift */; };
 		8EB358062B44144F004ACDA8 /* ReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB358052B44144F004ACDA8 /* ReaderView.swift */; };
+		8EF7F9CA2B457F4700A0963E /* TestingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7F9C92B457F4700A0963E /* TestingView.swift */; };
 		F1A80FC41BA594BD3423C97F /* Pods_BookHarbour.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2631D1D8631101D85BC68D97 /* Pods_BookHarbour.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +45,7 @@
 		8EB358012B4413AC004ACDA8 /* UnzipHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnzipHelper.swift; sourceTree = "<group>"; };
 		8EB358032B4413C0004ACDA8 /* EpubParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpubParser.swift; sourceTree = "<group>"; };
 		8EB358052B44144F004ACDA8 /* ReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderView.swift; sourceTree = "<group>"; };
+		8EF7F9C92B457F4700A0963E /* TestingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingView.swift; sourceTree = "<group>"; };
 		CA4D30A45C827576A54FB60F /* Pods-BookHarbour.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookHarbour.debug.xcconfig"; path = "Target Support Files/Pods-BookHarbour/Pods-BookHarbour.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -152,6 +154,7 @@
 				8EB357FB2B4412DB004ACDA8 /* DisplayBooks.swift */,
 				8EB357FD2B4412FF004ACDA8 /* IndividualBookRow.swift */,
 				8EB358052B44144F004ACDA8 /* ReaderView.swift */,
+				8EF7F9C92B457F4700A0963E /* TestingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -291,6 +294,7 @@
 				8EB357F52B4411B9004ACDA8 /* ReaderController.swift in Sources */,
 				8EB357F12B441176004ACDA8 /* MainController.swift in Sources */,
 				8E4BC8F82B440F9F006D2403 /* BookHarbourApp.swift in Sources */,
+				8EF7F9CA2B457F4700A0963E /* TestingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

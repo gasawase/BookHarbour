@@ -40,7 +40,8 @@ class ReaderController : ObservableObject{
 //}
 
 struct HTMLView: UIViewRepresentable {
-    let htmlFileName: String
+//    let htmlFileName: String
+    @Binding var chapterPath : String
 
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
@@ -48,14 +49,20 @@ struct HTMLView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        let htmlPath = htmlFileName
+        let htmlPath = chapterPath
 //        if let htmlPath = Bundle.main.path(forResource: htmlFileName, ofType: "xhtml") {
-            do {
-                let htmlString = try String(contentsOfFile: htmlPath, encoding: .utf8)
-                uiView.loadHTMLString(htmlString, baseURL: Bundle.main.bundleURL)
-            } catch {
-                print("Error loading HTML file: \(error)")
-            }
+        
+        //just loading the file
+        let chapterPathURL = URL(fileURLWithPath: chapterPath)
+        uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: chapterPathURL)
+        
+        // converting to a string
+//            do {
+//                let htmlString = try String(contentsOfFile: htmlPath, encoding: .utf8)
+//                uiView.loadHTMLString(htmlString, baseURL: Bundle.main.bundleURL)
+//            } catch {
+//                print("Error loading HTML file: \(error)")
+//            }
 //        }
     }
 }
