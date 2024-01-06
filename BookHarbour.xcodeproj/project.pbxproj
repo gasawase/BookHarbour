@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E4892812B496A3E00C2F89D /* MiscAdditionalFunctionality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4892802B496A3E00C2F89D /* MiscAdditionalFunctionality.swift */; };
 		8E4BC8F82B440F9F006D2403 /* BookHarbourApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4BC8F72B440F9F006D2403 /* BookHarbourApp.swift */; };
 		8E4BC8FC2B440FA1006D2403 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E4BC8FB2B440FA1006D2403 /* Assets.xcassets */; };
 		8E4BC8FF2B440FA1006D2403 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E4BC8FE2B440FA1006D2403 /* Preview Assets.xcassets */; };
@@ -29,6 +30,7 @@
 /* Begin PBXFileReference section */
 		1AEEA5F99C2061D4C400F7A0 /* Pods-BookHarbour.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookHarbour.release.xcconfig"; path = "Target Support Files/Pods-BookHarbour/Pods-BookHarbour.release.xcconfig"; sourceTree = "<group>"; };
 		2631D1D8631101D85BC68D97 /* Pods_BookHarbour.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookHarbour.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E4892802B496A3E00C2F89D /* MiscAdditionalFunctionality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiscAdditionalFunctionality.swift; sourceTree = "<group>"; };
 		8E4BC8F42B440F9F006D2403 /* BookHarbour.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookHarbour.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E4BC8F72B440F9F006D2403 /* BookHarbourApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookHarbourApp.swift; sourceTree = "<group>"; };
 		8E4BC8FB2B440FA1006D2403 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -70,6 +72,13 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		8E4892822B49739000C2F89D /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 		8E4BC8EB2B440F9E006D2403 = {
 			isa = PBXGroup;
 			children = (
@@ -91,6 +100,7 @@
 		8E4BC8F62B440F9F006D2403 /* BookHarbour */ = {
 			isa = PBXGroup;
 			children = (
+				8E4892822B49739000C2F89D /* ViewModels */,
 				8EB357ED2B441114004ACDA8 /* Views */,
 				8EB357EC2B441103004ACDA8 /* ExternalPrograms */,
 				8EB357EB2B4410E8004ACDA8 /* CustomFunctionality */,
@@ -135,6 +145,7 @@
 			children = (
 				8EB358012B4413AC004ACDA8 /* UnzipHelper.swift */,
 				8EB358032B4413C0004ACDA8 /* EpubParser.swift */,
+				8E4892802B496A3E00C2F89D /* MiscAdditionalFunctionality.swift */,
 			);
 			path = CustomFunctionality;
 			sourceTree = "<group>";
@@ -282,6 +293,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EB357F72B4411F3004ACDA8 /* BookDetailsModalView.swift in Sources */,
+				8E4892812B496A3E00C2F89D /* MiscAdditionalFunctionality.swift in Sources */,
 				8EB357FC2B4412DB004ACDA8 /* DisplayBooks.swift in Sources */,
 				8EB357FA2B44122C004ACDA8 /* Library.xcdatamodeld in Sources */,
 				8EB357FE2B4412FF004ACDA8 /* IndividualBookRow.swift in Sources */,

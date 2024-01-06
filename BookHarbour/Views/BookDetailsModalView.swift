@@ -21,7 +21,10 @@ struct BookDetailsModalView: View {
     @State private var editedTitle: String = ""
     @State private var editedAuthor: String = ""
     @State private var editedSynopsis: String = ""
-    
+    @State private var isImagePickerPresented: Bool = false
+    @State private var selectedImage: UIImage?
+    @State private var selectedImagePath: String?
+
 
     var ebook : Ebooks
     
@@ -43,20 +46,82 @@ struct BookDetailsModalView: View {
         }
     }
     
+    func loadImage() {
+            guard let selectedImage = selectedImage else { return }
+
+            // Save the new image path to ebook.coverImgPath
+            if let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+                let imageFileName = UUID().uuidString
+                let imagePath = documentsDirectory.appendingPathComponent(imageFileName)
+
+                if let imageData = selectedImage.jpegData(compressionQuality: 1) {
+                    do {
+                        try imageData.write(to: imagePath)
+                        ebook.coverImgPath = imagePath.path
+                        print(ebook.coverImgPath)
+                        checkChangesThenSave()
+                    } catch {
+                        // Handle the error
+                        print("Error saving image:", error)
+                    }
+                }
+            }
+        }
+    
     var body: some View {
         
         let rowLayout = Array(repeating: GridItem(.fixed(300)), count: 2)
         VStack {
             NavigationStack{
                 LazyVGrid(columns: rowLayout, alignment: .center) {
-                    AsyncImage(url: URL(fileURLWithPath: ebook.coverImgPath ?? "")){ image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    } placeholder: {
-                        Color.black
-                        //replace this with a stand-in image later
+//                    if isEditing{
+//                        AsyncImage(url: URL(fileURLWithPath: ebook.coverImgPath ?? "")){ image in
+//                            image
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fit)
+//                        } placeholder: {
+//                            Color.black
+//                            //replace this with a stand-in image later
+//                        }
+//                    }
+//                    if !isEditing{
+//                        AsyncImage(url: URL(fileURLWithPath: ebook.coverImgPath ?? "")){ image in
+//                            image
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fit)
+//                        } placeholder: {
+//                            Color.black
+//                            //replace this with a stand-in image later
+//                        }
+//                    }
+                    if isEditing {
+                        Button(action: {
+                            isImagePickerPresented = true
+                        }) {
+                            AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook.coverImgPath ?? "")) { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                            } placeholder: {
+                                Color.black
+                                // Replace this with a stand-in image later
+                            }
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .sheet(isPresented: $isImagePickerPresented, onDismiss: loadImage) {
+                            ImagePicker(image: $selectedImage)
+                        }
+                    } else {
+                        AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook.coverImgPath ?? "")) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        } placeholder: {
+                            Color.black
+                            // Replace this with a stand-in image later
+                        }
                     }
+                    
                     VStack{
                         if isEditing{
                             VStack{
