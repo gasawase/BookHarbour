@@ -47,12 +47,12 @@ struct NavBarView : View{
     @StateObject var fileSelectorController = FileSelectorController()
     @State private var isFilePickerPresented = false
     @State private var selectedFolderURL: URL?
+    @State private var fileLocArr : [String] = []
     
     let dataController = DataController.shared
     
     
     var body : some View{
-        var fileLocArr : [String] = []
         NavigationStack{
             VStack{
                 if fileLocArr.isEmpty{
@@ -65,43 +65,41 @@ struct NavBarView : View{
                         }
                     }
                 }
-                Text(fileLocArr.first ?? "")
-                    .toolbar{
-                        ToolbarItemGroup(placement: .topBarLeading) {
-                            Button {
-                                print("Select a folder clicked")
-                                isFilePickerPresented = true
-                                // close the navigation stack
-                            } label: {
-                                Text("Select a Folder...")
-                            }
-                            Button {
-                                print("reset books clicked")
-                                dataController.clearAllTitles()
-                            } label: {
-                                Text("Reset Books")
-                            }
-                        }
+            }
+            .toolbar{
+                ToolbarItemGroup(placement: .topBarLeading) {
+                    Button {
+                        print("Select a folder clicked")
+                        isFilePickerPresented = true
+                        // close the navigation stack
+                    } label: {
+                        Text("Select a Folder...")
                     }
-                    .padding()
-                    .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.folder], allowsMultipleSelection: false) { result in
-                        do {
-                            guard let selectedURL = try result.get().first else { return }
-                            selectedFolderURL = selectedURL
-                            fileLocArr.append(selectedFolderURL?.absoluteString ?? "")
-                            guard selectedURL.startAccessingSecurityScopedResource() else { // Notice this line right here
-                                return
-                            }
-                            try FileManager.default.contentsOfDirectory(at: selectedURL, includingPropertiesForKeys: nil)
-                            fileSelectorController.loadEpubFiles(from: selectedURL)
-                        } catch {
-                            print("File picking error:", error.localizedDescription)
-                        }
+                    Button {
+                        print("reset books clicked")
+                        dataController.clearAllTitles()
+                        fileLocArr.removeAll()
+                    } label: {
+                        Text("Reset Books")
                     }
+                }
+            }
+            .padding()
+            .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.folder], allowsMultipleSelection: false) { result in
+                do {
+                    guard let selectedURL = try result.get().first else { return }
+                    selectedFolderURL = selectedURL
+                    fileLocArr.append(selectedFolderURL?.absoluteString ?? "")
+                    guard selectedURL.startAccessingSecurityScopedResource() else { // Notice this line right here
+                        return
+                    }
+                    try FileManager.default.contentsOfDirectory(at: selectedURL, includingPropertiesForKeys: nil)
+                    fileSelectorController.loadEpubFiles(from: selectedURL)
+                } catch {
+                    print("File picking error:", error.localizedDescription)
+                }
             }
         }
-        .border(Color.red)
-        
 //        @StateObject var fileSelectorController = FileSelectorController()
 //        @State private var isFilePickerPresented = false
 //        @State private var selectedFolderURL: URL?

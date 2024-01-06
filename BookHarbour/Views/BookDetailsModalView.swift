@@ -6,14 +6,22 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct BookDetailsModalView: View {
     //@Binding var isShowingBookDetails : Bool
     //@Binding var isShowingReader : Bool
-    
+    //@Environment()
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var currentBook: CurrentBook
     @Environment(\.dismiss) private var dismiss
+    
+    @State var isEditing : Bool = false
+    @State private var hasChanges: Bool = false
+    @State private var editedTitle: String = ""
+    @State private var editedAuthor: String = ""
+    @State private var editedSynopsis: String = ""
+    
 
     var ebook : Ebooks
     
@@ -25,7 +33,18 @@ struct BookDetailsModalView: View {
         currentBook.bookOPFURL = ebook.opfFileURL ?? URL(fileURLWithPath: "/path/to/file.txt")
     }
     
+    func checkChangesThenSave(){
+        if DataController.shared.container.viewContext.hasChanges {
+            do {
+                try DataController.shared.container.viewContext.save()
+            } catch {
+                print("Error saving managed object context: \(error)")
+            }
+        }
+    }
+    
     var body: some View {
+        
         let rowLayout = Array(repeating: GridItem(.fixed(300)), count: 2)
         VStack {
             NavigationStack{
@@ -39,19 +58,60 @@ struct BookDetailsModalView: View {
                         //replace this with a stand-in image later
                     }
                     VStack{
-                        Text(ebook.title ?? "No Title")
-                            .font(.largeTitle)
-                            .multilineTextAlignment(.leading)
-                            .frame(
-                                maxWidth: 300
-                            )
-                        Text(ebook.author ?? "No Author")
-                            .font(.title2)
-                        ScrollView{
-                            Text(ebook.synopsis ?? "No Description")
-                                .multilineTextAlignment(.leading)
-                                .frame(
-                                    maxWidth: 300)
+                        if isEditing{
+                            VStack{
+                                TextField("\(ebook.title ?? "")", text: $editedTitle)
+                                    .font(.largeTitle)
+                                    .aspectRatio(contentMode: .fill)
+                                //.multilineTextAlignment(.leading)
+                                    .frame(
+                                        maxWidth: 300
+                                    )
+                                    .multilineTextAlignment(TextAlignment.center)
+                                    .onChange(of: editedTitle) { newValue in
+                                            ebook.title = newValue
+                                        }
+                                TextField("\(ebook.author ?? "")", text: $editedAuthor)
+                                    .font(.title2)
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(
+                                        maxWidth: 300
+                                    )
+                                    .multilineTextAlignment(TextAlignment.center)
+                                    .onChange(of: editedAuthor) { newValue in
+                                            ebook.author = newValue
+                                        }
+                                ScrollView{
+                                    TextField("\(ebook.synopsis ?? "")", text: $editedSynopsis, axis: .vertical)
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(
+                                            maxWidth: 300
+                                        )
+                                        .multilineTextAlignment(TextAlignment.center)
+                                        .onChange(of: editedSynopsis) { newValue in
+                                                ebook.synopsis = newValue
+                                            }
+                                }
+                                .border(Color.red)
+                            }
+                            .border(Color.green)
+                        }
+                        else if !isEditing{
+                                Text(ebook.title ?? "")
+                                    .font(.largeTitle)
+                                    .multilineTextAlignment(.leading)
+                                    .frame(
+                                        maxWidth: 300
+                                    )
+                                Text(ebook.author ?? "")
+                                    .font(.title2)
+                                    .multilineTextAlignment(.leading)
+                            ScrollView{
+                                Text(ebook.synopsis ?? "")
+                                    .multilineTextAlignment(.leading)
+                                    .frame(
+                                        maxWidth: 300)
+                            }
                         }
                     }
                     .aspectRatio(contentMode: .fill)
@@ -67,18 +127,23 @@ struct BookDetailsModalView: View {
                             } label: {
                                 Text("Read")
                             }
-
-//                            NavigationLink(destination: ReaderView(ebook:ebook))
-//                            {
-//                                Text("Read")
-//                            }
-                            
                         }
                         ToolbarItemGroup(placement: .topBarTrailing){
                             Button(action: {
                                 print("Edit button pressed")
+                                isEditing.toggle()
+                                if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty{
+                                    editedTitle = ebook.title ?? ""
+                                    editedAuthor = ebook.author ?? ""
+                                    editedSynopsis = ebook.synopsis ?? ""
+                                }
                             }, label: {
-                                Image(systemName: "book.and.wrench")
+                                if isEditing{
+                                    Image(systemName: "square.and.arrow.down")
+                                }
+                                else {
+                                    Image(systemName: "book.and.wrench")
+                                }
                             })
                         }
                         ToolbarItemGroup(placement: .topBarLeading){

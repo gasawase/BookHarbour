@@ -45,7 +45,7 @@ class FileSelectorController : ObservableObject{
 //                let data = try Data(contentsOf: containerURL)
 //                print("Data: \(data)")
                 
-                let fileManager = FileManager()
+                //let fileManager = FileManager()
                 //let ebook = bookBinder.bindBook(at: epubFile)
 
                 let unzipHelper = UnzipHelper.self

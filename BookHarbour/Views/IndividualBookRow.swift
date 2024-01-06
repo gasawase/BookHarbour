@@ -35,6 +35,7 @@ struct IndividualBookRow: View {
         .sheet(isPresented: $isShowingBookDetails)
         {
             BookDetailsModalView(ebook: ebook)
+//            BookDetailsModalViewTesting()
         }
         
 //        if isShowingBookDetails{
