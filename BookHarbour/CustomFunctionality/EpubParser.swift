@@ -123,6 +123,8 @@ class EpubParser: NSObject, XMLParserDelegate{
         let localCoverPath = coverURL
         // save the path to the opf
         let localOPFPath = opfURL.path()
+        
+        
         // save all of the data
         do{
             let newBook = Ebooks(context: DataController.shared.container.viewContext)

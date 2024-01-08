@@ -76,6 +76,7 @@ struct DataController{
         }
     }
     
+    
     func getAllTitles() -> [Ebooks]{
         let fetchRequest : NSFetchRequest<Ebooks> = Ebooks.fetchRequest()
         

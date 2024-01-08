@@ -100,39 +100,6 @@ struct NavBarView : View{
                 }
             }
         }
-//        @StateObject var fileSelectorController = FileSelectorController()
-//        @State private var isFilePickerPresented = false
-//        @State private var selectedFolderURL: URL?
-//        
-        
-        
-//        var body: some View {
-//            VStack {
-//                if isFilePickerPresented == false{
-//                    Button {
-//                        isFilePickerPresented = true
-//                    } label: {
-//                        Text("SelectFolder")
-//                    }
-//                }
-//                Text(selectedFolderURL?.description ?? "No folder selected")
-//                
-//            }
-//            .padding()
-//            .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.folder], allowsMultipleSelection: false) { result in
-//                do {
-//                    guard let selectedURL = try result.get().first else { return }
-//                    selectedFolderURL = selectedURL
-//                    guard selectedURL.startAccessingSecurityScopedResource() else { // Notice this line right here
-//                        return
-//                    }
-//                    try FileManager.default.contentsOfDirectory(at: selectedURL, includingPropertiesForKeys: nil)
-//                    fileSelectorController.loadEpubFiles(from: selectedURL)
-//                } catch {
-//                    print("File picking error:", error.localizedDescription)
-//                }
-//            }
-//        }
     }
 }
 

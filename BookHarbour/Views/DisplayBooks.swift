@@ -14,6 +14,7 @@ struct DisplayBooks: View {
     @FetchRequest(sortDescriptors: [
             SortDescriptor(\.title)
     ]) var books: FetchedResults <Ebooks>
+    
     //var epubUrl : String
     //var epubURLs : [URL]
     @State private var newBookList : [Ebooks] = [Ebooks]()
