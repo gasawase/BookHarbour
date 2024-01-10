@@ -136,6 +136,7 @@ class EpubParser: NSObject, XMLParserDelegate{
                 newBook.opfFileURL = opfURL
                 newBook.epubPath = localEpubPath
                 newBook.synopsis = localSynopsis
+                
             
                  try DataController.shared.container.viewContext.save()
         } catch{
@@ -266,9 +267,6 @@ class OPFTryGetData : NSObject, XMLParserDelegate{
                 opfParser.delegate = self
                 opfParser.parse()
             }
-            
-            print("Spine Items from EpubParser: \(spineItems.count)")
-             
         }
         return spineItems
     }

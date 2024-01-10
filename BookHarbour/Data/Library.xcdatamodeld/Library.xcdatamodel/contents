@@ -3,10 +3,11 @@
     <entity name="BookTags" representedClassName="BookTags" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Ebooks"/>
+        <relationship name="bookTagsRelationship" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Ebooks"/>
     </entity>
     <entity name="Ebooks" representedClassName="Ebooks" syncable="YES" codeGenerationType="class">
         <attribute name="author" attributeType="String"/>
+        <attribute name="bookUID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="coverImgPath" optional="YES" attributeType="String"/>
         <attribute name="epubPath" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
@@ -14,6 +15,5 @@
         <attribute name="opfFileURL" optional="YES" attributeType="URI"/>
         <attribute name="synopsis" optional="YES" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
-        <relationship name="bookTags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BookTags"/>
     </entity>
 </model>

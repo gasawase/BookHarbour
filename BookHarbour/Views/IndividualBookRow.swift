@@ -15,9 +15,6 @@ struct IndividualBookRow: View {
     var ebook : Ebooks
     
     var body: some View {
-        
-        //let newCoverURL = URL(string: ebook.coverImgPath ?? "")
-        //Text(newCoverURL?.absoluteString ?? "")
         Button{
             print("\(ebook.title ?? "No Title") was selected")
             self.isShowingBookDetails.toggle()
@@ -35,12 +32,7 @@ struct IndividualBookRow: View {
         .sheet(isPresented: $isShowingBookDetails)
         {
             BookDetailsModalView(ebook: ebook)
-//            BookDetailsModalViewTesting()
         }
-        
-//        if isShowingBookDetails{
-//            ReaderView()
-//        }
     }
 }
 

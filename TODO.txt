@@ -5,10 +5,17 @@
 ----TODO----
 
 - more efficient way of storing data (only initially store coverimage and file url then when modal clicked, gather the data then)
-- ability to read book
 - go through and remove duplicates
+- real-time updating the bookshelf
+- tracking reading time
+- marking and storing reviews
+- marking and sorting by tags
+- sorting by name and author and such
+- be able to display the info as the correct xhtml instead of the html string it is right now
+	that way we can link things correctly and display things like images
 
 ----DONE----
+- ability to read book
 
 
 ----FEATURES I'D LIKE----

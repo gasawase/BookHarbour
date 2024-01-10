@@ -29,11 +29,18 @@ struct BookDetailsModalView: View {
     var ebook : Ebooks
     
     func setBookDetails(){
-        currentBook.bookTitle = ebook.title ?? ""
-        currentBook.bookAuthor = ebook.author ?? ""
-        currentBook.currentChapter = 1
-        currentBook.bookOPFPath = ebook.opfFilePath ?? ""
-        currentBook.bookOPFURL = ebook.opfFileURL ?? URL(fileURLWithPath: "/path/to/file.txt")
+        do {
+            currentBook.bookTitle = try ebook.title.unwrap(variableName: "title")
+            currentBook.bookAuthor = try ebook.author.unwrap(variableName: "author")
+            currentBook.currentChapter = 1
+            currentBook.bookOPFPath = try ebook.opfFilePath.unwrap(variableName: "OPFPath")
+            currentBook.bookOPFURL = try ebook.opfFileURL.unwrap(variableName: "OPFFileURl")
+            currentBook.bookUID = try ebook.bookUID.unwrap(variableName: "bookUID")
+        } catch {
+            // Handle the error here
+            print("Error: \(error)")
+        }
+
     }
     
     func checkChangesThenSave(){
@@ -58,7 +65,6 @@ struct BookDetailsModalView: View {
                     do {
                         try imageData.write(to: imagePath)
                         ebook.coverImgPath = imagePath.path
-                        print(ebook.coverImgPath)
                         checkChangesThenSave()
                     } catch {
                         // Handle the error
@@ -74,26 +80,7 @@ struct BookDetailsModalView: View {
         VStack {
             NavigationStack{
                 LazyVGrid(columns: rowLayout, alignment: .center) {
-//                    if isEditing{
-//                        AsyncImage(url: URL(fileURLWithPath: ebook.coverImgPath ?? "")){ image in
-//                            image
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fit)
-//                        } placeholder: {
-//                            Color.black
-//                            //replace this with a stand-in image later
-//                        }
-//                    }
-//                    if !isEditing{
-//                        AsyncImage(url: URL(fileURLWithPath: ebook.coverImgPath ?? "")){ image in
-//                            image
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fit)
-//                        } placeholder: {
-//                            Color.black
-//                            //replace this with a stand-in image later
-//                        }
-//                    }
+
                     if isEditing {
                         Button(action: {
                             isImagePickerPresented = true
@@ -180,45 +167,45 @@ struct BookDetailsModalView: View {
                         }
                     }
                     .aspectRatio(contentMode: .fill)
-                    .toolbar{
-                        ToolbarItemGroup(placement: .bottomBar){
-                            Button {
-                                print("Read Button Pressed")
-                                setBookDetails()
-                                appState.showReaderView.toggle()
-                                //appState.showBookDetails.toggle()
-                                dismiss()
-                                
-                            } label: {
-                                Text("Read")
+                    TagView()
+                }
+                .toolbar{
+                    ToolbarItemGroup(placement: .bottomBar){
+                        Button {
+                            print("Read Button Pressed")
+                            setBookDetails()
+                            appState.showReaderView.toggle()
+                            dismiss()
+                            
+                        } label: {
+                            Text("Read")
+                        }
+                    }
+                    ToolbarItemGroup(placement: .topBarTrailing){
+                        Button(action: {
+                            print("Edit button pressed")
+                            isEditing.toggle()
+                            if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty{
+                                editedTitle = ebook.title ?? ""
+                                editedAuthor = ebook.author ?? ""
+                                editedSynopsis = ebook.synopsis ?? ""
                             }
-                        }
-                        ToolbarItemGroup(placement: .topBarTrailing){
-                            Button(action: {
-                                print("Edit button pressed")
-                                isEditing.toggle()
-                                if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty{
-                                    editedTitle = ebook.title ?? ""
-                                    editedAuthor = ebook.author ?? ""
-                                    editedSynopsis = ebook.synopsis ?? ""
-                                }
-                            }, label: {
-                                if isEditing{
-                                    Image(systemName: "square.and.arrow.down")
-                                }
-                                else {
-                                    Image(systemName: "book.and.wrench")
-                                }
-                            })
-                        }
-                        ToolbarItemGroup(placement: .topBarLeading){
-                            Button(action: {
-                                print("Back button pressed")
-                                appState.showBookDetails = false
-                            }, label: {
-                                Image(systemName: "arrowshape.turn.up.backward")
-                            })
-                        }
+                        }, label: {
+                            if isEditing{
+                                Image(systemName: "square.and.arrow.down")
+                            }
+                            else {
+                                Image(systemName: "book.and.wrench")
+                            }
+                        })
+                    }
+                    ToolbarItemGroup(placement: .topBarLeading){
+                        Button(action: {
+                            print("Back button pressed")
+                            appState.showBookDetails = false
+                        }, label: {
+                            Image(systemName: "arrowshape.turn.up.backward")
+                        })
                     }
                 }
             }
@@ -227,3 +214,62 @@ struct BookDetailsModalView: View {
 }
 
 // maybe try doing a function here that will get the stupid value and then calling the funciton above?
+
+struct TagView : View{
+    @State var arrTags : [BookTags] = []
+    @EnvironmentObject var currentBook: CurrentBook
+    @StateObject private var viewModel = BookTagsViewModel()
+    @State private var newTagName: String = ""
+    
+    let bookUID = UUID(uuidString: "testing") // Replace with the actual UID
+    
+    private func fetchData() {
+        do {
+            let context = DataController.shared.container.viewContext
+            let fetchRequest: NSFetchRequest<BookTags> = BookTags.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \BookTags.name, ascending: true)]
+            fetchRequest.predicate = NSPredicate(format: "ANY bookTagsRelationship.bookUID == %@", currentBook.bookUID as CVarArg)
+
+            arrTags = try context.fetch(fetchRequest)
+        } catch {
+            print("Error fetching data: \(error.localizedDescription)")
+        }
+    }
+    
+    var body: some View {
+        // have the add button
+        // have it make an addition to the tag library at this location and tie it to this book
+        // get the tags on this book already and display them
+        ScrollView(.horizontal, showsIndicators: true){
+            HStack{
+                ForEach(arrTags, id:\.self){ tag in
+                    Text(tag.name ?? "")
+                }
+
+                HStack {
+                    TextField("Enter tag name", text: $newTagName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                }
+                .padding()
+                // Add Button
+                Button(action: {
+                    print("add tag button pressed")
+                }, label: {
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundColor(Color.blue)
+                        .padding()
+                })
+            }
+        }
+        .onAppear {
+            // Trigger the fetch request when the view appears
+            fetchData()
+        }
+    }
+}
+
+struct TagView_Previews: PreviewProvider {
+    static var previews: some View {
+        TagView()
+    }
+}

@@ -97,3 +97,49 @@ struct DataController{
     
     // try taking in a book value and then testing that and testing all of those values instead of being super specific
 }
+
+class BookTagsViewModel: ObservableObject {
+    @Published var bookTags: [BookTags] = []
+    
+    func fetchBookTags(forBookUID bookUID: UUID) {
+        //let toString = String(describing: bookUID)
+        // Perform your CoreData fetch request here
+        // Example:
+        let fetchRequest: NSFetchRequest<BookTags> = BookTags.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "bookUID == %@", bookUID as CVarArg)
+        
+        do {
+            let fetchedResults = try DataController.shared.container.viewContext.fetch(fetchRequest)
+            for entity in fetchedResults {
+                // Process the fetched entities
+                print(entity)
+            }
+        } catch {
+            // Handle fetch errors
+            print("Error fetching data: \(error.localizedDescription)")
+        }
+        
+//        do {
+//            self.bookTags = try DataController.shared.container.viewContext.fetch(fetchRequest)
+//        } catch {
+//            // Handle error
+//            print("Error fetching data: \(error.localizedDescription)")
+//        }
+    }
+    
+    func addTag(forBookUID bookUID: UUID, tagName: String) {
+        // Create a new tag and save it to CoreData
+        let newTag = BookTags(context: DataController.shared.container.viewContext)
+            newTag.name = tagName
+        DataController.shared.container.viewContext.insert(newTag)
+        
+        do {
+            try DataController.shared.container.viewContext.save()
+            // Update the local array
+            self.bookTags.append(newTag)
+        } catch {
+            // Handle error
+            print("Error saving data: \(error.localizedDescription)")
+        }
+    }
+}
