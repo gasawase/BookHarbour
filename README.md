@@ -13,16 +13,19 @@ Define the primary users and their needs. Consider demographics, technical exper
 ### 2.1. Core Features
 List and describe the essential features of your application.
 
-1. **Feature 1:** _[Description]_
-2. **Feature 2:** _[Description]_
-3. **Feature 3:** _[Description]_
+1. **Feature 1:** _Epub Display_
+2. **Feature 2:** _Ability to read Epubs_
+3. **Feature 3:** _Associate tags with Epubs and be able to customize how the user sorts their books_
 
 ### 2.2. Additional Features
 Identify and describe any secondary features that enhance the user experience or provide additional functionality.
 
-1. **Feature 4:** _[Description]_
-2. **Feature 5:** _[Description]_
-3. **Feature 6:** _[Description]_
+1. **Feature 4:** _Read time tracking_
+2. **Feature 5:** _Adding and storing reviews_
+3. **Feature 6:** _Ability to edit and change what data is shown about each book (cover image, description, title, etc.)_
+4. **Feature 7:** _Sort books by author, title, tags, etc._
+5. **Feature 8:** _Loading screens_
+6. **Features 9:** _Remove duplicates of books_
 
 ## 3. User Stories
 
@@ -45,15 +48,15 @@ Create user stories for each feature, specifying the actions users can perform a
 ### 4.1. Entities
 Identify the key entities and their attributes that your application will manage.
 
-1. **Entity 1:** _[Description]_
-2. **Entity 2:** _[Description]_
+1. **Entity 1:** _Ebooks_
+2. **Entity 2:** _BookTags_
 3. **Entity 3:** _[Description]_
 
 ### 4.2. Relationships
 Define the relationships between different entities.
 
-1. **Relationship 1:** _[Description]_
-2. **Relationship 2:** _[Description]_
+1. **Relationship 1:** _Ebooks -> BookTags : oneToMany = tags_
+2. **Relationship 2:** _BookTags -> Ebooks : oneToMany = bookTagsRelationship_
 3. **Relationship 3:** _[Description]_
 
 ## 5. Technology Stack
@@ -100,9 +103,15 @@ Define the flow of actions users will take within the application.
 ### 7.1. Milestones
 Break down the development process into key milestones.
 
-1. **Milestone 1:** Create EPUB Metadata Package
+1. **Milestone 1:** Create Custom Epub Parsing Functionality
 2. **Milestone 2:** Create Bookshelf, EPUB Selection Display, and Reading Ability
 3. **Milestone 3:** Create User Customization Features (Tags, Reviews, etc.)
+
+#### 7.1.1. Additional Future Features
+These features are features that I'd like to get to if I have time after finishing the above milestones.
+
+1. Custom bookshelf builder: the ability for a user to organize all of their books on a physical bookshelf if they'd like to. Could have additional props, such as fake plants or pictures, should time allow.
+2. 
 
 ### 7.2. Release Plan
 Specify the planned release dates for each version or major feature.
@@ -146,7 +155,7 @@ Define the roles and responsibilities of team members.
 ### 10.2. Communication Plan
 Specify communication channels and frequency.
 
-- **Issue Tracking:** _[Tool]_
+- **Issue Tracking:** _GitHubIssues_
 
 ## 12. Legal and Compliance
 
