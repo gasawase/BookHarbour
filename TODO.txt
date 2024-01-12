@@ -1,6 +1,6 @@
 ----UPDATED-----
 
-17/12/2023
+12/1/2023
 
 ----TODO----
 
@@ -13,9 +13,12 @@
 - sorting by name and author and such
 - be able to display the info as the correct xhtml instead of the html string it is right now
 	that way we can link things correctly and display things like images
+- be able to have a drop down with all of the tags that the user can auto select to prevent overwriting
+	- also to have it search through the list to see if they're writing anything that is already there
 
 ----DONE----
 - ability to read book
+- adding tags to books
 
 
 ----FEATURES I'D LIKE----
