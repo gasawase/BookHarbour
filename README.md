@@ -64,7 +64,7 @@ Define the relationships between different entities.
 ### 5.1. Frontend
 Specify the technologies and frameworks you plan to use for the user interface.
 
-- **UI Framework:** _[Framework]_
+- **UI Framework:** _SwiftUI, Webkit_
 - **State Management:** _[Library]_
 - **Other Frontend Tools:** _[Tools]_
 
