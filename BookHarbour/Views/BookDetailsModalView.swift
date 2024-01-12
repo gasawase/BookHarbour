@@ -75,12 +75,12 @@ struct BookDetailsModalView: View {
         }
     
     var body: some View {
-        
-        let rowLayout = Array(repeating: GridItem(.fixed(300)), count: 2)
-        VStack {
+        let rowLength : CGFloat = 300
+        let rowLayout = Array(repeating: GridItem(.fixed(rowLength)), count: 2)
+        //let rowLayout = Array(repeating: GridItem(.flexible(minimum: minRowLength, maximum: maxRowLength)), count: 2)
+        HStack{
             NavigationStack{
                 LazyVGrid(columns: rowLayout, alignment: .center) {
-
                     if isEditing {
                         Button(action: {
                             isImagePickerPresented = true
@@ -121,8 +121,8 @@ struct BookDetailsModalView: View {
                                     )
                                     .multilineTextAlignment(TextAlignment.center)
                                     .onChange(of: editedTitle) { newValue in
-                                            ebook.title = newValue
-                                        }
+                                        ebook.title = newValue
+                                    }
                                 TextField("\(ebook.author ?? "")", text: $editedAuthor)
                                     .font(.title2)
                                     .aspectRatio(contentMode: .fill)
@@ -131,8 +131,8 @@ struct BookDetailsModalView: View {
                                     )
                                     .multilineTextAlignment(TextAlignment.center)
                                     .onChange(of: editedAuthor) { newValue in
-                                            ebook.author = newValue
-                                        }
+                                        ebook.author = newValue
+                                    }
                                 ScrollView{
                                     TextField("\(ebook.synopsis ?? "")", text: $editedSynopsis, axis: .vertical)
                                         .aspectRatio(contentMode: .fill)
@@ -141,23 +141,23 @@ struct BookDetailsModalView: View {
                                         )
                                         .multilineTextAlignment(TextAlignment.center)
                                         .onChange(of: editedSynopsis) { newValue in
-                                                ebook.synopsis = newValue
-                                            }
+                                            ebook.synopsis = newValue
+                                        }
                                 }
                                 .border(Color.red)
                             }
                             .border(Color.green)
                         }
                         else if !isEditing{
-                                Text(ebook.title ?? "")
-                                    .font(.largeTitle)
-                                    .multilineTextAlignment(.leading)
-                                    .frame(
-                                        maxWidth: 300
-                                    )
-                                Text(ebook.author ?? "")
-                                    .font(.title2)
-                                    .multilineTextAlignment(.leading)
+                            Text(ebook.title ?? "")
+                                .font(.largeTitle)
+                                .multilineTextAlignment(.leading)
+                                .frame(
+                                    maxWidth: 300
+                                )
+                            Text(ebook.author ?? "")
+                                .font(.title2)
+                                .multilineTextAlignment(.leading)
                             ScrollView{
                                 Text(ebook.synopsis ?? "")
                                     .multilineTextAlignment(.leading)
@@ -166,48 +166,55 @@ struct BookDetailsModalView: View {
                             }
                         }
                     }
-                    .aspectRatio(contentMode: .fill)
-                    TagView()
+                    //.aspectRatio(contentMode: .fill)
                 }
-                .toolbar{
-                    ToolbarItemGroup(placement: .bottomBar){
-                        Button {
-                            print("Read Button Pressed")
-                            setBookDetails()
-                            appState.showReaderView.toggle()
-                            dismiss()
-                            
-                        } label: {
-                            Text("Read")
-                        }
-                    }
-                    ToolbarItemGroup(placement: .topBarTrailing){
-                        Button(action: {
-                            print("Edit button pressed")
-                            isEditing.toggle()
-                            if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty{
-                                editedTitle = ebook.title ?? ""
-                                editedAuthor = ebook.author ?? ""
-                                editedSynopsis = ebook.synopsis ?? ""
-                            }
-                        }, label: {
-                            if isEditing{
-                                Image(systemName: "square.and.arrow.down")
-                            }
-                            else {
-                                Image(systemName: "book.and.wrench")
-                            }
-                        })
-                    }
-                    ToolbarItemGroup(placement: .topBarLeading){
-                        Button(action: {
-                            print("Back button pressed")
-                            appState.showBookDetails = false
-                        }, label: {
-                            Image(systemName: "arrowshape.turn.up.backward")
-                        })
-                    }
+                TagView(ebook: ebook)
+                    .frame(width: rowLength * 2, height: rowLength / 3,  alignment: .leading)
+                LazyVGrid(columns: rowLayout, alignment: .center) {
+                    // Stack for Review information
                 }
+                //
+                }
+            .aspectRatio(contentMode: .fill)
+            }
+
+        .toolbar{
+            ToolbarItemGroup(placement: .bottomBar){
+                Button {
+                    print("Read Button Pressed")
+                    setBookDetails()
+                    appState.showReaderView.toggle()
+                    dismiss()
+                    
+                } label: {
+                    Text("Read")
+                }
+            }
+            ToolbarItemGroup(placement: .topBarTrailing){
+                Button(action: {
+                    print("Edit button pressed")
+                    isEditing.toggle()
+                    if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty{
+                        editedTitle = ebook.title ?? ""
+                        editedAuthor = ebook.author ?? ""
+                        editedSynopsis = ebook.synopsis ?? ""
+                    }
+                }, label: {
+                    if isEditing{
+                        Image(systemName: "square.and.arrow.down")
+                    }
+                    else {
+                        Image(systemName: "book.and.wrench")
+                    }
+                })
+            }
+            ToolbarItemGroup(placement: .topBarLeading){
+                Button(action: {
+                    print("Back button pressed")
+                    appState.showBookDetails = false
+                }, label: {
+                    Image(systemName: "arrowshape.turn.up.backward")
+                })
             }
         }
     }
@@ -217,18 +224,24 @@ struct BookDetailsModalView: View {
 
 struct TagView : View{
     @State var arrTags : [BookTags] = []
+    @State var tempStringTags : [String] = []
     @EnvironmentObject var currentBook: CurrentBook
     @StateObject private var viewModel = BookTagsViewModel()
+    @State var ebook : Ebooks
     @State private var newTagName: String = ""
+    @State var addTagPressed : Bool = false
+    @State var enterPressed : Bool = false
     
     let bookUID = UUID(uuidString: "testing") // Replace with the actual UID
+    
+    let tagColumns = Array(repeating: GridItem(.flexible(minimum: 50, maximum: .infinity)), count: 2)
     
     private func fetchData() {
         do {
             let context = DataController.shared.container.viewContext
             let fetchRequest: NSFetchRequest<BookTags> = BookTags.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \BookTags.name, ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "ANY bookTagsRelationship.bookUID == %@", currentBook.bookUID as CVarArg)
+            fetchRequest.predicate = NSPredicate(format: "ANY bookTagsRelationship == %@", ebook)
 
             arrTags = try context.fetch(fetchRequest)
         } catch {
@@ -240,30 +253,59 @@ struct TagView : View{
         // have the add button
         // have it make an addition to the tag library at this location and tie it to this book
         // get the tags on this book already and display them
-        ScrollView(.horizontal, showsIndicators: true){
-            HStack{
-                ForEach(arrTags, id:\.self){ tag in
-                    Text(tag.name ?? "")
-                }
-
-                HStack {
+        
+        HStack{
+            Button {
+                print("add tag button pressed")
+                addTagPressed.toggle()
+            } label: {
+                Image(systemName: "plus.circle.fill")
+                    .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                    .padding()
+            }
+            if addTagPressed{
+                HStack{
                     TextField("Enter tag name", text: $newTagName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(width: 100)
+                        .onSubmit {
+                            enterPressed.toggle()
+                            print("enter pressed")
+                            // add to core data here
+                            // add tag to all Tags
+                            let newTag = BookTags(context: DataController.shared.container.viewContext)
+                            newTag.id = UUID()
+                            newTag.name = newTagName
+                            
+                            //associate tag with book
+                            ebook.addToTags(newTag)
+                            newTag.addToBookTagsRelationship(ebook)
+                            //fetchData()
+                            fetchData()
+                            // have the tags repopulate with what is in the tag thing to make sure that the data displaying is the right data
+                            //tempStringTags.append(newTagName)
+                            newTagName = ""
+                        }
                 }
-                .padding()
-                // Add Button
-                Button(action: {
-                    print("add tag button pressed")
-                }, label: {
-                    Image(systemName: "plus.circle.fill")
-                        .foregroundColor(Color.blue)
-                        .padding()
-                })
             }
-        }
-        .onAppear {
-            // Trigger the fetch request when the view appears
-            fetchData()
+            ScrollView(.horizontal, showsIndicators: true){
+                //LazyHGrid(rows: tagColumns, spacing: 20) {
+                HStack{
+                    ForEach(arrTags, id: \.self) { tag in
+                        Text(tag.name ?? "nil")
+                            .padding(8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color.blue)
+                            )
+                            .foregroundColor(.white)
+                    }
+                }
+            }
+            .onAppear(perform: {
+                fetchData()
+            })
         }
     }
 }
+
