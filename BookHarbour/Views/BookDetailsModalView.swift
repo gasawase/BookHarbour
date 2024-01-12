@@ -9,9 +9,6 @@ import SwiftUI
 import CoreData
 
 struct BookDetailsModalView: View {
-    //@Binding var isShowingBookDetails : Bool
-    //@Binding var isShowingReader : Bool
-    //@Environment()
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var currentBook: CurrentBook
     @Environment(\.dismiss) private var dismiss
@@ -26,7 +23,7 @@ struct BookDetailsModalView: View {
     @State private var selectedImagePath: String?
 
 
-    var ebook : Ebooks
+    @ObservedObject var ebook : Ebooks
     
     func setBookDetails(){
         do {

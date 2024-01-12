@@ -2,17 +2,15 @@
 
 12/1/2023
 
-- create buttons at the top to sort the books
+
 
 ----TODO----
 
 - more efficient way of storing data (only initially store coverimage and file url then when modal clicked, gather the data then)
 - go through and remove duplicates
-- real-time updating the bookshelf
 - tracking reading time
 - marking and storing reviews
 - marking and sorting by tags
-- sorting by name and author and such
 - be able to display the info as the correct xhtml instead of the html string it is right now
 	that way we can link things correctly and display things like images
 - be able to have a drop down with all of the tags that the user can auto select to prevent overwriting
@@ -21,6 +19,9 @@
 ----DONE----
 - ability to read book
 - adding tags to books
+- create buttons at the top to sort the books
+- ability to sort books
+- real-time updating the bookshelf
 
 
 ----FEATURES I'D LIKE----

@@ -12,7 +12,7 @@ struct IndividualBookRow: View {
     @State var isShowingBookDetails : Bool = false
     @Binding var isShowingReader : Bool
     
-    var ebook : Ebooks
+    @ObservedObject var ebook : Ebooks
     
     var body: some View {
         Button{

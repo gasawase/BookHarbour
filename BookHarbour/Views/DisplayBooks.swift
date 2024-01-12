@@ -63,12 +63,6 @@ struct DisplayBooks: View {
     let dataController = DataController.shared
     
     @Binding public var isShowingReader : Bool
-
-    
-    // maybe have this somehow linked to a change in the titles?
-    func populateBooks(){
-        newBookList = dataController.getAllTitles()
-    }
     
     var body: some View {
         
