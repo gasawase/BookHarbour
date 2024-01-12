@@ -18,16 +18,6 @@ struct BookHarbourApp: App {
     
     var body: some Scene {
         WindowGroup {
-//            if appState.showNewView {
-//                NewView()
-//                    .environmentObject(appState)
-//            } else {
-//                TestingView()
-//                    .environmentObject(appState)
-//                    .fullScreenCover(isPresented: $appState.showNewView) {
-//                        NewView()
-//                    }
-//            }
             if appState.showReaderView{
                 ReaderView()
                     .environmentObject(appState)
@@ -37,9 +27,8 @@ struct BookHarbourApp: App {
                 MainHomeView()
                     .environment(\.managedObjectContext, dataController.container.viewContext)
                     .environmentObject(appState)
-                    .environmentObject(currentBook)
+                    .environmentObject(currentBook)                
             }
-           
         }
     }
 }

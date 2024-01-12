@@ -7,6 +7,24 @@
 
 import SwiftUI
 
+enum SortingTypes : String, CaseIterable, Identifiable{
+    case alphabetic
+    case author
+//    case longestShortest
+//    case shortestLongest
+//    case readUnread
+//    case unreadRead
+    var id: Self { return self }
+    var title: String {
+            switch self {
+                case .alphabetic:
+                    return "Alpha"
+                case .author:
+                    return "Author"
+            }
+        }
+}
+
 struct DisplayBooks: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     @EnvironmentObject var currentBook: CurrentBook
@@ -18,6 +36,20 @@ struct DisplayBooks: View {
     //var epubUrl : String
     //var epubURLs : [URL]
     @State private var newBookList : [Ebooks] = [Ebooks]()
+    
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.title)]) var alphabeticBooks: FetchedResults<Ebooks>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.author)]) var authorBooks: FetchedResults<Ebooks>
+    
+    @State private var selectedSorting = SortingTypes.alphabetic
+    var sortedBooks: FetchedResults<Ebooks> {
+            switch selectedSorting {
+            case .alphabetic:
+                return alphabeticBooks
+            case .author:
+                return authorBooks
+            // Add other cases and fetch requests as needed
+            }
+        }
     
     let colCount : Int = 4
     let minRowVal : CGFloat = 0
@@ -50,51 +82,31 @@ struct DisplayBooks: View {
         ScrollView{
             LazyHGrid(rows: rowLayout, spacing: rowSpacing, content: {
                 LazyVGrid(columns: colLayout,spacing: colSpacing, content: {
-                        ForEach(books, id:\.self){ book in
+                        ForEach(sortedBooks, id:\.self){ book in
                             // Individual book Details
                             IndividualBookRow(isShowingReader: $isShowingReader, ebook: book)
                         }
                         .onDelete(perform: { indexSet in
                             indexSet.forEach { index in
-                                let bookEntry = books[index]
+                                let bookEntry = sortedBooks[index]
                                 DataController.shared.deleteBookEntry(ebook: bookEntry)
-                                populateBooks()
                             }
                         })
                         .padding(20)
                 })
             })
         }
-        .onAppear(perform: {
-            populateBooks()
-            print(type(of: books))
-        })
-        
-//        ScrollView{
-//            List{
-//                ForEach(books, id:\.self){ book in
-//                    //Text(book.title ?? "")
-//                    // Individual book Details
-//                    IndividualBookRow(ebook: book)
-//                }
-//                .onDelete(perform: { indexSet in
-//                    indexSet.forEach { index in
-//                        let bookEntry = books[index]
-//                        DataController.shared.deleteBookEntry(ebook: bookEntry)
-//                        populateBooks()
-//                    }
-//                })
-//
-//            }
-//            .frame(height: 500)
-//            Text(books.count.description)
-//        }
-//        .onAppear(perform: {
-//            populateBooks()
-//        })
-//        .frame(width:500)
-//        .border(Color.red)
-
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Picker("Sort",selection: $selectedSorting) {
+                    ForEach(SortingTypes.allCases, id: \.self)
+                    {
+                        Text($0.title)
+                            .tag($0)
+                    }
+                }
+                .pickerStyle(.menu)
+            }
+        }
     }
-    
 }

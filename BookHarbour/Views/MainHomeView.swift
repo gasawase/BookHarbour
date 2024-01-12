@@ -38,8 +38,13 @@ struct HoldingView : View{
         NavigationSplitView {
             NavBarView()
         } detail: {
+            
             DisplayBooks(isShowingReader: $isShowingReader)
+            
+            // this \/ only fills the middle column of the screen -_-
+                //.background(Color.green, ignoresSafeAreaEdges: .all)
         }
+        
     }
 }
 

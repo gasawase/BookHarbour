@@ -2,6 +2,8 @@
 
 12/1/2023
 
+- create buttons at the top to sort the books
+
 ----TODO----
 
 - more efficient way of storing data (only initially store coverimage and file url then when modal clicked, gather the data then)

@@ -144,9 +144,7 @@ struct BookDetailsModalView: View {
                                             ebook.synopsis = newValue
                                         }
                                 }
-                                .border(Color.red)
                             }
-                            .border(Color.green)
                         }
                         else if !isEditing{
                             Text(ebook.title ?? "")
@@ -173,48 +171,46 @@ struct BookDetailsModalView: View {
                 LazyVGrid(columns: rowLayout, alignment: .center) {
                     // Stack for Review information
                 }
-                //
+                .toolbar{
+                    ToolbarItemGroup(placement: .bottomBar){
+                        Button {
+                            print("Read Button Pressed")
+                            setBookDetails()
+                            appState.showReaderView.toggle()
+                            dismiss()
+                            
+                        } label: {
+                            Text("Read")
+                        }
+                    }
+                    ToolbarItemGroup(placement: .topBarTrailing){
+                        Button(action: {
+                            print("Edit button pressed")
+                            isEditing.toggle()
+                            if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty{
+                                editedTitle = ebook.title ?? ""
+                                editedAuthor = ebook.author ?? ""
+                                editedSynopsis = ebook.synopsis ?? ""
+                            }
+                        }, label: {
+                            if isEditing{
+                                Image(systemName: "square.and.arrow.down")
+                            }
+                            else {
+                                Image(systemName: "book.and.wrench")
+                            }
+                        })
+                    }
+                    ToolbarItemGroup(placement: .topBarLeading){
+                        Button(action: {
+                            print("Back button pressed")
+                            appState.showBookDetails = false
+                        }, label: {
+                            Image(systemName: "arrowshape.turn.up.backward")
+                        })
+                    }
                 }
             .aspectRatio(contentMode: .fill)
-            }
-
-        .toolbar{
-            ToolbarItemGroup(placement: .bottomBar){
-                Button {
-                    print("Read Button Pressed")
-                    setBookDetails()
-                    appState.showReaderView.toggle()
-                    dismiss()
-                    
-                } label: {
-                    Text("Read")
-                }
-            }
-            ToolbarItemGroup(placement: .topBarTrailing){
-                Button(action: {
-                    print("Edit button pressed")
-                    isEditing.toggle()
-                    if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty{
-                        editedTitle = ebook.title ?? ""
-                        editedAuthor = ebook.author ?? ""
-                        editedSynopsis = ebook.synopsis ?? ""
-                    }
-                }, label: {
-                    if isEditing{
-                        Image(systemName: "square.and.arrow.down")
-                    }
-                    else {
-                        Image(systemName: "book.and.wrench")
-                    }
-                })
-            }
-            ToolbarItemGroup(placement: .topBarLeading){
-                Button(action: {
-                    print("Back button pressed")
-                    appState.showBookDetails = false
-                }, label: {
-                    Image(systemName: "arrowshape.turn.up.backward")
-                })
             }
         }
     }
