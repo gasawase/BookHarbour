@@ -83,40 +83,36 @@ struct ReaderView: View{
                     }
                 }
             }
-            Group(){
-                    if isShowingReadingMenu{
-                        Group(){
-                            VStack {
-                                Button(action: {
-                                    appState.showReaderView.toggle()
-                                }, label: {
-                                    Image(systemName: "books.vertical.circle")
-                                        .resizable()
-                                        .frame(width: 20, height: 20)
-                                        .foregroundColor(.white)
-                                })
-                                .padding()
-                                .background(Color.gray)
-                                .clipShape(Circle())
-                            }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-                    }
+            VStack{
+                if isShowingReadingMenu{
                     Button(action: {
-                        withAnimation {
-                            isShowingReadingMenu.toggle()
-                        }
-                    }) {
-                        Image(systemName: "ellipsis.circle")
+                        appState.showReaderView.toggle()
+                    }, label: {
+                        Image(systemName: "books.vertical.circle")
                             .resizable()
-                            .frame(width: 30, height: 30)
+                            .frame(width: 20, height: 20)
                             .foregroundColor(.white)
-                    }
+                    })
                     .padding()
                     .background(Color.gray)
                     .clipShape(Circle())
-                    .shadow(radius: 5)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                }
+                Button(action: {
+                    withAnimation {
+                        isShowingReadingMenu.toggle()
+                    }
+                }) {
+                    Image(systemName: "ellipsis.circle")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .foregroundColor(.white)
+                }
+                .padding()
+                .background(Color.gray)
+                .clipShape(Circle())
+                .shadow(radius: 5)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
             }
             .padding()
         }
