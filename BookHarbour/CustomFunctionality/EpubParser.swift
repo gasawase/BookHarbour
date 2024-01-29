@@ -29,6 +29,8 @@ class EpubParser: NSObject, XMLParserDelegate{
     private var coverImagePath : String!
     private var metadataObj : XMLBasicMetadata!
     private var opfDataObj : XMLOPFData!
+    private var ncxDataObj : XMLNCXData!
+    private var ncxDict : [String:String] = [:]
     private var coverURL : String!
     
     init(epubDirectory: URL){
@@ -44,15 +46,15 @@ class EpubParser: NSObject, XMLParserDelegate{
             if let rootfilePath = xml["container"]["rootfiles"]["rootfile"].element?.attribute(by: "full-path")?.text {
                 // and if it's valid, it says to get the opfURL from the unzipDirectory (where the epub was unzipped to)
                 let opfURL = unzipDirectory.appendingPathComponent(rootfilePath)
-                //print(rootfilePath)
+                let parentFilePath = opfURL.deletingLastPathComponent()
                 parseOPFFile(opfURL, completion: completion)
+                parseNCXFile(parentFilePath.path(), completion: completion)
             }
         }
     }
     
     
     private func parseOPFFile(_ opfURL: URL, completion: @escaping (URL?) -> Void) {
-        print(opfURL)
         if let containerOPFXMLData = FileManager.default.contents(atPath: opfURL.path()){
             // convert to XMLHash.lazy for better efficiency
             let opfXML = XMLHash.lazy(containerOPFXMLData)
@@ -64,18 +66,66 @@ class EpubParser: NSObject, XMLParserDelegate{
             else{
                 completion(nil)
             }
-
             do {
                 opfDataObj = try opfXML["package"].value()
                 metadataObj = try opfDataObj.metadata.value()
                 coverURL = getCoverURL(manifestItems: manifestItems, opfURL: opfURL)
                 addToCoreData(opfURL: opfURL, metadata: metadataObj, manifestItems: manifestItems, epubPath: unzipDirectory, coverURL: coverURL)
-
                 
             } catch {
                 // Handle the error here
                 print("An error occurred: \(error)")
             }
+        }
+    }
+    
+    func parseNCXFile(_ parentFilePath: String, completion: @escaping (URL?) -> Void) {
+        // ncx file is XML
+        // navPoints are in an array
+        // ncx[navMap][navPoint][navLabel]
+        // ncx[navMap][navPoint][content]
+        
+        let ncxFilePath = parentFilePath.appending("toc.ncx")
+        let ncxURL = URL(string: ncxFilePath)!
+        //if let containerNCXXMLData = FileManager.default.contents(atPath: ncxFilePath)
+        if let containerNCXXMLData = FileManager.default.contents(atPath: ncxURL.path())
+        {
+            let ncxData = XMLHash.lazy(containerNCXXMLData)
+//            if let ncxParser = XMLParser(contentsOf: ncxURL){
+//                ncxParser.delegate = self
+//                ncxParser.parse()
+//            }
+//            else{
+//                completion(nil)
+//            }
+            do{
+                ncxDataObj = try ncxData["ncx"].value()
+                let navPoints = ncxData["ncx"]["navMap"]["navPoint"].all
+                for navPoint in navPoints {
+                    if let label = navPoint["navLabel"]["text"].element?.text, let content = navPoint["content"].element?.attribute(by: "src")?.text {
+                        ncxDict[label] = content
+                        //print("Label: \(label ), Content: \(content )")
+                    }
+                }
+                print(ncxDict)
+
+            } catch {
+                print("An error occured: \(error)")
+            }
+        }
+    }
+    
+    struct XMLNCXData : XMLObjectDeserialization{
+        let navMap : XMLIndexer
+        let navPoint : XMLIndexer
+        let navLabel : XMLIndexer
+        
+        static func deserialize(_ element: XMLIndexer) throws -> XMLNCXData {
+            return try XMLNCXData(
+            navMap: element["navMap"],
+            navPoint: element["navMap"]["navPoint"],
+            navLabel: element["navMap"]["navPoint"]["navLabel"]
+            )
         }
     }
     
@@ -98,6 +148,8 @@ class EpubParser: NSObject, XMLParserDelegate{
             if let metaName = attributeDict["name"], (metaName == "cover" || metaName == "cover-image"), let metaCover = attributeDict["content"] {
                 metaCoverVal = metaCover
             }
+        case "navPoint":
+            print("NavPoint detected, my liege.")
         default:
             break
         }
@@ -105,12 +157,6 @@ class EpubParser: NSObject, XMLParserDelegate{
 
     // might want to simplify this later to speed up efficiency to only get the title and cover at first
     func addToCoreData(opfURL: URL, metadata:XMLBasicMetadata, manifestItems: [String:String], epubPath: URL, coverURL: String){
-        
-//        let parentURL = opfURL
-//        let parentFilePath = parentURL.deletingLastPathComponent()
-//        let finalCoverURLPath = parentFilePath.appending(path: manifestItems[spineItems[1]]!).path()
-//
-//        print(finalCoverURLPath)
         // get the title
         let localTitle = metadata.title
         // get the author
@@ -158,8 +204,8 @@ class EpubParser: NSObject, XMLParserDelegate{
             coverImagePath = coverImageHrefValue
         }
         
-        let parentURL = opfURL
-        let parentFilePath = parentURL.deletingLastPathComponent()
+        //let parentURL = opfURL
+        let parentFilePath = opfURL.deletingLastPathComponent()
         let finalCoverURLPath = parentFilePath.appending(path: coverImagePath).path()
         
         return finalCoverURLPath
@@ -181,20 +227,6 @@ struct XMLOPFData: XMLObjectDeserialization{
     }
 }
 
-//struct XMLOPFData: XMLObjectDeserialization{
-//    let manifest : XMLIndexer
-//    let metadata : XMLIndexer
-//    let spine : XMLIndexer
-//
-//    static func deserialize(_ element: XMLIndexer) throws -> XMLOPFData {
-//        return try XMLOPFData(
-//            manifest: element["manifest"],
-//            metadata: element["metadata"],
-//            spine: element["spine"]
-//        )
-//    }
-//}
-
 struct XMLBasicMetadata : XMLObjectDeserialization{
     let title : String
     let author : String
@@ -214,28 +246,6 @@ struct XMLBasicMetadata : XMLObjectDeserialization{
         )
     }
 }
-
-
-//struct XMLMoreMetadata : XMLObjectDeserialization{
-//    let synopsis : String
-//    //let language : String
-//    //let datePublished : String
-//
-//    static func deserialize(_ element: XMLIndexer) throws -> XMLMoreMetadata {
-//        return try XMLMoreMetadata(
-//            synopsis: element["dc:description"].value())
-//    }
-//}
-
-//struct XMLManifest: XMLObjectDeserialization{
-//    let coverImageURL : URL
-//
-//    // could also search the manifest items for this (optional to do if you need to speed up efficiency)
-//    static func deserialize(_ element: XMLIndexer) throws -> XMLManifest{
-//        return try XMLManifest(
-//            coverImageURL: try element["cover"].value())
-//    }
-//}
 
 
 class OPFTryGetData : NSObject, XMLParserDelegate{

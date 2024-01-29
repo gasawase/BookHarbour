@@ -36,6 +36,10 @@ struct ReaderView: View{
         }
     }
     
+    // get the chapter path
+    // get where it matches to the TOC
+    // append the file path that is at the end of the toc dictionary
+    
     func getChapterPath(currentChapterIndex : Int) -> String{
         let opfURL : URL = currentBook.bookOPFURL
         //let opfURL = URL(string: opfPath)!

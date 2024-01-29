@@ -53,6 +53,5 @@ struct HTMLView: UIViewRepresentable {
         //just loading the file
         let chapterPathURL = URL(fileURLWithPath: chapterPath)
         uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: chapterPathURL)
-        
     }
 }
