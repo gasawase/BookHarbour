@@ -13,19 +13,53 @@ Define the primary users and their needs. Consider demographics, technical exper
 ### 2.1. Core Features
 List and describe the essential features of your application.
 
-1. **Feature 1:** _Epub Display_
+
+1. **Feature 1:** _Bookshelf Interface_
+
+     - Display books on a virtual bookshelf with cover images
+  
+     - Have an intuitive UI for users to scroll through and visually locate books.
+  
+     - Have a button bar or area including some way for users to quickly access the sorting options
+
+  
 2. **Feature 2:** _Ability to read Epubs_
+
+     - Integrate a built-in e-reader for users to read books from within the app
+  
+
 3. **Feature 3:** _Associate tags with Epubs and be able to customize how the user sorts their books_
+
+
 
 ### 2.2. Additional Features
 Identify and describe any secondary features that enhance the user experience or provide additional functionality.
 
 1. **Feature 4:** _Read time tracking_
+
+     - Record reading start and end times
+  
+     - Track total reading duration for each book.
+
+  
 2. **Feature 5:** _Adding and storing reviews_
-3. **Feature 6:** _Ability to edit and change what data is shown about each book (cover image, description, title, etc.)_
-4. **Feature 7:** _Sort books by author, title, tags, etc._
-5. **Feature 8:** _Loading screens_
-6. **Features 9:** _Remove duplicates of books_
+
+     - Allow users to leave reviews and star ratings for each book
+  
+     - Display their average ratings on the book modal pages
+
+  
+4. **Feature 6:** _Ability to edit and change what data is shown about each book (cover image, description, title, etc.)_
+5. **Feature 7:** _Sort books by author, title, tags, etc._
+
+     - Sort books by genre, author, rating, read status, etc.
+  
+     - Allow users to tag books for personalized organization
+  
+     - Implement search functionality for quick book retrieval
+  
+6. **Feature 8:** _Loading screens_
+7. **Features 9:** _Remove duplicates of books_
 
 ## 3. User Stories
 
@@ -50,7 +84,7 @@ Identify the key entities and their attributes that your application will manage
 
 1. **Entity 1:** _Ebooks_
 2. **Entity 2:** _BookTags_
-3. **Entity 3:** _[Description]_
+3. **Entity 3:** _Reviews_
 
 ### 4.2. Relationships
 Define the relationships between different entities.
