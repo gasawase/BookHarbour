@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import UIKit
+import SwiftSoup
 
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var image: UIImage?
@@ -45,5 +46,21 @@ struct ImagePicker: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
         // Update the view controller if needed
+    }
+}
+
+struct MiscAdditionalFunctionality {
+    // Function to parse HTML and create NSAttributedString
+    func parseHTML(_ html: String) throws -> NSAttributedString {
+        let document = try SwiftSoup.parse(html)
+        let bodyElement = try document.body()
+
+        // Convert HTML to NSAttributedString
+        let attrString = try NSAttributedString(data: bodyElement?.html().data(using: .utf8) ?? Data(),
+                                               options: [.documentType: NSAttributedString.DocumentType.html,
+                                                         .characterEncoding: String.Encoding.utf8.rawValue],
+                                               documentAttributes: nil)
+
+        return attrString
     }
 }

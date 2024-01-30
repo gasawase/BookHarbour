@@ -8,5 +8,6 @@ target 'BookHarbour' do
   # Pods for BookHarbour
   pod 'SWXMLHash'
   pod 'SSZipArchive'
+  pod 'SwiftSoup'
 
 end

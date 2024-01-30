@@ -1,7 +1,9 @@
-----UPDATED-----
+----CURRENT TAST-----
 
-12/1/2023
+LAST UPDATED: 30/1/2024
 
+- marking and storing reviews
+- marking and sorting by tags
 
 
 ----TODO----
@@ -9,12 +11,19 @@
 - more efficient way of storing data (only initially store coverimage and file url then when modal clicked, gather the data then)
 - go through and remove duplicates
 - tracking reading time
-- marking and storing reviews
-- marking and sorting by tags
-- be able to display the info as the correct xhtml instead of the html string it is right now
+- be able to display the reading info as the correct xhtml instead of the html string it is right now
 	that way we can link things correctly and display things like images
+	- I think I'm going to have to parse it like it's an xml document.
 - be able to have a drop down with all of the tags that the user can auto select to prevent overwriting
 	- also to have it search through the list to see if they're writing anything that is already there
+- have the description show how it was supposed to in html
+- make it all look pretty
+- have it blur the background when a title is clicked
+- shrink the pop up a little bit
+- remove duplicates 
+- create a button bar for the top to control the sorting and such
+- handling descriptions and the formatting (automatically in HTML)
+
 
 ----DONE----
 - ability to read book
@@ -22,12 +31,19 @@
 - create buttons at the top to sort the books
 - ability to sort books
 - real-time updating the bookshelf
-
+- get the metadata from the epubs and have them display
+- make all of the books the correct size
+- make the books be able to be side by side
+- modal pop ups (currently in its own view)
+- work on getting the covers clickable so that a sheet pops up
+- have the epubs display all in one section
+- have the description text auto wrap
+- convert grids to lazy grids to be more efficient
 
 ----FEATURES I'D LIKE----
 - move original bookbinder parsing from kanna to swiftsoup
 - change layout of library to just see the spine
-- make a customizable bookshelf where you can have a list of your books and design your bookshelf
+- make a customizable bookshelf where you can have a list of your books and design your bookshelf, drag and drop
 
 ----KNOWN BUGS----
 

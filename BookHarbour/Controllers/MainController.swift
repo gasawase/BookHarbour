@@ -23,6 +23,7 @@ enum BookHarbourErrorType : Error{
 class AppState: ObservableObject {
     @Published var showBookDetails: Bool = false
     @Published var showReaderView: Bool = false
+    @Published var showTestingView: Bool = false
 }
 
 class CurrentBook: ObservableObject {

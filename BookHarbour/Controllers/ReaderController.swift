@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import UIKit
 import WebKit
+import SwiftSoup
 
 
 class ReaderController : ObservableObject{
@@ -51,7 +52,36 @@ struct HTMLView: UIViewRepresentable {
     func updateUIView(_ uiView: WKWebView, context: Context) {
         let htmlPath = chapterPath
         //just loading the file
-        let chapterPathURL = URL(fileURLWithPath: chapterPath)
-        uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: chapterPathURL)
+        
+        do{
+            // Read HTML file content
+            let htmlContent = try String(contentsOfFile: htmlPath, encoding: .utf8)
+            
+            // Parse HTML using SwiftSoup
+            let document = try SwiftSoup.parse(htmlContent)
+            
+            
+            // Apply stylesheets
+//            if let stylesPath = Bundle.main.path(forResource: "page_styles", ofType: "css") {
+//                let styles = try String(contentsOfFile: stylesPath, encoding: .utf8)
+//                try document.head()?.append("<style>\(styles)</style>")
+//            }
+            
+            // Get the final HTML content
+            let finalHtml = try document.outerHtml()
+            
+            let chapterPathURL = URL(fileURLWithPath: chapterPath)
+            uiView.loadHTMLString(finalHtml, baseURL: chapterPathURL)
+            
+        }catch Exception.Error(let type, let message) {
+            print(message)
+        } catch {
+            print("error")
+        }
+        
+//        let chapterPathURL = URL(fileURLWithPath: chapterPath)
+        
+//        uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: chapterPathURL)
     }
+    
 }

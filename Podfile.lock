@@ -1,20 +1,24 @@
 PODS:
   - SSZipArchive (2.5.5)
+  - SwiftSoup (2.7.0)
   - SWXMLHash (7.0.2)
 
 DEPENDENCIES:
   - SSZipArchive
+  - SwiftSoup
   - SWXMLHash
 
 SPEC REPOS:
   trunk:
     - SSZipArchive
+    - SwiftSoup
     - SWXMLHash
 
 SPEC CHECKSUMS:
   SSZipArchive: c69881e8ac5521f0e622291387add5f60f30f3c4
+  SwiftSoup: 06cbbf665257adfbfe0c927c63de246e5e844b9d
   SWXMLHash: dd733a457e9c4fe93b1538654057aefae4acb382
 
-PODFILE CHECKSUM: 2a45b376770e9844851f4da5e2624a0c59e7801f
+PODFILE CHECKSUM: ee43696ee654a36da0829ba4a30c19055ad7b772
 
 COCOAPODS: 1.14.3

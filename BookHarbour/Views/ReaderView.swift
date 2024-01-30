@@ -28,8 +28,8 @@ struct ReaderView: View{
     }
     
     func nextChapter(){
-        print("next chapter run")
-        print(spineItems.count)
+        //print("next chapter run")
+        //print(spineItems.count)
         if currentChapterIndex < (spineItems.count - 1){
             currentChapterIndex += 1
             print(currentChapterIndex)
@@ -44,7 +44,7 @@ struct ReaderView: View{
         let opfURL : URL = currentBook.bookOPFURL
         //let opfURL = URL(string: opfPath)!
         spineItems = OPFTryGetData().getSpineItems(opfURL)
-        print(spineItems.count)
+        //print(spineItems.count)
         manifestItems = OPFTryGetData().getManifestItems(opfURL)
         if currentChapterIndex < spineItems.count, let chapterPath = manifestItems[spineItems[currentChapterIndex]]
         {
@@ -55,7 +55,7 @@ struct ReaderView: View{
             
             return finalCoverURLPath
         }
-        return "Nothing"
+        return "No chapter path"
     }
     
     var body: some View {

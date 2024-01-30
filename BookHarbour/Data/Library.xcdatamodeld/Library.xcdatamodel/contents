@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23B92" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23C71" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="BookTags" representedClassName="BookTags" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -15,6 +15,12 @@
         <attribute name="opfFileURL" optional="YES" attributeType="URI"/>
         <attribute name="synopsis" optional="YES" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
+        <relationship name="reviews" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Reviews"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BookTags"/>
+    </entity>
+    <entity name="Reviews" representedClassName="Reviews" syncable="YES" codeGenerationType="class">
+        <attribute name="reviewContent" attributeType="String"/>
+        <attribute name="reviewDate" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="reviewToBook" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Ebooks"/>
     </entity>
 </model>

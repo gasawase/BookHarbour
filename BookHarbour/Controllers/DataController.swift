@@ -61,13 +61,10 @@ struct DataController{
         }
     }
     
-    func edit(){
-        
-    }
+
     
     func deleteBookEntry(ebook: Ebooks){
         container.viewContext.delete(ebook)
-        
         do{
             try container.viewContext.save()
         } catch{
@@ -76,10 +73,8 @@ struct DataController{
         }
     }
     
-    
     func getAllTitles() -> [Ebooks]{
         let fetchRequest : NSFetchRequest<Ebooks> = Ebooks.fetchRequest()
-        
         do{
             return try container.viewContext.fetch(fetchRequest)
         } catch{
@@ -112,7 +107,7 @@ class BookTagsViewModel: ObservableObject {
             let fetchedResults = try DataController.shared.container.viewContext.fetch(fetchRequest)
             for entity in fetchedResults {
                 // Process the fetched entities
-                print(entity)
+                //print(entity)
             }
         } catch {
             // Handle fetch errors

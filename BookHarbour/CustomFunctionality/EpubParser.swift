@@ -7,6 +7,7 @@
 
 import Foundation
 import SWXMLHash
+import SwiftSoup
 
 enum BookAttribute {
     case title
@@ -157,22 +158,23 @@ class EpubParser: NSObject, XMLParserDelegate{
 
     // might want to simplify this later to speed up efficiency to only get the title and cover at first
     func addToCoreData(opfURL: URL, metadata:XMLBasicMetadata, manifestItems: [String:String], epubPath: URL, coverURL: String){
-        // get the title
-        let localTitle = metadata.title
-        // get the author
-        let localAuthor = metadata.author
-        // get the synopsis
-        let localSynopsis = metadata.synopsis
-        // get the epub path
-        let localEpubPath = epubPath.path()
-        // get the cover url
-        let localCoverPath = coverURL
-        // save the path to the opf
-        let localOPFPath = opfURL.path()
-        
-        
-        // save all of the data
         do{
+            // get the title
+            let localTitle = metadata.title
+            // get the author
+            let localAuthor = metadata.author
+            // get the synopsis
+            let localSynopsis = metadata.synopsis
+            // get the epub path
+            let localEpubPath = epubPath.path()
+            // get the cover url
+            let localCoverPath = coverURL
+            // save the path to the opf
+            let localOPFPath = opfURL.path()
+            
+
+        // save all of the data
+        //do{
             let newBook = Ebooks(context: DataController.shared.container.viewContext)
                 newBook.id = UUID()
                 newBook.title = localTitle
@@ -185,9 +187,14 @@ class EpubParser: NSObject, XMLParserDelegate{
                 
             
                  try DataController.shared.container.viewContext.save()
-        } catch{
-            print("An error occured \(error)")
+        }catch Exception.Error(let type, let message) {
+            print(message)
+        } catch {
+            print("error")
         }
+//        } catch{
+//            print("An error occured \(error)")
+//        }
 
     }
     
