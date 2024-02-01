@@ -8,7 +8,24 @@
 import SwiftUI
 import CoreData
 
-struct BookDetailsModalView: View {
+struct BookDetailsModalView : View {
+    @ObservedObject var ebook: Ebooks
+
+    var body: some View {
+        let rowLength: CGFloat = 300
+
+        HStack(alignment: .top) {
+            NavigationStack {
+                BookDetails(ebook: ebook)
+                TagView(ebook: ebook)
+                    .frame(width: rowLength * 2, height: rowLength / 3,  alignment: .leading)
+                ReviewView(ebook: ebook)
+            }
+        }
+    }
+}
+
+struct BookDetails: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var currentBook: CurrentBook
     @Environment(\.dismiss) private var dismiss
@@ -51,20 +68,20 @@ struct BookDetailsModalView: View {
     // Move image loading logic to a separate function
     func loadImage() {
         guard let selectedImage = selectedImage else { return }
-
+        
         let imageFileName = UUID().uuidString
         if let imagePath = saveImage(selectedImage, withFileName: imageFileName) {
             ebook.coverImgPath = imagePath.path
             checkChangesThenSave()
         }
     }
-
+    
     // Extracted function for saving an image
     private func saveImage(_ image: UIImage, withFileName fileName: String) -> URL? {
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             return nil
         }
-
+        
         let imagePath = documentsDirectory.appendingPathComponent(fileName)
         if let imageData = image.jpegData(compressionQuality: 1) {
             do {
@@ -76,144 +93,133 @@ struct BookDetailsModalView: View {
                 return nil
             }
         }
-
+        
         return nil
     }
-
+    
     var body: some View {
         let rowLength: CGFloat = 300
         let rowLayout = Array(repeating: GridItem(.fixed(rowLength)), count: 2)
         
-        HStack {
-            NavigationStack {
-                LazyVGrid(columns: rowLayout, alignment: .center) {
-                    if isEditing {
-                        Button(action: {
-                            isImagePickerPresented = true
-                        }) {
-                            AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook.coverImgPath ?? "")) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                            } placeholder: {
-                                Color.black
-                                // Replace this with a stand-in image later
-                            }
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .sheet(isPresented: $isImagePickerPresented, onDismiss: loadImage) {
-                            ImagePicker(image: $selectedImage)
-                        }
-                    } else {
-                        AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook.coverImgPath ?? "")) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        } placeholder: {
-                            Color.black
-                            // Replace this with a stand-in image later
-                        }
+        
+        LazyVGrid(columns: rowLayout, alignment: .center) {
+            if isEditing {
+                Button(action: {
+                    isImagePickerPresented = true
+                }) {
+                    AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook.coverImgPath ?? "")) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    } placeholder: {
+                        Color.black
+                        // Replace this with a stand-in image later
                     }
-                    
+                }
+                .buttonStyle(PlainButtonStyle())
+                .sheet(isPresented: $isImagePickerPresented, onDismiss: loadImage) {
+                    ImagePicker(image: $selectedImage)
+                }
+            } else {
+                AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook.coverImgPath ?? "")) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                } placeholder: {
+                    Color.black
+                    // Replace this with a stand-in image later
+                }
+            }
+            
+            VStack {
+                if isEditing {
                     VStack {
-                        if isEditing {
-                            VStack {
-                                TextField("\(ebook.title ?? "")", text: $editedTitle)
-                                    .font(.largeTitle)
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(
-                                        maxWidth: 300
-                                    )
-                                    .multilineTextAlignment(TextAlignment.center)
-                                    .onChange(of: editedTitle) { newValue in
-                                        ebook.title = newValue
-                                    }
-                                TextField("\(ebook.author ?? "")", text: $editedAuthor)
-                                    .font(.title2)
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(
-                                        maxWidth: 300
-                                    )
-                                    .multilineTextAlignment(TextAlignment.center)
-                                    .onChange(of: editedAuthor) { newValue in
-                                        ebook.author = newValue
-                                    }
-                                ScrollView {
-                                    TextField("\(ebook.synopsis ?? "")", text: $editedSynopsis, axis: .vertical)
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(
-                                            maxWidth: 300
-                                        )
-                                        .multilineTextAlignment(TextAlignment.center)
-                                        .onChange(of: editedSynopsis) { newValue in
-                                            ebook.synopsis = newValue
-                                        }
+                        TextField("Title", text: $editedTitle)
+                            .font(.largeTitle)
+                            .multilineTextAlignment(.leading)
+                        
+                        TextField("Author", text: $editedAuthor)
+                            .font(.title2)
+                            .multilineTextAlignment(.leading)
+                        
+                        Divider()
+                        
+                        ScrollView {
+                            TextField("\(ebook.synopsis ?? "")", text: $editedSynopsis, axis: .vertical)
+                                .multilineTextAlignment(.leading)
+                                .onChange(of: editedSynopsis) { newValue in
+                                    ebook.synopsis = newValue
                                 }
-                            }
-                        } else if !isEditing {
-                            Text(ebook.title ?? "")
-                                .font(.largeTitle)
-                                .multilineTextAlignment(.leading)
-                                .frame(
-                                    maxWidth: 300
-                                )
-                            Text(ebook.author ?? "")
-                                .font(.title2)
-                                .multilineTextAlignment(.leading)
-                            ScrollView {
-                                Text(ebook.synopsis ?? "")
-                                    .multilineTextAlignment(.leading)
-                                    .frame(
-                                        maxWidth: 300)
-                            }
                         }
+                        .padding()
+                        .frame(
+                            maxWidth: 300,
+                            maxHeight: 350
+                        )
                     }
+                } else {
+                    Text(ebook.title ?? "")
+                        .font(.largeTitle)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    Text(ebook.author ?? "")
+                        .font(.title2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    Divider()
+                    
+                    ScrollView {
+                        Text(ebook.synopsis ?? "")
+                            .multilineTextAlignment(.leading)
+                    }
+                    .padding()
+                    .frame(
+                        maxWidth: 300,
+                        maxHeight: 350
+                    )
                 }
-                TagView(ebook: ebook)
-                    .frame(width: rowLength * 2, height: rowLength / 3,  alignment: .leading)
-                LazyVGrid(columns: rowLayout, alignment: .center) {
-                    // Stack for Review information
+            }
+            
+        }
+
+        .toolbar {
+            ToolbarItemGroup(placement: .bottomBar) {
+                Button {
+                    print("Read Button Pressed")
+                    setBookDetails()
+                    appState.showReaderView.toggle()
+                    dismiss()
+                } label: {
+                    Text("Read")
                 }
-                .toolbar {
-                    ToolbarItemGroup(placement: .bottomBar) {
-                        Button {
-                            print("Read Button Pressed")
-                            setBookDetails()
-                            appState.showReaderView.toggle()
-                            dismiss()
-                        } label: {
-                            Text("Read")
-                        }
+            }
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button(action: {
+                    print("Edit button pressed")
+                    isEditing.toggle()
+                    if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty {
+                        editedTitle = ebook.title ?? ""
+                        editedAuthor = ebook.author ?? ""
+                        editedSynopsis = ebook.synopsis ?? ""
                     }
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        Button(action: {
-                            print("Edit button pressed")
-                            isEditing.toggle()
-                            if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty {
-                                editedTitle = ebook.title ?? ""
-                                editedAuthor = ebook.author ?? ""
-                                editedSynopsis = ebook.synopsis ?? ""
-                            }
-                        }, label: {
-                            if isEditing {
-                                Image(systemName: "square.and.arrow.down")
-                            } else {
-                                Image(systemName: "book.and.wrench")
-                            }
-                        })
+                }, label: {
+                    if isEditing {
+                        Image(systemName: "square.and.arrow.down")
+                    } else {
+                        Image(systemName: "book.and.wrench")
                     }
-                    ToolbarItemGroup(placement: .topBarLeading) {
-                        Button(action: {
-                            print("Back button pressed")
-                            appState.showBookDetails = false
-                        }, label: {
-                            Image(systemName: "arrowshape.turn.up.backward")
-                        })
-                    }
-                }
-                .aspectRatio(contentMode: .fill)
+                })
+            }
+            ToolbarItemGroup(placement: .topBarLeading) {
+                Button(action: {
+                    print("Back button pressed")
+                    appState.showBookDetails = false
+                }, label: {
+                    Image(systemName: "arrowshape.turn.up.backward")
+                })
             }
         }
+        .aspectRatio(contentMode: .fill)
     }
 }
 
@@ -221,28 +227,38 @@ struct BookDetailsModalView: View {
 
 struct ReviewView : View {
     @State var arrReviews: [Reviews] = []
-    @State var dictReviews : [Date:String] = [:]
+    @State var dictReviews : [String:String] = [:]
     @State var ebook: Ebooks
     @State var newReviewContent : String = ""
     @State var enterPressed: Bool = false
-
-
-    private func fetchReviewData(){
+    @State var addReviewPressed : Bool = false
+    
+    @State var reviewTitleInput : String = ""
+    @State var reviewDateStartedInput : Date = Date()
+    @State var reviewDateFinishedInput : Date = Date()
+    @State var reviewContent : String = ""
+    
+    let columnLayout : [GridItem] = [
+        GridItem(.fixed(200)),
+        GridItem(.flexible(minimum: 200, maximum: 1000))
+    ]
+    
+    func fetchReviewData(){
         do{
             let context = DataController.shared.container.viewContext
             let fetchRequest: NSFetchRequest<Reviews> = Reviews.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Reviews.reviewDate, ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "ANY reviewToBook == &@", ebook)
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Reviews.reviewDateStarted, ascending: true)]
+            fetchRequest.predicate = NSPredicate(format: "ANY reviewToBook == %@", ebook)
             
             arrReviews = try context.fetch(fetchRequest)
             for review in arrReviews {
-                let locReviewDate = review.reviewDate ?? Date()
+                let locReviewDate = review.reviewDateStarted ?? ""
                 let locReviewContent = review.reviewContent
                 dictReviews[locReviewDate] = locReviewContent
             }
         }catch{
             print("Error fetching data: \(error.localizedDescription)")
-
+            
         }
     }
     
@@ -255,46 +271,140 @@ struct ReviewView : View {
     
     private func addToDatabase(reviewToBook: Reviews, ebook: Ebooks){
         //associate tag with book
-        ebook.addToReviews
-        bookTagItem.addToBookTagsRelationship(ebook)
+        //bookTagItem.addToBookTagsRelationship(ebook)
+        ebook.addToReviewLink(reviewToBook)
         //fetchData()
-        fetchData()
     }
     
     var body: some View {
-        LazyHStack{
+        let rowLayout = Array(repeating: GridItem(.flexible(minimum: 200, maximum: 400)), count: 4)
+        ScrollView{
             if arrReviews.isEmpty{
-                Button {
-                    print("Add Review button pressed")
-                    // have fields appear for adding the date read, the rating, and then the content
-                    TextField("Please write your review", text: $newReviewContent)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 100)
-                        .onSubmit {
-                            enterPressed.toggle()
-                            print("enter pressed")
-                            // add to core data here
-                            // add tag to all Tags
-                            let newReview = Reviews(context: DataController.shared.container.viewContext)
-                            newReview.reviewDate = Date()
-                            newReview.reviewContent = newReviewContent
-                            addToDatabase(bookTagItem: newTag, ebook: ebook)
-                            newTagName = ""
+                // column 1
+                LazyVStack(){
+                    Button(action: {
+                        addReviewPressed.toggle()
+                        
+                    }, label: {
+                        Text("Add New Review")
+                    })
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.roundedRectangle)
+                    
+                }
+                .sheet(isPresented: $addReviewPressed) {
+                    //AddNewReviewView()
+                    Form {
+                        Section(header: Text("Add a New Review")) {
+                            
+                            TextField("Title", text: $reviewTitleInput)
+                                .font(.title2)
+                            // Add more form elements as needed
+                            LazyVGrid(columns: rowLayout, content: {
+                                Spacer()
+                                DatePicker("Date Start", selection: $reviewDateStartedInput, displayedComponents: [.date])
+                                DatePicker("Date End", selection: $reviewDateFinishedInput, displayedComponents: [.date])
+                                Spacer()
+                            })
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            // section for the stars
+                            ScrollView{
+                                TextField("Enter review content here", text: $reviewContent, axis: .vertical)
+                                    .frame(minHeight: 100, alignment: .topLeading)
+                                    .padding()
+                                
+                            }
                         }
-                } label: {
-                    Text("Add a Review")
+                        Button(action: {
+                            print("enter pressed")
+                            let newReview = Reviews(context: DataController.shared.container.viewContext)
+                            newReview.reviewTitle = reviewTitleInput
+                            newReview.reviewContent = reviewContent
+                            newReview.reviewDateStarted = formatDate(inputDate: reviewDateStartedInput)
+                            newReview.reviewDateFinished = formatDate(inputDate: reviewDateFinishedInput)
+                            addToDatabase(reviewToBook: newReview, ebook: ebook)
+                            arrReviews.append(newReview)
+                            addReviewPressed.toggle()
+                        }, label: {
+                            Text("Save")
+                        })
+                        .frame(width: 100)
+                    }
                 }
             }
-            else{
-                ForEach(dictReviews.sorted(by: { $0.0 < $1.0 }), id: \.key) { key, value in
-                    Text(formatDate(inputDate: key))
-                    Text(value)
+            
+            List(arrReviews, id: \.self){ locReview in
+                LazyVGrid(columns: columnLayout){
+                    LazyVStack(){
+                        //stars
+                        Text("Total Time Read")
+                        Divider()
+                        Text(locReview.reviewDateStarted ?? "None")
+                        Text("to")
+                        Text(locReview.reviewDateFinished ?? "None")
+                    }
+                    
+                    LazyVStack(alignment:.leading){
+                        Text(locReview.reviewTitle ?? "None")
+                            .font(.title)
+                        Divider()
+                        ScrollView {
+                            Text(locReview.reviewContent ?? "None")
+                        }
+                        .frame(
+                            height: 100
+                        )
+                        .padding()
+                    }
                 }
-                //date
-                // review itself
             }
-
+            .frame(minHeight:300)
         }
+        .onAppear(perform:fetchReviewData)
+    }
+    //.frame(height:200)
+}
+
+struct AddNewReviewView : View {
+    
+    private func addToDatabase(reviewToBook: Reviews, ebook: Ebooks){
+        //associate tag with book
+        //bookTagItem.addToBookTagsRelationship(ebook)
+        ebook.addToReviewLink(reviewToBook)
+        //fetchData()
+    }
+    
+    @State var reviewTitleInput : String = ""
+    @State var reviewDate : Date = Date()
+    @State var reviewContent : String = ""
+    var body: some View {
+        let rowLayout = Array(repeating: GridItem(.adaptive(minimum: 100, maximum: 400)), count: 4)
+        Form {
+            Section(header: Text("Add a New Review")) {
+                
+                TextField("Title", text: $reviewTitleInput)
+                    .font(.title2)
+                // Add more form elements as needed
+                LazyVGrid(columns: rowLayout, content: {
+                    Spacer()
+                    DatePicker("Date Start", selection: $reviewDate, displayedComponents: [.date])
+                    DatePicker("Date End", selection: $reviewDate, displayedComponents: [.date])
+                    Spacer()
+                })
+                .frame(maxWidth: .infinity, alignment: .center)
+                // section for the stars
+                ScrollView{
+                    TextField("Enter review content here", text: $reviewContent, axis: .vertical)
+                        .frame(minHeight: 100, alignment: .topLeading)
+                        .padding()
+
+                }
+                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+                    /*@START_MENU_TOKEN@*/Text("Button")/*@END_MENU_TOKEN@*/
+                })
+            }
+        }
+        .frame(minHeight: 200)
     }
 }
 

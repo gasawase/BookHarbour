@@ -24,59 +24,113 @@ class EpubParser: NSObject, XMLParserDelegate{
     private var currentAttributes: [String: String] = [:]
     private var opfFilePath: String = ""
     private var unzipDirectory: URL!
-    private var itemCoverVal : String! // is either cover or cover-id
-    private var metaCoverVal : String! // is either cover or cover-id
+    private var itemCoverVal : String = "" // is either cover or cover-id
+    private var metaCoverVal : String = "" // is either cover or cover-id
     
-    private var coverImagePath : String!
-    private var metadataObj : XMLBasicMetadata!
+    private var coverImagePath : String = ""
+    private var metadataObj : XMLBasicMetadata = XMLBasicMetadata(title: "", author: "", synopsis: "")
     private var opfDataObj : XMLOPFData!
     private var ncxDataObj : XMLNCXData!
     private var ncxDict : [String:String] = [:]
-    private var coverURL : String!
+    private var coverURL : String = ""
     
     init(epubDirectory: URL){
         self.unzipDirectory = epubDirectory
     }
     
+//    func parseEpub(completion: @escaping (URL?) -> Void) {
+//        let containerXMLPath = unzipDirectory.appendingPathComponent("META-INF/container.xml").path
+//        if let containerXMLData = FileManager.default.contents(atPath: containerXMLPath) {
+//            // this is where the xml container data is stored
+//            let xml = XMLHash.lazy(containerXMLData)
+//            // this gets the rootfilepath of the opf
+//            if let rootfilePath = xml["container"]["rootfiles"]["rootfile"].element?.attribute(by: "full-path")?.text {
+//                // and if it's valid, it says to get the opfURL from the unzipDirectory (where the epub was unzipped to)
+//                let opfURL = unzipDirectory.appendingPathComponent(rootfilePath)
+//                let parentFilePath = opfURL.deletingLastPathComponent()
+//                parseOPFFile(opfURL, completion: completion)
+//                parseNCXFile(parentFilePath.path(), completion: completion)
+//            }
+//        }
+//    }
+    
     func parseEpub(completion: @escaping (URL?) -> Void) {
         let containerXMLPath = unzipDirectory.appendingPathComponent("META-INF/container.xml").path
-        if let containerXMLData = FileManager.default.contents(atPath: containerXMLPath) {
-            // this is where the xml container data is stored
-            let xml = XMLHash.lazy(containerXMLData)
-            // this gets the rootfilepath of the opf
-            if let rootfilePath = xml["container"]["rootfiles"]["rootfile"].element?.attribute(by: "full-path")?.text {
-                // and if it's valid, it says to get the opfURL from the unzipDirectory (where the epub was unzipped to)
-                let opfURL = unzipDirectory.appendingPathComponent(rootfilePath)
+        guard let containerXMLData = FileManager.default.contents(atPath: containerXMLPath) else {
+            completion(nil)
+            return
+        }
+
+        let xml = XMLHash.lazy(containerXMLData)
+        if let rootfilePath = xml["container"]["rootfiles"]["rootfile"].element?.attribute(by: "full-path")?.text {
+            do {
+                let opfURL = try unzipDirectory.appendingPathComponent(rootfilePath)
                 let parentFilePath = opfURL.deletingLastPathComponent()
                 parseOPFFile(opfURL, completion: completion)
                 parseNCXFile(parentFilePath.path(), completion: completion)
+            } catch {
+                completion(nil)
             }
         }
     }
     
     
+//    private func parseOPFFile(_ opfURL: URL, completion: @escaping (URL?) -> Void) {
+//        if let containerOPFXMLData = FileManager.default.contents(atPath: opfURL.path()){
+//            // convert to XMLHash.lazy for better efficiency
+//            let opfXML = XMLHash.lazy(containerOPFXMLData)
+//            //let metadata = opfXML["package"]["metadata"]
+//            if let opfParser = XMLParser(contentsOf: opfURL){
+//                opfParser.delegate = self
+//                opfParser.parse()
+//            }
+//            else{
+//                completion(nil)
+//            }
+//            do {
+//                opfDataObj = try opfXML["package"].value()
+//                metadataObj = try opfDataObj.metadata.value()
+//                coverURL = getCoverURL(manifestItems: manifestItems, opfURL: opfURL)
+//                addToCoreData(opfURL: opfURL, metadata: metadataObj, manifestItems: manifestItems, epubPath: unzipDirectory, coverURL: coverURL)
+//                
+//            } catch {
+//                // Handle the error here
+//                print("An error occurred: \(error)")
+//            }
+//        }
+//    }
+    
     private func parseOPFFile(_ opfURL: URL, completion: @escaping (URL?) -> Void) {
-        if let containerOPFXMLData = FileManager.default.contents(atPath: opfURL.path()){
-            // convert to XMLHash.lazy for better efficiency
-            let opfXML = XMLHash.lazy(containerOPFXMLData)
-            //let metadata = opfXML["package"]["metadata"]
-            if let opfParser = XMLParser(contentsOf: opfURL){
-                opfParser.delegate = self
-                opfParser.parse()
-            }
-            else{
+        do {
+            guard let containerOPFXMLData = FileManager.default.contents(atPath: opfURL.path()) else {
                 completion(nil)
+                return
             }
-            do {
-                opfDataObj = try opfXML["package"].value()
+
+            let opfXML = XMLHash.lazy(containerOPFXMLData)
+            let opfParser = XMLParser(contentsOf: opfURL)
+            opfParser?.delegate = self
+            opfParser?.parse()
+
+//            opfDataObj = try opfXML["package"].value()
+//            metadataObj = try opfDataObj.metadata.value()
+//            coverURL = getCoverURL(manifestItems: manifestItems, opfURL: opfURL)
+//            addToCoreData(opfURL: opfURL, metadata: metadataObj, manifestItems: manifestItems, epubPath: unzipDirectory, coverURL: coverURL)
+            opfDataObj = try opfXML["package"].value()
+            if opfDataObj != nil {
                 metadataObj = try opfDataObj.metadata.value()
                 coverURL = getCoverURL(manifestItems: manifestItems, opfURL: opfURL)
                 addToCoreData(opfURL: opfURL, metadata: metadataObj, manifestItems: manifestItems, epubPath: unzipDirectory, coverURL: coverURL)
-                
-            } catch {
-                // Handle the error here
-                print("An error occurred: \(error)")
+            } else {
+                print("opfDataObj is nil")
+                completion(nil)
+                return
             }
+
+        } catch {
+            // Handle the error here
+            print("An error occurred: \(error)")
+            completion(nil)
         }
     }
     
@@ -108,7 +162,7 @@ class EpubParser: NSObject, XMLParserDelegate{
                         //print("Label: \(label ), Content: \(content )")
                     }
                 }
-                print(ncxDict)
+                //print(ncxDict)
 
             } catch {
                 print("An error occured: \(error)")
@@ -136,7 +190,7 @@ class EpubParser: NSObject, XMLParserDelegate{
         switch elementName {
         case "item":
             if let properties = attributeDict["properties"], properties == "cover" || properties == "cover-image" {
-                coverImagePath = attributeDict["href"]
+                coverImagePath = attributeDict["href"] ?? ""
                 itemCoverVal = properties
             } else if let itemId = attributeDict["id"], let href = attributeDict["href"] {
                 manifestItems[itemId] = href
@@ -157,45 +211,63 @@ class EpubParser: NSObject, XMLParserDelegate{
     }
 
     // might want to simplify this later to speed up efficiency to only get the title and cover at first
-    func addToCoreData(opfURL: URL, metadata:XMLBasicMetadata, manifestItems: [String:String], epubPath: URL, coverURL: String){
-        do{
-            // get the title
-            let localTitle = metadata.title
-            // get the author
-            let localAuthor = metadata.author
-            // get the synopsis
-            let localSynopsis = metadata.synopsis
-            // get the epub path
-            let localEpubPath = epubPath.path()
-            // get the cover url
-            let localCoverPath = coverURL
-            // save the path to the opf
-            let localOPFPath = opfURL.path()
-            
-
-        // save all of the data
-        //do{
-            let newBook = Ebooks(context: DataController.shared.container.viewContext)
-                newBook.id = UUID()
-                newBook.title = localTitle
-                newBook.author = localAuthor
-                newBook.coverImgPath = localCoverPath
-                newBook.opfFilePath = localOPFPath
-                newBook.opfFileURL = opfURL
-                newBook.epubPath = localEpubPath
-                newBook.synopsis = localSynopsis
-                
-            
-                 try DataController.shared.container.viewContext.save()
-        }catch Exception.Error(let type, let message) {
-            print(message)
-        } catch {
-            print("error")
-        }
-//        } catch{
-//            print("An error occured \(error)")
+//    func addToCoreData(opfURL: URL, metadata:XMLBasicMetadata, manifestItems: [String:String], epubPath: URL, coverURL: String){
+//        do{
+//            // get the title
+//            let localTitle = metadata.title
+//            // get the author
+//            let localAuthor = metadata.author
+//            // get the synopsis
+//            let localSynopsis = metadata.synopsis
+//            // get the epub path
+//            let localEpubPath = epubPath.path()
+//            // get the cover url
+//            let localCoverPath = coverURL
+//            // save the path to the opf
+//            let localOPFPath = opfURL.path()
+//            
+//
+//        // save all of the data
+//        //do{
+//            let newBook = Ebooks(context: DataController.shared.container.viewContext)
+//                newBook.id = UUID()
+//                newBook.title = localTitle
+//                newBook.author = localAuthor
+//                newBook.coverImgPath = localCoverPath
+//                newBook.opfFilePath = localOPFPath
+//                newBook.opfFileURL = opfURL
+//                newBook.epubPath = localEpubPath
+//                newBook.synopsis = localSynopsis
+//                
+//            
+//                 try DataController.shared.container.viewContext.save()
+//        }catch Exception.Error(let type, let message) {
+//            print(message)
+//        } catch {
+//            print("error")
 //        }
+////        } catch{
+////            print("An error occured \(error)")
+////        }
+//
+//    }
+    
+    func addToCoreData(opfURL: URL, metadata: XMLBasicMetadata, manifestItems: [String:String], epubPath: URL, coverURL: String) {
+        do {
+            let newBook = Ebooks(context: DataController.shared.container.viewContext)
+            newBook.id = UUID()
+            newBook.title = metadata.title
+            newBook.author = metadata.author
+            newBook.coverImgPath = coverURL
+            newBook.opfFilePath = opfURL.path()
+            newBook.opfFileURL = opfURL
+            newBook.epubPath = epubPath.path()
+            newBook.synopsis = metadata.synopsis
 
+            try DataController.shared.container.viewContext.save()
+        } catch let error as NSError {
+            print("Error saving to CoreData: \(error.localizedDescription)")
+        }
     }
     
     func getCoverURL(manifestItems: [String:String], opfURL: URL) -> String{

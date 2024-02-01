@@ -232,11 +232,9 @@ Define the immediate next steps in the development process
 
 ## Progress Log
 
-----CURRENT TAST-----
+----CURRENT TASK-----
 
-LAST UPDATED: 30/1/2024
-
-- marking and storing reviews
+LAST UPDATED: 01/2/2024
 
 
 
@@ -244,7 +242,7 @@ LAST UPDATED: 30/1/2024
 
 - more efficient way of storing data (only initially store coverimage and file url then when modal clicked, gather the data then)
 - go through and remove duplicates
-- tracking reading time
+- tracking reading time (add a timer to the ReaderController and or ReadingView)
 - be able to display the reading info as the correct xhtml instead of the html string it is right now
 	that way we can link things correctly and display things like images
 	- I think I'm going to have to parse it like it's an xml document.
@@ -255,7 +253,6 @@ LAST UPDATED: 30/1/2024
 - have it blur the background when a title is clicked
 - shrink the pop up a little bit
 - remove duplicates 
-- create a button bar for the top to control the sorting and such
 - handling descriptions and the formatting (automatically in HTML)
 - marking and sorting by tags (pausing until I figure out how I want to display this)
 - rating system (first by numbers then by clicking stars like good reads)
@@ -275,6 +272,8 @@ LAST UPDATED: 30/1/2024
 - have the epubs display all in one section
 - have the description text auto wrap
 - convert grids to lazy grids to be more efficient
+- marking and storing reviews
+- create a button bar for the top to control the sorting and such
 
 ----FEATURES I'D LIKE----
 - move original bookbinder parsing from kanna to swiftsoup
@@ -282,6 +281,8 @@ LAST UPDATED: 30/1/2024
 - make a customizable bookshelf where you can have a list of your books and design your bookshelf, drag and drop
 
 ----KNOWN BUGS----
+
+- for some reason, after you scroll for a bit, the books stop becoming buttons
 
 ----NOTES----
 

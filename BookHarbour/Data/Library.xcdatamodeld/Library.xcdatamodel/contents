@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23C71" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="BookTags" representedClassName="BookTags" syncable="YES" codeGenerationType="class">
+    <entity name="BookTags" representedClassName="BookTags" syncable="YES">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="bookTagsRelationship" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Ebooks"/>
     </entity>
-    <entity name="Ebooks" representedClassName="Ebooks" syncable="YES" codeGenerationType="class">
+    <entity name="Ebooks" representedClassName="Ebooks" syncable="YES">
         <attribute name="author" attributeType="String"/>
         <attribute name="bookUID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="coverImgPath" optional="YES" attributeType="String"/>
@@ -14,13 +14,16 @@
         <attribute name="opfFilePath" optional="YES" attributeType="String"/>
         <attribute name="opfFileURL" optional="YES" attributeType="URI"/>
         <attribute name="synopsis" optional="YES" attributeType="String"/>
+        <attribute name="timeRead" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="title" attributeType="String"/>
-        <relationship name="reviews" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Reviews"/>
+        <relationship name="reviewLink" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Reviews"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BookTags"/>
     </entity>
-    <entity name="Reviews" representedClassName="Reviews" syncable="YES" codeGenerationType="class">
+    <entity name="Reviews" representedClassName="Reviews" syncable="YES">
         <attribute name="reviewContent" attributeType="String"/>
-        <attribute name="reviewDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="reviewDateFinished" optional="YES" attributeType="String"/>
+        <attribute name="reviewDateStarted" attributeType="String"/>
+        <attribute name="reviewTitle" optional="YES" attributeType="String"/>
         <relationship name="reviewToBook" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Ebooks"/>
     </entity>
 </model>

@@ -27,7 +27,7 @@ struct BookHarbourApp: App {
                 MainHomeView()
                     .environment(\.managedObjectContext, dataController.container.viewContext)
                     .environmentObject(appState)
-                    .environmentObject(currentBook)                
+                    .environmentObject(currentBook)  
             }
         }
     }
