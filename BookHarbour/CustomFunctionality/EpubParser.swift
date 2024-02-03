@@ -8,6 +8,7 @@
 import Foundation
 import SWXMLHash
 import SwiftSoup
+import CoreData
 
 enum BookAttribute {
     case title
@@ -209,51 +210,21 @@ class EpubParser: NSObject, XMLParserDelegate{
             break
         }
     }
-
-    // might want to simplify this later to speed up efficiency to only get the title and cover at first
-//    func addToCoreData(opfURL: URL, metadata:XMLBasicMetadata, manifestItems: [String:String], epubPath: URL, coverURL: String){
-//        do{
-//            // get the title
-//            let localTitle = metadata.title
-//            // get the author
-//            let localAuthor = metadata.author
-//            // get the synopsis
-//            let localSynopsis = metadata.synopsis
-//            // get the epub path
-//            let localEpubPath = epubPath.path()
-//            // get the cover url
-//            let localCoverPath = coverURL
-//            // save the path to the opf
-//            let localOPFPath = opfURL.path()
-//            
-//
-//        // save all of the data
-//        //do{
-//            let newBook = Ebooks(context: DataController.shared.container.viewContext)
-//                newBook.id = UUID()
-//                newBook.title = localTitle
-//                newBook.author = localAuthor
-//                newBook.coverImgPath = localCoverPath
-//                newBook.opfFilePath = localOPFPath
-//                newBook.opfFileURL = opfURL
-//                newBook.epubPath = localEpubPath
-//                newBook.synopsis = localSynopsis
-//                
-//            
-//                 try DataController.shared.container.viewContext.save()
-//        }catch Exception.Error(let type, let message) {
-//            print(message)
-//        } catch {
-//            print("error")
-//        }
-////        } catch{
-////            print("An error occured \(error)")
-////        }
-//
-//    }
     
     func addToCoreData(opfURL: URL, metadata: XMLBasicMetadata, manifestItems: [String:String], epubPath: URL, coverURL: String) {
+        // Check if a book with the same title already exists
+        let fetchRequest: NSFetchRequest<Ebooks> = Ebooks.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "title == %@ AND author == %@", metadata.title, metadata.author)
+
         do {
+            let existingBooks = try DataController.shared.container.viewContext.fetch(fetchRequest)
+            
+            // If a book with the same title already exists, don't save the duplicate
+            if let existingBook = existingBooks.first {
+                print("Duplicate book found with title: \(existingBook.title ?? ""), author: \(existingBook.author ?? "")")
+                return
+            }
+            
             let newBook = Ebooks(context: DataController.shared.container.viewContext)
             newBook.id = UUID()
             newBook.title = metadata.title
@@ -271,12 +242,6 @@ class EpubParser: NSObject, XMLParserDelegate{
     }
     
     func getCoverURL(manifestItems: [String:String], opfURL: URL) -> String{
-        // need to get the epuburl path and add that to the coverURLPath
-//        guard let coverURLPath = try manifestItems.first(where: {$0.key == "cover"})?.value else{return "nil"}
-//        func findHref(for id: String) -> String? {
-//            return manifestItems[id]
-//        }
-        //guard let coverURLPath = findHref(for: "cover") ?? findHref(for: "cover-image") else{ return "nil" }
         if let coverHref = manifestItems["cover"], coverHref.hasSuffix(".jpg") || coverHref.hasSuffix(".jpeg") {
             coverImagePath = coverHref
         } else if let coverImageHrefValue = manifestItems["cover-image"], coverImageHrefValue.hasSuffix(".jpg") || coverImageHrefValue.hasSuffix(".jpeg") {

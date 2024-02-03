@@ -37,6 +37,10 @@ class CurrentBook: ObservableObject {
     
 }
 
+class NumOfBooks : ObservableObject {
+    @Published var numOFBooks : Int = 0
+}
+
 extension Optional {
     func unwrap( variableName: String) throws -> Wrapped {
         guard let unwrapped = self else {

@@ -358,7 +358,7 @@ struct ReviewView : View {
                     }
                 }
             }
-            .frame(minHeight:300)
+            .frame(minHeight:200)
         }
         .onAppear(perform:fetchReviewData)
     }

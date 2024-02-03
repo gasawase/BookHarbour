@@ -18,27 +18,30 @@ struct MainHomeView: View {
     @State private var selectedFolderURL: URL?
     
     @State public var isShowingReader : Bool = false
+    @State public var isShowingBookDetails : Bool = false
 
         
     var fileHaveBeenSelected = false
     
     var body: some View {
         
-        HoldingView(isShowingReader: $isShowingReader)
+        HoldingView(isShowingReader: $isShowingReader, isShowingBookDetails: $isShowingBookDetails)
     }
 }
 
 struct HoldingView : View{
     @Environment (\.dismiss) private var dismiss
+
     
     @Binding public var isShowingReader : Bool
+    @Binding public var isShowingBookDetails : Bool
     var body: some View {
         NavigationSplitView {
             NavBarView()
         } detail: {
             ZStack{
                 Color("MainBackground").ignoresSafeArea(.all)
-                DisplayBooks(isShowingReader: $isShowingReader)
+                DisplayBooks(isShowingBookDetails: $isShowingBookDetails, isShowingReader: $isShowingReader)
 
             }
 
@@ -55,7 +58,6 @@ struct NavBarView : View{
     @State private var isFilePickerPresented = false
     @State private var selectedFolderURL: URL?
     @State private var fileLocArr : [String] = []
-    @State private var isLoading = false
 
     
     let dataController = DataController.shared
@@ -97,7 +99,6 @@ struct NavBarView : View{
             .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.folder], allowsMultipleSelection: false) { result in
                 do {
                     guard let selectedURL = try result.get().first else { return }
-                    isLoading = true // Show loading indicator
                     selectedFolderURL = selectedURL
                     fileLocArr.append(selectedFolderURL?.absoluteString ?? "")
                     guard selectedURL.startAccessingSecurityScopedResource() else { // Notice this line right here
@@ -105,28 +106,17 @@ struct NavBarView : View{
                     }
 //                    try FileManager.default.contentsOfDirectory(at: selectedURL, includingPropertiesForKeys: nil)
 //                    fileSelectorController.loadEpubFiles(from: selectedURL)
-                    // Perform the time-consuming operation on a background thread
-                    DispatchQueue.global().async {
+
                         do {
                             try FileManager.default.contentsOfDirectory(at: selectedURL, includingPropertiesForKeys: nil)
                             fileSelectorController.loadEpubFiles(from: selectedURL)
                         } catch {
                             print("File picking error:", error.localizedDescription)
                         }
-                        
-                        // Update UI on the main thread
-                        DispatchQueue.main.async {
-                            isLoading = false // Hide loading indicator
-                        }
-                    }
-                } catch {
+
+                    } catch {
                     print("File picking error:", error.localizedDescription)
                 }
-            }
-            if isLoading {
-                ProgressView("Loading...") // Display loading indicator
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding()
             }
         }
     }

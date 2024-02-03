@@ -32,7 +32,6 @@ enum SortingTypes : String, CaseIterable, Identifiable{
 struct DisplayBooks: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     @EnvironmentObject var currentBook: CurrentBook
-    
     @FetchRequest(sortDescriptors: [
         SortDescriptor(\.title)
     ]) var books: FetchedResults <Ebooks>
@@ -41,12 +40,19 @@ struct DisplayBooks: View {
     //var epubURLs : [URL]
     @State private var newBookList : [Ebooks] = [Ebooks]()
     @State private var isLoading = false
+    @State private var selectedSorting = SortingTypes.alphabetic
+    @State private var locEbook : Ebooks?
+    //@State var isShowingBookDetails : Bool = false
+    @Binding public var isShowingBookDetails : Bool
+    @Binding public var isShowingReader : Bool
+
+//    @ObservedObject var ebook : Ebooks
+
     
     @FetchRequest(sortDescriptors: [SortDescriptor(\.title)]) var alphabeticBooks: FetchedResults<Ebooks>
     @FetchRequest(sortDescriptors: [SortDescriptor(\.author)]) var authorBooks: FetchedResults<Ebooks>
     //    @FetchRequest(sortDescriptors: [SortDescriptor(\.title)]) var tagBooks : FetchedResults<Ebooks>
     
-    @State private var selectedSorting = SortingTypes.alphabetic
     var sortedBooks: [Ebooks] {
         switch selectedSorting {
         case .alphabetic:
@@ -69,7 +75,12 @@ struct DisplayBooks: View {
     
     let dataController = DataController.shared
     
-    @Binding public var isShowingReader : Bool
+    
+    // Replace this with your desired function.
+    func yourFunctionAfterForEach() {
+        // Your function logic here
+        print("Function after ForEach loop")
+    }
     
     var body: some View {
         
@@ -83,22 +94,33 @@ struct DisplayBooks: View {
         ScrollView{
             LazyHGrid(rows: rowLayout, spacing: rowSpacing, content: {
                 LazyVGrid(columns: colLayout,spacing: colSpacing, content: {
+                    
                     ForEach(sortedBooks, id:\.self){ book in
                         // Individual book Details
-                        IndividualBookRow(isShowingReader: $isShowingReader, ebook: book)
-                    }
-                    .onDelete(perform: { indexSet in
-                        indexSet.forEach { index in
-                            let bookEntry = sortedBooks[index]
-                            DataController.shared.deleteBookEntry(ebook: bookEntry)
+                        Button {
+                            print("\(book.unwrappedTitle) was pressed")
+                            locEbook = book
+
+                            isShowingBookDetails.toggle()
+                        } label: {
+                            IndividualBookRow(isShowingReader: $isShowingReader, ebook: book)
                         }
-                    })
+                    }
+//                    .onDelete(perform: { indexSet in
+//                        indexSet.forEach { index in
+//                            let bookEntry = sortedBooks[index]
+//                            DataController.shared.deleteBookEntry(ebook: bookEntry)
+//                        }
+//                    })
                     .padding(20)
                 })
             })
         }
         .background(Color("MainBackground")).ignoresSafeArea(.all)
-
+        .sheet(isPresented: $isShowingBookDetails) {
+            BookDetailsModalView(ebook: locEbook ?? Ebooks())
+                .zIndex(1)
+        }
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Picker("Sort",selection: $selectedSorting) {
@@ -109,8 +131,10 @@ struct DisplayBooks: View {
                     }
                 }
                 .pickerStyle(.menu)
-                
             }
         }
+
     }
 }
+
+

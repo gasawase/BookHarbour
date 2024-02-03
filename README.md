@@ -3,15 +3,16 @@
 ## 1. Overview
 
 ### 1.1. Vision Statement
-Provide a concise statement outlining the overall vision and purpose of your application.
+The app aims to provide a virtual bookshelf where users
+can efficiently manage their e-books, track reading progress, and personalize their reading
+preferences. Its main three functions are to display books on a bookshelf, allow the user to readbooks they select, and offer more sorting capabilities such as by tag.
 
 ### 1.2. Target Audience
-Define the primary users and their needs. Consider demographics, technical expertise, and any specific user requirements.
+The Target Audience is readers who feel that their digital reading experience is lacking the customizability that reading physical books has. Therefore, it is aimed at all readers but mainly those of the 16-35 year old women demographic.
 
 ## 2. Features
 
 ### 2.1. Core Features
-List and describe the essential features of your application.
 
 
 1. **Feature 1:** _Bookshelf Interface_
@@ -66,16 +67,15 @@ Identify and describe any secondary features that enhance the user experience or
 ### 3.1. User Roles
 Define different user roles and their responsibilities within the application.
 
-1. **User Role 1:** _[Description]_
-2. **User Role 2:** _[Description]_
-3. **User Role 3:** _[Description]_
+1. **User Role 1:** _A casual user wanting to see more information, such as the synopsis and if they had read the book before, about their book of choice_
+2. **User Role 2:** _A reader with a large quantity of books who wants to find specific books with certain attributes such as books with fantasy or the "enemies-to-lovers" trope_
+3. **User Role 3:** _A reader who wants to read their ebook_
 
 ### 3.2. User Stories
-Create user stories for each feature, specifying the actions users can perform and the value they derive.
 
-- **User Story 1:** _[As a <user role>, I want to <perform an action> so that <benefit>._
-- **User Story 2:** _[As a <user role>, I want to <perform an action> so that <benefit>._
-- **User Story 3:** _[As a <user role>, I want to <perform an action> so that <benefit>._
+- **User Story 1:** _As a casual user, I want to be able to see more information about the book I choose so I can choose and read a book of choice quicker than I would if I only saw the title_
+- **User Story 2:** _As a reader, I want to be able to find my book and read it all in the same place so I don't have to open multiple apps to get the same information._
+- **User Story 3:** _As a hardcore reader, I want to be able to sort and organize my books by trope, genre, or other attribute so I can find books quicker instead of wasting time digging through my books._
 
 ## 4. Data Model
 
@@ -83,29 +83,53 @@ Create user stories for each feature, specifying the actions users can perform a
 Identify the key entities and their attributes that your application will manage.
 
 1. **Entity 1:** _Ebooks_
+	a. ***Attribute 1:*** _title_
+	a. ***Attribute 2:*** _author_
+	a. ***Attribute 3:*** _bookUID_
+	a. ***Attribute 4:*** _coverImgPath_
+	a. ***Attribute 5:*** _epubPath_
+	a. ***Attribute 6:*** _id_
+	a. ***Attribute 7:*** _opfFilePath_
+	a. ***Attribute 8:*** _opfFileURL_
+	a. ***Attribute 9:*** _synopsis_
+	a. ***Attribute 10:*** _timeRead_
+	a. ***Attribute 11:*** _tags_ <- one-to-many link to BookTags
+	a. ***Attribute 12:*** _reviewLink_ <- one-to-many link to Reviews
+
 2. **Entity 2:** _BookTags_
+	a. ***Attribute 1:*** _id_
+	a. ***Attribute 2:*** _name_
+	a. ***Attribute 3:*** _bookTagsRelationship_ <- one-to-many link to Ebooks
+
 3. **Entity 3:** _Reviews_
+	a. ***Attribute 1:*** _reviewContent_
+	a. ***Attribute 2:*** _reviewDateFinished_
+	a. ***Attribute 3:*** _reviewDateStarted_
+	a. ***Attribute 4:*** _reviewTitle_
+	a. ***Attribute 5:*** _reviewRating_
+	a. ***Attribute 6:*** _reviewToBook_ <- one-to-one link to Ebooks
 
 ### 4.2. Relationships
 Define the relationships between different entities.
 
 1. **Relationship 1:** _Ebooks -> BookTags : oneToMany = tags_
+3. **Relationship 3:** _Ebooks -> Review : oneToOne = reviewLink_
 2. **Relationship 2:** _BookTags -> Ebooks : oneToMany = bookTagsRelationship_
-3. **Relationship 3:** _[Description]_
+3. **Relationship 3:** _Review -> Ebooks : oneToOne = reviewToBook_
 
 ## 5. Technology Stack
 
 ### 5.1. Frontend
 Specify the technologies and frameworks you plan to use for the user interface.
 
-- **UI Framework:** _SwiftUI, Webkit_
+- **UI Framework:** _SwiftUI, Webkit, UIKit_
 - **State Management:** _[Library]_
 - **Other Frontend Tools:** _[Tools]_
 
 ### 5.2. Backend
 Specify the technologies and frameworks for server-side development.
 
-- **Backend Framework:** _[Framework]_
+- **Backend Framework:** _SSZipArchive, SwiftSoup, SWXMLHash_
 - **Database:** Core Data
 - **API Documentation:** _[Tool]_
 
@@ -128,9 +152,16 @@ Create wireframes or mockups for key screens in your application.
 ### 6.2. User Flow
 Define the flow of actions users will take within the application.
 
-- **User Flow 1:** _[Description]_
-- **User Flow 2:** _[Description]_
+- **User Flow 1:** _[Adding books to the library]_
+- **User Flow 2:** _[Adding tags and reviews]_
+- **User Flow 3:** _[Sorting books in library]_
+- **User Flow 3:** _[Reading the book]_
+- **User Flow 3:** _[Editing book attributes]_
+- **User Flow 3:** _[Resetting the books you have loaded]_
 - **User Flow 3:** _[Description]_
+- **User Flow 3:** _[Description]_
+
+
 
 ## 7. Development Roadmap
 
@@ -145,7 +176,10 @@ Break down the development process into key milestones.
 These features are features that I'd like to get to if I have time after finishing the above milestones.
 
 1. Custom bookshelf builder: the ability for a user to organize all of their books on a physical bookshelf if they'd like to. Could have additional props, such as fake plants or pictures, should time allow.
-2. 
+
+2. More tools for reading (a table of contents, highlighting/bookmarking and ability to view all of these in one book in one place, page count at the bottom of the page, ability to turn pages, customizing the look of the page and fonts used, etc.)
+
+3. Integration with GoodReads
 
 ### 7.2. Release Plan
 Specify the planned release dates for each version or major feature.
@@ -252,7 +286,6 @@ LAST UPDATED: 01/2/2024
 - make it all look pretty
 - have it blur the background when a title is clicked
 - shrink the pop up a little bit
-- remove duplicates 
 - handling descriptions and the formatting (automatically in HTML)
 - marking and sorting by tags (pausing until I figure out how I want to display this)
 - rating system (first by numbers then by clicking stars like good reads)
@@ -274,6 +307,8 @@ LAST UPDATED: 01/2/2024
 - convert grids to lazy grids to be more efficient
 - marking and storing reviews
 - create a button bar for the top to control the sorting and such
+- remove duplicates 
+
 
 ----FEATURES I'D LIKE----
 - move original bookbinder parsing from kanna to swiftsoup
@@ -283,9 +318,11 @@ LAST UPDATED: 01/2/2024
 ----KNOWN BUGS----
 
 - for some reason, after you scroll for a bit, the books stop becoming buttons
+- the html is showing up a plain text and i need it to show up with all of its styling and images
 
 ----NOTES----
 
 The manifest stores all of the data such as where the different pictures, covers, and toc are
 
 Data I want from reviews: content, title?, date read, total read time, rating
+

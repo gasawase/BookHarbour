@@ -14,6 +14,7 @@ class FileSelectorController : ObservableObject{
     @Published var epubFiles: [URL] = []
     @Published var currentEpubIndex: Int = 0
     
+
     func loadEpubFiles(from folderURL: URL) {
         // only loops once
         do {
@@ -22,7 +23,6 @@ class FileSelectorController : ObservableObject{
             // call the function to read the epubs here
             // for each epub, have it get the information and write it to the database
             // for now, just have it print the title
-            
             for epubFile in epubFiles {
                 let unzipHelper = UnzipHelper.self
                 unzipHelper.unzipEPUB(epubURL: epubFile) { [weak self] unzipDirectory in

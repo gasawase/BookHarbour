@@ -28,6 +28,7 @@ struct BookHarbourApp: App {
                     .environment(\.managedObjectContext, dataController.container.viewContext)
                     .environmentObject(appState)
                     .environmentObject(currentBook)  
+
             }
         }
     }
