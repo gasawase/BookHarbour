@@ -268,8 +268,7 @@ Define the immediate next steps in the development process
 
 ----CURRENT TASK-----
 
-LAST UPDATED: 01/2/2024
-
+LAST UPDATED: 06/2/2024
 
 
 ----TODO----
@@ -277,9 +276,6 @@ LAST UPDATED: 01/2/2024
 - more efficient way of storing data (only initially store coverimage and file url then when modal clicked, gather the data then)
 - go through and remove duplicates
 - tracking reading time (add a timer to the ReaderController and or ReadingView)
-- be able to display the reading info as the correct xhtml instead of the html string it is right now
-	that way we can link things correctly and display things like images
-	- I think I'm going to have to parse it like it's an xml document.
 - be able to have a drop down with all of the tags that the user can auto select to prevent overwriting
 	- also to have it search through the list to see if they're writing anything that is already there
 - have the description show how it was supposed to in html
@@ -308,6 +304,8 @@ LAST UPDATED: 01/2/2024
 - marking and storing reviews
 - create a button bar for the top to control the sorting and such
 - remove duplicates 
+- be able to display the reading info as the correct xhtml instead of the html string it is right now that way we can link things correctly and display things like images
+- for some reason, after you scroll for a bit, the books stop becoming buttons
 
 
 ----FEATURES I'D LIKE----
@@ -317,7 +315,6 @@ LAST UPDATED: 01/2/2024
 
 ----KNOWN BUGS----
 
-- for some reason, after you scroll for a bit, the books stop becoming buttons
 - the html is showing up a plain text and i need it to show up with all of its styling and images
 
 ----NOTES----

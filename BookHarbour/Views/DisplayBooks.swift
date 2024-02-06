@@ -101,15 +101,16 @@ struct DisplayBooks: View {
                             print("\(book.unwrappedTitle) was pressed")
                             //BookDetailsModalView(ebook: book)
                             locEbook = book
+                            print("This is the local Book: \(locEbook?.title ?? "None")")
+                            print("This is the book: \(book.title)")
                             isShowingBookDetails.toggle()
                         } label: {
                             IndividualBookRow(isShowingReader: $isShowingReader, ebook: book)
                         }
-                        .sheet(isPresented: $isShowingBookDetails) {
-                            BookDetailsModalView(ebook: $locEbook)
-                                .zIndex(1)
-                                //.position(.zero)
-                        }
+//                        .sheet(isPresented: $isShowingBookDetails) {
+//                            BookDetailsModalView(ebook: $locEbook)
+//                                .zIndex(1)
+//                        }
                     }
 //                    .onDelete(perform: { indexSet in
 //                        indexSet.forEach { index in
@@ -120,6 +121,10 @@ struct DisplayBooks: View {
                     .padding(20)
                 })
             })
+        }
+        .sheet(isPresented: $isShowingBookDetails) {
+            BookDetailsModalView(ebook: $locEbook)
+                .zIndex(1)
         }
         .background(Color("MainBackground")).ignoresSafeArea(.all)
 //        .sheet(isPresented: $isShowingBookDetails) {

@@ -70,7 +70,7 @@ struct HTMLView: UIViewRepresentable {
         
         do{
             // Read HTML file content
-            let htmlContent = try String(contentsOfFile: htmlPath, encoding: .utf8)
+            //let htmlContent = try String(contentsOfFile: htmlPath, encoding: .utf8)
             
             // Parse HTML using SwiftSoup
             //let document = try SwiftSoup.parse(htmlContent)
