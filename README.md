@@ -304,8 +304,9 @@ LAST UPDATED: 06/2/2024
 - marking and storing reviews
 - create a button bar for the top to control the sorting and such
 - remove duplicates 
-- be able to display the reading info as the correct xhtml instead of the html string it is right now that way we can link things correctly and display things like images
+
 - for some reason, after you scroll for a bit, the books stop becoming buttons
+- edited data isn't overwriting previous data
 
 
 ----FEATURES I'D LIKE----
@@ -314,8 +315,9 @@ LAST UPDATED: 06/2/2024
 - make a customizable bookshelf where you can have a list of your books and design your bookshelf, drag and drop
 
 ----KNOWN BUGS----
-- edited data isn't overwriting previous data
-- the html is showing up a plain text and i need it to show up with all of its styling and images
+- the html is showing up a plain text and i need it to show up with all of its styling and images 
+
+- be able to display the reading info as the correct xhtml instead of the html string it is right now that way we can link things correctly and display things like images <-- works sometimes but not for all books; I think there's a different way that some of the images and stylesheets are being referenced
 
 ----NOTES----
 
