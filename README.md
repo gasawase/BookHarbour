@@ -314,7 +314,7 @@ LAST UPDATED: 06/2/2024
 - make a customizable bookshelf where you can have a list of your books and design your bookshelf, drag and drop
 
 ----KNOWN BUGS----
-
+- edited data isn't overwriting previous data
 - the html is showing up a plain text and i need it to show up with all of its styling and images
 
 ----NOTES----

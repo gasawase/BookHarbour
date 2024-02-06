@@ -101,8 +101,6 @@ struct DisplayBooks: View {
                             print("\(book.unwrappedTitle) was pressed")
                             //BookDetailsModalView(ebook: book)
                             locEbook = book
-                            print("This is the local Book: \(locEbook?.title ?? "None")")
-                            print("This is the book: \(book.title)")
                             isShowingBookDetails.toggle()
                         } label: {
                             IndividualBookRow(isShowingReader: $isShowingReader, ebook: book)
@@ -126,7 +124,7 @@ struct DisplayBooks: View {
             BookDetailsModalView(ebook: $locEbook)
                 .zIndex(1)
         }
-        .background(Color("MainBackground")).ignoresSafeArea(.all)
+//        .background(Color("MainBackground")).ignoresSafeArea(.all)
 //        .sheet(isPresented: $isShowingBookDetails) {
 //            BookDetailsModalView(ebook: locEbook!)
 //                .zIndex(1)
@@ -143,7 +141,7 @@ struct DisplayBooks: View {
                 .pickerStyle(.menu)
             }
         }
-
+        .background(Color("MainBackground"))
     }
 }
 
