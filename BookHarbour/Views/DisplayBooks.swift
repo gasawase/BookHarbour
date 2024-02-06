@@ -99,11 +99,16 @@ struct DisplayBooks: View {
                         // Individual book Details
                         Button {
                             print("\(book.unwrappedTitle) was pressed")
+                            //BookDetailsModalView(ebook: book)
                             locEbook = book
-
                             isShowingBookDetails.toggle()
                         } label: {
                             IndividualBookRow(isShowingReader: $isShowingReader, ebook: book)
+                        }
+                        .sheet(isPresented: $isShowingBookDetails) {
+                            BookDetailsModalView(ebook: $locEbook)
+                                .zIndex(1)
+                                //.position(.zero)
                         }
                     }
 //                    .onDelete(perform: { indexSet in
@@ -117,10 +122,10 @@ struct DisplayBooks: View {
             })
         }
         .background(Color("MainBackground")).ignoresSafeArea(.all)
-        .sheet(isPresented: $isShowingBookDetails) {
-            BookDetailsModalView(ebook: locEbook ?? Ebooks())
-                .zIndex(1)
-        }
+//        .sheet(isPresented: $isShowingBookDetails) {
+//            BookDetailsModalView(ebook: locEbook!)
+//                .zIndex(1)
+//        }
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Picker("Sort",selection: $selectedSorting) {

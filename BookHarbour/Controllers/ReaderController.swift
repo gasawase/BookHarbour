@@ -43,9 +43,24 @@ class ReaderController : ObservableObject{
 struct HTMLView: UIViewRepresentable {
 //    let htmlFileName: String
     @Binding var chapterPath : String
+    
+    func listFilesInFolder(_ folderURL: URL) {
+        do {
+            let fileManager = FileManager.default
+            let contents = try fileManager.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)
+            for fileURL in contents {
+                print(fileURL.lastPathComponent)
+            }
+        } catch {
+            print("Error listing files: \(error)")
+        }
+    }
 
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
+        let preferences = WKWebpagePreferences()
+        preferences.allowsContentJavaScript = true // Enable JavaScript execution
+        webView.configuration.defaultWebpagePreferences = preferences
         return webView
     }
 
@@ -58,20 +73,13 @@ struct HTMLView: UIViewRepresentable {
             let htmlContent = try String(contentsOfFile: htmlPath, encoding: .utf8)
             
             // Parse HTML using SwiftSoup
-            let document = try SwiftSoup.parse(htmlContent)
-            
-            
-            // Apply stylesheets
-//            if let stylesPath = Bundle.main.path(forResource: "page_styles", ofType: "css") {
-//                let styles = try String(contentsOfFile: stylesPath, encoding: .utf8)
-//                try document.head()?.append("<style>\(styles)</style>")
-//            }
+            //let document = try SwiftSoup.parse(htmlContent)
             
             // Get the final HTML content
-            let finalHtml = try document.outerHtml()
-            
+            //let finalHtml = try document.outerHtml()
             let chapterPathURL = URL(fileURLWithPath: chapterPath)
-            uiView.loadHTMLString(finalHtml, baseURL: chapterPathURL)
+            let parentURL = chapterPathURL.deletingLastPathComponent()
+            uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: parentURL)
             
         }catch Exception.Error(let type, let message) {
             print(message)
@@ -85,3 +93,4 @@ struct HTMLView: UIViewRepresentable {
     }
     
 }
+

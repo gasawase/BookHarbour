@@ -23,25 +23,6 @@ struct IndividualBookRow: View {
               //replace this with a stand-in image later
           }
           .frame(width: 160, height: 256)
-//        Button{
-//            self.isShowingBookDetails = true
-//            print("\(ebook.title ?? "No Title") was selected and it is \(isShowingBookDetails)")
-//        } label: {
-//            AsyncImage(url: URL(fileURLWithPath: ebook.coverImgPath ?? "")){ image in
-//                image
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fit)
-//              } placeholder: {
-//                  Color.black
-//                  //replace this with a stand-in image later
-//              }
-//              .frame(width: 160, height: 256)
-//        }
-//        .sheet(isPresented: $isShowingBookDetails)
-//        {
-//            BookDetailsModalView(ebook: ebook)
-//                .zIndex(1)
-//        }
     }
 }
 

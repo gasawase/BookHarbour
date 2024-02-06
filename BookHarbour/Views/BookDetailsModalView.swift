@@ -9,17 +9,18 @@ import SwiftUI
 import CoreData
 
 struct BookDetailsModalView : View {
-    @ObservedObject var ebook: Ebooks
+    //@ObservedObject var ebook: Ebooks
+    @Binding var ebook : Ebooks?
 
     var body: some View {
         let rowLength: CGFloat = 300
 
         HStack(alignment: .top) {
             NavigationStack {
-                BookDetails(ebook: ebook)
-                TagView(ebook: ebook)
+                BookDetails(ebook: $ebook)
+                TagView(ebook: $ebook)
                     .frame(width: rowLength * 2, height: rowLength / 3,  alignment: .leading)
-                ReviewView(ebook: ebook)
+                ReviewView(ebook: $ebook)
             }
         }
     }
@@ -39,16 +40,17 @@ struct BookDetails: View {
     @State private var selectedImage: UIImage?
     @State private var selectedImagePath: String?
     
-    @ObservedObject var ebook: Ebooks
+    //@ObservedObject var ebook: Ebooks
+    @Binding var ebook : Ebooks?
     
     func setBookDetails() {
         do {
-            currentBook.bookTitle = try ebook.title.unwrap(variableName: "title")
-            currentBook.bookAuthor = try ebook.author.unwrap(variableName: "author")
+            currentBook.bookTitle = try ebook!.title.unwrap(variableName: "title")
+            currentBook.bookAuthor = try ebook!.author.unwrap(variableName: "author")
             currentBook.currentChapter = 1
-            currentBook.bookOPFPath = try ebook.opfFilePath.unwrap(variableName: "OPFPath")
-            currentBook.bookOPFURL = try ebook.opfFileURL.unwrap(variableName: "OPFFileURl")
-            currentBook.bookUID = try ebook.bookUID.unwrap(variableName: "bookUID")
+            currentBook.bookOPFPath = try ebook!.opfFilePath.unwrap(variableName: "OPFPath")
+            currentBook.bookOPFURL = try ebook!.opfFileURL.unwrap(variableName: "OPFFileURl")
+            currentBook.bookUID = try ebook!.bookUID.unwrap(variableName: "bookUID")
         } catch {
             // Handle the error here
             print("Error: \(error)")
@@ -71,7 +73,7 @@ struct BookDetails: View {
         
         let imageFileName = UUID().uuidString
         if let imagePath = saveImage(selectedImage, withFileName: imageFileName) {
-            ebook.coverImgPath = imagePath.path
+            ebook!.coverImgPath = imagePath.path
             checkChangesThenSave()
         }
     }
@@ -102,12 +104,12 @@ struct BookDetails: View {
         let rowLayout = Array(repeating: GridItem(.fixed(rowLength)), count: 2)
         
         
-        LazyVGrid(columns: rowLayout, alignment: .center) {
+        LazyVGrid(columns: rowLayout) {
             if isEditing {
                 Button(action: {
                     isImagePickerPresented = true
                 }) {
-                    AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook.coverImgPath ?? "")) { image in
+                    AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook!.coverImgPath ?? "")) { image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -121,7 +123,7 @@ struct BookDetails: View {
                     ImagePicker(image: $selectedImage)
                 }
             } else {
-                AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook.coverImgPath ?? "")) { image in
+                AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook!.coverImgPath ?? "")) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -145,10 +147,10 @@ struct BookDetails: View {
                         Divider()
                         
                         ScrollView {
-                            TextField("\(ebook.synopsis ?? "")", text: $editedSynopsis, axis: .vertical)
+                            TextField("\(ebook!.synopsis ?? "")", text: $editedSynopsis, axis: .vertical)
                                 .multilineTextAlignment(.leading)
                                 .onChange(of: editedSynopsis) { newValue in
-                                    ebook.synopsis = newValue
+                                    ebook!.synopsis = newValue
                                 }
                         }
                         .padding()
@@ -158,18 +160,18 @@ struct BookDetails: View {
                         )
                     }
                 } else {
-                    Text(ebook.title ?? "")
+                    Text(ebook!.title ?? "")
                         .font(.largeTitle)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    Text(ebook.author ?? "")
+                    Text(ebook!.author ?? "")
                         .font(.title2)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
                     Divider()
                     
                     ScrollView {
-                        Text(ebook.synopsis ?? "")
+                        Text(ebook!.synopsis ?? "")
                             .multilineTextAlignment(.leading)
                     }
                     .padding()
@@ -198,9 +200,9 @@ struct BookDetails: View {
                     print("Edit button pressed")
                     isEditing.toggle()
                     if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty {
-                        editedTitle = ebook.title ?? ""
-                        editedAuthor = ebook.author ?? ""
-                        editedSynopsis = ebook.synopsis ?? ""
+                        editedTitle = ebook!.title ?? ""
+                        editedAuthor = ebook!.author ?? ""
+                        editedSynopsis = ebook!.synopsis ?? ""
                     }
                 }, label: {
                     if isEditing {
@@ -228,7 +230,8 @@ struct BookDetails: View {
 struct ReviewView : View {
     @State var arrReviews: [Reviews] = []
     @State var dictReviews : [String:String] = [:]
-    @State var ebook: Ebooks
+    //@ObservedObject var ebook: Ebooks
+    @Binding var ebook : Ebooks?
     @State var newReviewContent : String = ""
     @State var enterPressed: Bool = false
     @State var addReviewPressed : Bool = false
@@ -248,7 +251,7 @@ struct ReviewView : View {
             let context = DataController.shared.container.viewContext
             let fetchRequest: NSFetchRequest<Reviews> = Reviews.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Reviews.reviewDateStarted, ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "ANY reviewToBook == %@", ebook)
+            fetchRequest.predicate = NSPredicate(format: "ANY reviewToBook == %@", ebook!)
             
             arrReviews = try context.fetch(fetchRequest)
             for review in arrReviews {
@@ -306,7 +309,7 @@ struct ReviewView : View {
                                 DatePicker("Date End", selection: $reviewDateFinishedInput, displayedComponents: [.date])
                                 Spacer()
                             })
-                            .frame(maxWidth: .infinity, alignment: .center)
+                            //.frame(maxWidth: .infinity, alignment: .center)
                             // section for the stars
                             ScrollView{
                                 TextField("Enter review content here", text: $reviewContent, axis: .vertical)
@@ -322,7 +325,7 @@ struct ReviewView : View {
                             newReview.reviewContent = reviewContent
                             newReview.reviewDateStarted = formatDate(inputDate: reviewDateStartedInput)
                             newReview.reviewDateFinished = formatDate(inputDate: reviewDateFinishedInput)
-                            addToDatabase(reviewToBook: newReview, ebook: ebook)
+                            addToDatabase(reviewToBook: newReview, ebook: ebook!)
                             arrReviews.append(newReview)
                             addReviewPressed.toggle()
                         }, label: {
@@ -391,7 +394,7 @@ struct AddNewReviewView : View {
                     DatePicker("Date End", selection: $reviewDate, displayedComponents: [.date])
                     Spacer()
                 })
-                .frame(maxWidth: .infinity, alignment: .center)
+                //.frame(maxWidth: .infinity, alignment: .center)
                 // section for the stars
                 ScrollView{
                     TextField("Enter review content here", text: $reviewContent, axis: .vertical)
@@ -414,7 +417,8 @@ struct TagView : View{
     @State var tempStringTags: [String] = []
     @EnvironmentObject var currentBook: CurrentBook
     @StateObject private var viewModel = BookTagsViewModel()
-    @State var ebook: Ebooks
+    //@ObservedObject var ebook: Ebooks
+    @Binding var ebook : Ebooks?
     @State private var newTagName: String = ""
     @State var addTagPressed: Bool = false
     @State var enterPressed: Bool = false
@@ -428,7 +432,7 @@ struct TagView : View{
             let context = DataController.shared.container.viewContext
             let fetchRequest: NSFetchRequest<BookTags> = BookTags.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \BookTags.name, ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "ANY bookTagsRelationship == %@", ebook)
+            fetchRequest.predicate = NSPredicate(format: "ANY bookTagsRelationship == %@", ebook!)
 
             arrTags = try context.fetch(fetchRequest)
         } catch {
@@ -441,7 +445,7 @@ struct TagView : View{
             let context = DataController.shared.container.viewContext
             let fetchRequest: NSFetchRequest<BookTags> = BookTags.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \BookTags.name, ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "ANY bookTagsRelationship != %@", ebook)
+            fetchRequest.predicate = NSPredicate(format: "ANY bookTagsRelationship != %@", ebook!)
             suggestTags = try context.fetch(fetchRequest)
         } catch {
             print("Error fetching data: \(error.localizedDescription)")
@@ -490,14 +494,14 @@ struct TagView : View{
                             let newTag = BookTags(context: DataController.shared.container.viewContext)
                             newTag.id = UUID()
                             newTag.name = newTagName
-                            addToDatabase(bookTagItem: newTag, ebook: ebook)
+                            addToDatabase(bookTagItem: newTag, ebook: ebook!)
                             newTagName = ""
                         }
                     Grid {
                         ForEach(suggestTags, id: \.self){ tag in
                             Button(action: {
                                 print("\(tag.name ?? "nil") pressed")
-                                addToDatabase(bookTagItem: tag, ebook: ebook)
+                                addToDatabase(bookTagItem: tag, ebook: ebook!)
                                 removeFromSuggestTags(tag)
                             }, label: {
                                 Text(tag.name ?? "nil")
