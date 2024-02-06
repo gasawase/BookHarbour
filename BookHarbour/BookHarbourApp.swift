@@ -18,6 +18,7 @@ struct BookHarbourApp: App {
     
     var body: some Scene {
         WindowGroup {
+//            TestingView()
             if appState.showReaderView{
                 ReaderView()
                     .environmentObject(appState)

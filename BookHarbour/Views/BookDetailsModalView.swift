@@ -39,9 +39,20 @@ struct BookDetails: View {
     @State private var isImagePickerPresented: Bool = false
     @State private var selectedImage: UIImage?
     @State private var selectedImagePath: String?
-    
+    @State var showAlert = false
+
     //@ObservedObject var ebook: Ebooks
     @Binding var ebook : Ebooks?
+    
+    func notificationAlert(notifTitle: String, notifMessage: String, confirmMessage: String, noMessage: String) -> Alert {
+            Alert(
+                title: Text(notifTitle),
+                message: Text(notifMessage),
+                primaryButton: .default(Text(confirmMessage)) {
+                    saveChanges()
+                },
+                secondaryButton: .cancel(Text(noMessage)))
+        }
     
     func setBookDetails() {
         do {
@@ -63,6 +74,17 @@ struct BookDetails: View {
                 try DataController.shared.container.viewContext.save()
             } catch {
                 print("Error saving managed object context: \(error)")
+            }
+        }
+    }
+    
+    private func saveChanges() {
+        if let context = ebook?.managedObjectContext {
+            do {
+                try context.save()
+                print("Changes saved successfully")
+            } catch {
+                print("Error saving changes: \(error)")
             }
         }
     }
@@ -136,22 +158,46 @@ struct BookDetails: View {
             VStack {
                 if isEditing {
                     VStack {
-                        TextField("Title", text: $editedTitle)
+                        TextField("Title", text: $editedTitle, onCommit: {
+                            //saveChanges()
+                            showAlert.toggle()
+                            
+                        })
                             .font(.largeTitle)
                             .multilineTextAlignment(.leading)
+//                            .alert(isPresented: self.$showAlert,
+//                                    content: { self.notificationAlert(notifTitle: "Confirm", notifMessage: "Are you sure you want to save?", confirmMessage: "Yes, save", noMessage: "No, go back") })
+                            .onChange(of: editedTitle) { newValue in
+                                ebook!.title = newValue
+                            }
                         
-                        TextField("Author", text: $editedAuthor)
+                        TextField("Author", text: $editedAuthor, onCommit: {
+                            //saveChanges()
+                            showAlert.toggle()
+                            
+                        })
                             .font(.title2)
                             .multilineTextAlignment(.leading)
+                            .onChange(of: editedAuthor) { newValue in
+                                ebook!.author = newValue
+//                                saveChanges()
+                            }
                         
                         Divider()
                         
                         ScrollView {
-                            TextField("\(ebook!.synopsis ?? "")", text: $editedSynopsis, axis: .vertical)
+                            VStack(alignment: .leading){
+                                TextField("Synopsis", text: $editedSynopsis, onCommit: {
+                                    //saveChanges()
+                                    showAlert.toggle()
+                                    
+                                })
                                 .multilineTextAlignment(.leading)
                                 .onChange(of: editedSynopsis) { newValue in
                                     ebook!.synopsis = newValue
+                                    //                                        saveChanges()
                                 }
+                            }
                         }
                         .padding()
                         .frame(
@@ -159,6 +205,8 @@ struct BookDetails: View {
                             maxHeight: 350
                         )
                     }
+                    .alert(isPresented: self.$showAlert,
+                            content: { self.notificationAlert(notifTitle: "Confirm", notifMessage: "Are you sure you want to save?", confirmMessage: "Yes, save", noMessage: "No, go back") })
                 } else {
                     Text(ebook!.title ?? "")
                         .font(.largeTitle)
