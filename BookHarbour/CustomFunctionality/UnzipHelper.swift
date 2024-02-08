@@ -20,7 +20,7 @@ class UnzipHelper{
             print("EPUB Unzipped successfully.")
             completion(unzipDirectory)
         } catch {
-            print("Error unzipping file: \(error)")
+            print("Error unzipping file: \(error) \(epubURL)")
             completion(nil)
         }
     }

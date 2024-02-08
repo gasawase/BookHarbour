@@ -79,7 +79,10 @@ struct HTMLView: UIViewRepresentable {
             //let finalHtml = try document.outerHtml()
             let chapterPathURL = URL(fileURLWithPath: chapterPath)
             let parentURL = chapterPathURL.deletingLastPathComponent()
-            uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: parentURL)
+            let nextParentURL = parentURL.deletingLastPathComponent()
+            print(parentURL)
+            print(nextParentURL)
+            uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: nextParentURL)
             
         }catch Exception.Error(let type, let message) {
             print(message)

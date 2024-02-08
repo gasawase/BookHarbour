@@ -105,10 +105,6 @@ struct DisplayBooks: View {
                         } label: {
                             IndividualBookRow(isShowingReader: $isShowingReader, ebook: book)
                         }
-//                        .sheet(isPresented: $isShowingBookDetails) {
-//                            BookDetailsModalView(ebook: $locEbook)
-//                                .zIndex(1)
-//                        }
                     }
 //                    .onDelete(perform: { indexSet in
 //                        indexSet.forEach { index in

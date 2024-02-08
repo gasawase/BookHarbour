@@ -285,7 +285,10 @@ LAST UPDATED: 06/2/2024
 - handling descriptions and the formatting (automatically in HTML)
 - marking and sorting by tags (pausing until I figure out how I want to display this)
 - rating system (first by numbers then by clicking stars like good reads)
-
+- stretch the book cover holding to be the size of the normal book covers 
+- loading pop up for when the books are loading in
+- save position that reader was last at in the book
+- some books are not loading in (they might be throwing errors but are not being tracked)
 
 ----DONE----
 - ability to read book
@@ -304,20 +307,22 @@ LAST UPDATED: 06/2/2024
 - marking and storing reviews
 - create a button bar for the top to control the sorting and such
 - remove duplicates 
-
 - for some reason, after you scroll for a bit, the books stop becoming buttons
 - edited data isn't overwriting previous data
+- be able to display the reading info as the correct xhtml instead of the html string it is right now that way we can link things correctly and display things like images <-- works sometimes but not for all books; I think there's a different way that some of the images and stylesheets are being referenced
 
 
 ----FEATURES I'D LIKE----
 - move original bookbinder parsing from kanna to swiftsoup
 - change layout of library to just see the spine
 - make a customizable bookshelf where you can have a list of your books and design your bookshelf, drag and drop
+- delete books from the book shelf when you click on them
+
 
 ----KNOWN BUGS----
-- the html is showing up a plain text and i need it to show up with all of its styling and images 
+- the html is showing up a plain text and i need it to show up with all of its styling and images (going to have to use webview and then work in the editing for that)(maybe have the edited be the plain text that is a state and then when the save button is pressed, it refreshes the webview?)
 
-- be able to display the reading info as the correct xhtml instead of the html string it is right now that way we can link things correctly and display things like images <-- works sometimes but not for all books; I think there's a different way that some of the images and stylesheets are being referenced
+- some books don't have covers even though the covers exist
 
 ----NOTES----
 

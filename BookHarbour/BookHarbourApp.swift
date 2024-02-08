@@ -11,6 +11,7 @@ import SwiftUI
 struct BookHarbourApp: App {
     @StateObject private var appState = AppState()
     @StateObject private var currentBook = CurrentBook()
+    //@StateObject private var isLoading = false
     
     @Environment(\.scenePhase) var scenePhase
     
