@@ -15,9 +15,11 @@ struct ReaderView: View{
     @State private var chapterPath: String = ""
     @State private var currentChapterIndex: Int = 0
     @EnvironmentObject var currentBook: CurrentBook
-    
+    @StateObject var readerSettings = ReaderSettings()
+
     @State private var manifestItems: [String: String] = [:]
     @State private var spineItems: [String] = []
+    //@State private var fontFamily
     
     @State var isShowingReadingMenu : Bool = false
     
@@ -35,10 +37,6 @@ struct ReaderView: View{
             print(currentChapterIndex)
         }
     }
-    
-    // get the chapter path
-    // get where it matches to the TOC
-    // append the file path that is at the end of the toc dictionary
     
     func getChapterPath(currentChapterIndex : Int) -> String{
         let opfURL : URL = currentBook.bookOPFURL
@@ -62,7 +60,7 @@ struct ReaderView: View{
         ZStack{
             GeometryReader { geometry in
                 VStack {
-                    HTMLView(chapterPath: $chapterPath) // Use binding for chapterPath
+                    HTMLView(chapterPath: $chapterPath, readerSettings: readerSettings) // Use binding for chapterPath
                         .navigationBarTitle("HTML View", displayMode: .inline)
                         .frame(
                             width: geometry.size.width,
@@ -89,14 +87,23 @@ struct ReaderView: View{
             }
             VStack{
                 if isShowingReadingMenu{
-                    Button(action: {
-                        appState.showReaderView.toggle()
-                    }, label: {
-                        Image(systemName: "books.vertical.circle")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundColor(.white)
-                    })
+                    Spacer()
+                    Group{
+                        Button(action: {
+                            appState.showReaderView.toggle()
+                        }, label: {
+                            Image(systemName: "books.vertical.circle")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundColor(.white)
+                        })
+                        // change attributes of the html view
+                        Button(action: {
+                            readerSettings.fontSize += 2
+                        }, label: {
+                            Text("Button")
+                        })
+                    }
                     .padding()
                     .background(Color.gray)
                     .clipShape(Circle())
@@ -130,6 +137,10 @@ struct ReaderView: View{
             }
         }
     }
+}
+
+class ReaderSettings: ObservableObject{
+    @Published var fontSize : CGFloat = 32
 }
 
 //struct ReaderMenuView : View {

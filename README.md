@@ -268,12 +268,11 @@ Define the immediate next steps in the development process
 
 ----CURRENT TASK-----
 
-LAST UPDATED: 06/2/2024
+LAST UPDATED: 09/2/2024
 
 
 ----TODO----
 
-- more efficient way of storing data (only initially store coverimage and file url then when modal clicked, gather the data then)
 - go through and remove duplicates
 - tracking reading time (add a timer to the ReaderController and or ReadingView)
 - be able to have a drop down with all of the tags that the user can auto select to prevent overwriting
@@ -289,6 +288,8 @@ LAST UPDATED: 06/2/2024
 - loading pop up for when the books are loading in
 - save position that reader was last at in the book
 - some books are not loading in (they might be throwing errors but are not being tracked)
+- how to display the tags and groupings
+- how to group books of the same series
 
 ----DONE----
 - ability to read book
@@ -310,6 +311,7 @@ LAST UPDATED: 06/2/2024
 - for some reason, after you scroll for a bit, the books stop becoming buttons
 - edited data isn't overwriting previous data
 - be able to display the reading info as the correct xhtml instead of the html string it is right now that way we can link things correctly and display things like images <-- works sometimes but not for all books; I think there's a different way that some of the images and stylesheets are being referenced
+- more efficient way of storing data (only initially store coverimage and file url then when modal clicked, gather the data then)
 
 
 ----FEATURES I'D LIKE----

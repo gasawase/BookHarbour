@@ -16,33 +16,10 @@ class ReaderController : ObservableObject{
     @EnvironmentObject var currentBook : CurrentBook
 }
 
-
-
-//class WebViewController: UIViewController, WKNavigationDelegate {
-//    // WKWebView to display HTML content
-//    private var webView: WKWebView!
-//
-//    // Override loadView to set up the view hierarchy
-//    override func loadView() {
-//        // Create a WKWebView and set it as the view of the view controller
-//        webView = WKWebView()
-//        webView.navigationDelegate = self
-//        view = webView
-//    }
-//
-//    // Load HTML content from a file into the WKWebView
-//    func loadHTMLFromFile(_ filePath: String) {
-//        // Read HTML content from the file path
-////        if let htmlString = try? String(contentsOfFile: filePath, encoding: .utf8) {
-////            // Load the HTML string into the WKWebView
-////            webView.loadHTMLString(htmlString, baseURL: nil)
-////        }
-//    }
-//}
-
 struct HTMLView: UIViewRepresentable {
 //    let htmlFileName: String
     @Binding var chapterPath : String
+    @ObservedObject var readerSettings : ReaderSettings
     
     func listFilesInFolder(_ folderURL: URL) {
         do {
@@ -59,41 +36,58 @@ struct HTMLView: UIViewRepresentable {
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
         let preferences = WKWebpagePreferences()
-        preferences.allowsContentJavaScript = true // Enable JavaScript execution
+        preferences.allowsContentJavaScript = true
         webView.configuration.defaultWebpagePreferences = preferences
+
+        // Inject JavaScript to set initial font size
+        let script = """
+        document.getElementsByTagName('body')[0].style.fontSize = '\(readerSettings.fontSize)px';
+        """
+        webView.evaluateJavaScript(script, completionHandler: nil)
+
         return webView
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
+        print("updateUIView run")
         let htmlPath = chapterPath
-        //just loading the file
-        
-        do{
-            // Read HTML file content
-            //let htmlContent = try String(contentsOfFile: htmlPath, encoding: .utf8)
-            
-            // Parse HTML using SwiftSoup
-            //let document = try SwiftSoup.parse(htmlContent)
-            
-            // Get the final HTML content
-            //let finalHtml = try document.outerHtml()
+        do {
             let chapterPathURL = URL(fileURLWithPath: chapterPath)
             let parentURL = chapterPathURL.deletingLastPathComponent()
             let nextParentURL = parentURL.deletingLastPathComponent()
-            print(parentURL)
-            print(nextParentURL)
             uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: nextParentURL)
-            
-        }catch Exception.Error(let type, let message) {
-            print(message)
+            let script = """
+            document.getElementsByTagName('body')[0].style.fontSize = '\(readerSettings.fontSize)px';
+            """
+            uiView.evaluateJavaScript(script, completionHandler: nil)
+            print(readerSettings.fontSize)
         } catch {
-            print("error")
+            print("Error loading HTML file: \(error)")
         }
-        
-//        let chapterPathURL = URL(fileURLWithPath: chapterPath)
-        
-//        uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: chapterPathURL)
+//        let htmlPath = chapterPath
+//        //just loading the file
+//        do{
+//            let chapterPathURL = URL(fileURLWithPath: chapterPath)
+//            let parentURL = chapterPathURL.deletingLastPathComponent()
+//            let nextParentURL = parentURL.deletingLastPathComponent()
+//            print(parentURL)
+//            print(nextParentURL)
+//            uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: nextParentURL)
+//            
+//        }catch Exception.Error(let type, let message) {
+//            print(message)
+//        } catch {
+//            print("error")
+//        }
     }
     
+    // Function to change font size externally
+    func changeFontSize(_ size: CGFloat, webView: WKWebView) {
+        readerSettings.fontSize = size
+        let script = """
+        document.getElementsByTagName('body')[0].style.fontSize = '\(size)px';
+        """
+        webView.evaluateJavaScript(script, completionHandler: nil)
+    }
 }
 
