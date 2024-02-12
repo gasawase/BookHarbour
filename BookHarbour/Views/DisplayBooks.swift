@@ -48,10 +48,22 @@ struct DisplayBooks: View {
 
 //    @ObservedObject var ebook : Ebooks
 
-    
+    /// SORTING BOOKS REQUESTS ///
     @FetchRequest(sortDescriptors: [SortDescriptor(\.title)]) var alphabeticBooks: FetchedResults<Ebooks>
     @FetchRequest(sortDescriptors: [SortDescriptor(\.author)]) var authorBooks: FetchedResults<Ebooks>
     //    @FetchRequest(sortDescriptors: [SortDescriptor(\.title)]) var tagBooks : FetchedResults<Ebooks>
+    
+    /// SEARCHING BOOKS REQUESTS ///
+    
+    @State private var searchText = ""
+
+    var filteredBooks: [Ebooks] {
+        if searchText.isEmpty {
+            return sortedBooks
+        } else {
+            return sortedBooks.filter { $0.title!.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
     
     var sortedBooks: [Ebooks] {
         switch selectedSorting {
@@ -75,13 +87,6 @@ struct DisplayBooks: View {
     
     let dataController = DataController.shared
     
-    
-    // Replace this with your desired function.
-    func yourFunctionAfterForEach() {
-        // Your function logic here
-        print("Function after ForEach loop")
-    }
-    
     var body: some View {
         
         let rowCountEst : Int = colCount
@@ -95,7 +100,7 @@ struct DisplayBooks: View {
             LazyHGrid(rows: rowLayout, spacing: rowSpacing, content: {
                 LazyVGrid(columns: colLayout,spacing: colSpacing, content: {
                     
-                    ForEach(sortedBooks, id:\.self){ book in
+                    ForEach(filteredBooks, id:\.self){ book in
                         // Individual book Details
                         Button {
                             print("\(book.unwrappedTitle) was pressed")
@@ -127,6 +132,11 @@ struct DisplayBooks: View {
 //        }
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
+                // Search bar
+                TextField("Search", text: $searchText)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(.horizontal)
+                    .frame(minWidth: 300)
                 Picker("Sort",selection: $selectedSorting) {
                     ForEach(SortingTypes.allCases, id: \.self)
                     {

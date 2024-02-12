@@ -268,8 +268,12 @@ Define the immediate next steps in the development process
 
 ----CURRENT TASK-----
 
-LAST UPDATED: 09/2/2024
+LAST UPDATED: 10/2/2024
 
+- implement the ability to change the font size
+- create the time tracking feature
+- create the view for sorting the books by tag
+- add the ability to delete some books from the view
 
 ----TODO----
 
@@ -290,6 +294,8 @@ LAST UPDATED: 09/2/2024
 - some books are not loading in (they might be throwing errors but are not being tracked)
 - how to display the tags and groupings
 - how to group books of the same series
+- tap the back button to actually go back
+- 
 
 ----DONE----
 - ability to read book
@@ -312,6 +318,7 @@ LAST UPDATED: 09/2/2024
 - edited data isn't overwriting previous data
 - be able to display the reading info as the correct xhtml instead of the html string it is right now that way we can link things correctly and display things like images <-- works sometimes but not for all books; I think there's a different way that some of the images and stylesheets are being referenced
 - more efficient way of storing data (only initially store coverimage and file url then when modal clicked, gather the data then)
+- add a search bar
 
 
 ----FEATURES I'D LIKE----
@@ -319,6 +326,8 @@ LAST UPDATED: 09/2/2024
 - change layout of library to just see the spine
 - make a customizable bookshelf where you can have a list of your books and design your bookshelf, drag and drop
 - delete books from the book shelf when you click on them
+- book reading stats (total books read, books you need to read, total time read this year, etc.)
+- tap the image to look at the book cover bigger
 
 
 ----KNOWN BUGS----

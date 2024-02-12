@@ -26,6 +26,8 @@ struct BookDetailsModalView : View {
     }
 }
 
+// create an enum to see which kind of function you're trying to do here; based on that function the alert will show a specific text and perform a specific function
+
 struct BookDetails: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var currentBook: CurrentBook
@@ -33,13 +35,15 @@ struct BookDetails: View {
     
     @State var isEditing: Bool = false
     @State private var hasChanges: Bool = false
+    @State private var isDelete: Bool = false
+    @State private var isImagePickerPresented: Bool = false
+    @State var showAlert = false
+    @State private var alertMessage = ""
     @State private var editedTitle: String = ""
     @State private var editedAuthor: String = ""
     @State private var editedSynopsis: String = ""
-    @State private var isImagePickerPresented: Bool = false
     @State private var selectedImage: UIImage?
     @State private var selectedImagePath: String?
-    @State var showAlert = false
 
     //@ObservedObject var ebook: Ebooks
     @Binding var ebook : Ebooks?
@@ -89,6 +93,18 @@ struct BookDetails: View {
         }
     }
     
+    private func deleteBook() {
+        do{
+            if let ebook = ebook {
+                DataController.shared.deleteBookEntry(ebook: ebook)
+            } else {
+                return
+            }
+        } catch {
+            print("Error deleting book: \(error)")
+        }
+    }
+    
     // Move image loading logic to a separate function
     func loadImage() {
         guard let selectedImage = selectedImage else { return }
@@ -119,6 +135,12 @@ struct BookDetails: View {
         }
         
         return nil
+    }
+    
+    // Function to show alert with custom message and return user's response
+    func showConfirmationAlert(message: String) {
+        self.alertMessage = message
+        self.showAlert = true
     }
     
     var body: some View {
@@ -161,12 +183,9 @@ struct BookDetails: View {
                         TextField("Title", text: $editedTitle, onCommit: {
                             //saveChanges()
                             showAlert.toggle()
-                            
                         })
                             .font(.largeTitle)
                             .multilineTextAlignment(.leading)
-//                            .alert(isPresented: self.$showAlert,
-//                                    content: { self.notificationAlert(notifTitle: "Confirm", notifMessage: "Are you sure you want to save?", confirmMessage: "Yes, save", noMessage: "No, go back") })
                             .onChange(of: editedTitle) { newValue in
                                 ebook!.title = newValue
                             }
@@ -205,8 +224,6 @@ struct BookDetails: View {
                             maxHeight: 350
                         )
                     }
-                    .alert(isPresented: self.$showAlert,
-                            content: { self.notificationAlert(notifTitle: "Confirm", notifMessage: "Are you sure you want to save?", confirmMessage: "Yes, save", noMessage: "No, go back") })
                 } else {
                     Text(ebook!.title ?? "")
                         .font(.largeTitle)
@@ -234,6 +251,17 @@ struct BookDetails: View {
 
         .toolbar {
             ToolbarItemGroup(placement: .bottomBar) {
+                if isEditing{
+                    Button {
+                        print("Delete Button Pressed")
+                        //showAlert.toggle()
+                    } label: {
+                        Text("Delete")
+                    }
+                }
+                else{
+                    
+                }
                 Button {
                     print("Read Button Pressed")
                     setBookDetails()
@@ -263,6 +291,7 @@ struct BookDetails: View {
             ToolbarItemGroup(placement: .topBarLeading) {
                 Button(action: {
                     print("Back button pressed")
+                    isEditing = false
                     appState.showBookDetails = false
                 }, label: {
                     Image(systemName: "arrowshape.turn.up.backward")
@@ -270,6 +299,19 @@ struct BookDetails: View {
             }
         }
         .aspectRatio(contentMode: .fill)
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Confirm"),
+                message: Text(alertMessage),
+                primaryButton: .default(Text("Yes, save")) {
+                    // Handle primary button action here
+                    saveChanges()
+                },
+                secondaryButton: .cancel(Text("No, go back")) {
+                    // Handle secondary button action here
+                }
+            )
+        }
     }
 }
 
