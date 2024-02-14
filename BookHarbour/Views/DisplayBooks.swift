@@ -104,19 +104,12 @@ struct DisplayBooks: View {
                         // Individual book Details
                         Button {
                             print("\(book.unwrappedTitle) was pressed")
-                            //BookDetailsModalView(ebook: book)
                             locEbook = book
                             isShowingBookDetails.toggle()
                         } label: {
                             IndividualBookRow(isShowingReader: $isShowingReader, ebook: book)
                         }
                     }
-//                    .onDelete(perform: { indexSet in
-//                        indexSet.forEach { index in
-//                            let bookEntry = sortedBooks[index]
-//                            DataController.shared.deleteBookEntry(ebook: bookEntry)
-//                        }
-//                    })
                     .padding(20)
                 })
             })
@@ -125,11 +118,6 @@ struct DisplayBooks: View {
             BookDetailsModalView(ebook: $locEbook)
                 .zIndex(1)
         }
-//        .background(Color("MainBackground")).ignoresSafeArea(.all)
-//        .sheet(isPresented: $isShowingBookDetails) {
-//            BookDetailsModalView(ebook: locEbook!)
-//                .zIndex(1)
-//        }
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 // Search bar

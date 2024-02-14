@@ -48,16 +48,6 @@ struct BookDetails: View {
     //@ObservedObject var ebook: Ebooks
     @Binding var ebook : Ebooks?
     
-    func notificationAlert(notifTitle: String, notifMessage: String, confirmMessage: String, noMessage: String) -> Alert {
-            Alert(
-                title: Text(notifTitle),
-                message: Text(notifMessage),
-                primaryButton: .default(Text(confirmMessage)) {
-                    saveChanges()
-                },
-                secondaryButton: .cancel(Text(noMessage)))
-        }
-    
     func setBookDetails() {
         do {
             currentBook.bookTitle = try ebook!.title.unwrap(variableName: "title")
@@ -188,6 +178,7 @@ struct BookDetails: View {
                             .multilineTextAlignment(.leading)
                             .onChange(of: editedTitle) { newValue in
                                 ebook!.title = newValue
+                                saveChanges()
                             }
                         
                         TextField("Author", text: $editedAuthor, onCommit: {
@@ -199,7 +190,7 @@ struct BookDetails: View {
                             .multilineTextAlignment(.leading)
                             .onChange(of: editedAuthor) { newValue in
                                 ebook!.author = newValue
-//                                saveChanges()
+                                saveChanges()
                             }
                         
                         Divider()
@@ -214,7 +205,7 @@ struct BookDetails: View {
                                 .multilineTextAlignment(.leading)
                                 .onChange(of: editedSynopsis) { newValue in
                                     ebook!.synopsis = newValue
-                                    //                                        saveChanges()
+                                    saveChanges()
                                 }
                             }
                         }
@@ -246,6 +237,22 @@ struct BookDetails: View {
                     )
                 }
             }
+            // right now, this just handles deleting
+            .alert(
+                Text("Are you sure you want to proceed?"),
+                isPresented: $showAlert,
+                actions: {
+                    Button("Yes, I'm sure") {
+                        deleteBook()
+                        dismiss()
+                        
+                    }
+                    Button("No, go back"){
+                        //No nothing just close this
+                    }
+                })
+            //.alert(Text("Are you sure you want to proceed?"), isPresented: <#T##Binding<Bool>#>, actions: <#T##() -> View#>)
+            
             
         }
 
@@ -254,21 +261,20 @@ struct BookDetails: View {
                 if isEditing{
                     Button {
                         print("Delete Button Pressed")
-                        //showAlert.toggle()
+                        showAlert.toggle()
                     } label: {
                         Text("Delete")
                     }
                 }
                 else{
-                    
-                }
-                Button {
-                    print("Read Button Pressed")
-                    setBookDetails()
-                    appState.showReaderView.toggle()
-                    dismiss()
-                } label: {
-                    Text("Read")
+                    Button {
+                        print("Read Button Pressed")
+                        setBookDetails()
+                        appState.showReaderView.toggle()
+                        dismiss()
+                    } label: {
+                        Text("Read")
+                    }
                 }
             }
             ToolbarItemGroup(placement: .topBarTrailing) {

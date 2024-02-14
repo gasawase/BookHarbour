@@ -268,7 +268,7 @@ Define the immediate next steps in the development process
 
 ----CURRENT TASK-----
 
-LAST UPDATED: 10/2/2024
+LAST UPDATED: 14/2/2024
 
 - implement the ability to change the font size
 - create the time tracking feature
