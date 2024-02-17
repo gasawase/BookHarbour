@@ -271,31 +271,37 @@ Define the immediate next steps in the development process
 LAST UPDATED: 14/2/2024
 
 - implement the ability to change the font size
-- create the time tracking feature
-- create the view for sorting the books by tag
-- add the ability to delete some books from the view
+- implement more of Jules' bookshelf idea
+- loading overlay PLEASE
+
 
 ----TODO----
 
-- go through and remove duplicates
-- tracking reading time (add a timer to the ReaderController and or ReadingView)
-- be able to have a drop down with all of the tags that the user can auto select to prevent overwriting
-	- also to have it search through the list to see if they're writing anything that is already there
+HIGH PRIORITY:
 - have the description show how it was supposed to in html
-- make it all look pretty
-- have it blur the background when a title is clicked
-- shrink the pop up a little bit
-- handling descriptions and the formatting (automatically in HTML)
-- marking and sorting by tags (pausing until I figure out how I want to display this)
-- rating system (first by numbers then by clicking stars like good reads)
-- stretch the book cover holding to be the size of the normal book covers 
 - loading pop up for when the books are loading in
 - save position that reader was last at in the book
-- some books are not loading in (they might be throwing errors but are not being tracked)
-- how to display the tags and groupings
+
+
+MEDIUM PRIORITY:
 - how to group books of the same series
+- marking and sorting by tags (pausing until I figure out how I want to display this)
+- some books are not loading in (they might be throwing errors but are not being tracked)
+
+
+
+LOW PRIORITY:
+- go through and remove duplicates (have it look back through the books and do this?)
+- make it all look pretty
+- rating system (first by numbers then by clicking stars like good reads)
+- shrink the pop up a little bit
+- have it blur the background when a title is clicked
+- stretch the book cover holding to be the size of the normal book covers 
 - tap the back button to actually go back
-- 
+- be able to have a drop down with all of the tags that the user can auto select to prevent overwriting
+- have it search through the list of tags to see if they're writing anything that is already there
+- a way to delete tags
+
 
 ----DONE----
 - ability to read book
@@ -319,7 +325,10 @@ LAST UPDATED: 14/2/2024
 - be able to display the reading info as the correct xhtml instead of the html string it is right now that way we can link things correctly and display things like images <-- works sometimes but not for all books; I think there's a different way that some of the images and stylesheets are being referenced
 - more efficient way of storing data (only initially store coverimage and file url then when modal clicked, gather the data then)
 - add a search bar
-
+- add the ability to delete some books from the view
+- tracking reading time (add a timer to the ReaderController and or ReadingView)
+- create the view for sorting the books by tag
+	- eventually reorganize DefaultView so that the actual view, excluding the toolbar is the thing that is changed and have the fetched results happen on DisplayBooks and feeds into the DisplayBooks view
 
 ----FEATURES I'D LIKE----
 - move original bookbinder parsing from kanna to swiftsoup
@@ -340,4 +349,5 @@ LAST UPDATED: 14/2/2024
 The manifest stores all of the data such as where the different pictures, covers, and toc are
 
 Data I want from reviews: content, title?, date read, total read time, rating
+
 

@@ -248,19 +248,6 @@ class EpubParser: NSObject, XMLParserDelegate{
     }
     
     func getCoverURL(manifestItems: [String:String], opfURL: URL) -> String{
-//        if let coverHref = manifestItems["cover"]?.lowercased(), coverHref.hasSuffix(".jpg") || coverHref.hasSuffix(".jpeg") {
-//            coverImagePath = coverHref
-//        } else if let coverImageHrefValue = manifestItems["cover-image"]?.lowercased(), coverImageHrefValue.hasSuffix(".jpg") || coverImageHrefValue.hasSuffix(".jpeg") {
-//            coverImagePath = coverImageHrefValue
-//        } else if let coverImageHrefValue = manifestItems["coverimg"]?.lowercased(), coverImageHrefValue.hasSuffix(".jpg") || coverImageHrefValue.hasSuffix(".jpeg") {
-//            coverImagePath = coverImageHrefValue
-//
-//        } else if let coverImageHrefValue = manifestItems["coverimage"]?.lowercased(), coverImageHrefValue.hasSuffix(".jpg") || coverImageHrefValue.hasSuffix(".jpeg") {
-//            coverImagePath = coverImageHrefValue
-//        } else if let coverImageHrefValue = manifestItems["cover-img"]?.lowercased(), coverImageHrefValue.hasSuffix(".jpg") || coverImageHrefValue.hasSuffix(".jpeg") {
-//            coverImagePath = coverImageHrefValue
-//        }
-        
         if let coverHref = manifestItems[metaContentVal], coverHref.hasSuffix(".jpg") || coverHref.hasSuffix(".jpeg") || coverHref.hasSuffix(".png"){
             coverImagePath = coverHref
         }

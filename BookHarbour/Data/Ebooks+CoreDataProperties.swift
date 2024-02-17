@@ -2,7 +2,7 @@
 //  Ebooks+CoreDataProperties.swift
 //  
 //
-//  Created by Summer Gasaway on 1/31/24.
+//  Created by Summer Gasaway on 2/14/24.
 //
 //
 
@@ -19,17 +19,20 @@ extension Ebooks {
     @NSManaged public var author: String?
     @NSManaged public var bookUID: UUID?
     @NSManaged public var coverImgPath: String?
+    @NSManaged public var currReadLoc: Int32
     @NSManaged public var epubPath: String?
     @NSManaged public var id: UUID?
     @NSManaged public var opfFilePath: String?
     @NSManaged public var opfFileURL: URL?
     @NSManaged public var synopsis: String?
+    @NSManaged public var timeRead: Int32
     @NSManaged public var title: String?
     @NSManaged public var reviewLink: NSSet?
     @NSManaged public var tags: NSSet?
-
+    
     public var unwrappedTitle : String{ title ?? "No Title" }
     public var unwrappedAuthor : String{ author ?? "No Author" }
+
 }
 
 // MARK: Generated accessors for reviewLink
@@ -48,6 +51,7 @@ extension Ebooks {
     @NSManaged public func removeFromReviewLink(_ values: NSSet)
 
 }
+
 
 // MARK: Generated accessors for tags
 extension Ebooks {

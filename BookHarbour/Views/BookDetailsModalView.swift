@@ -55,7 +55,7 @@ struct BookDetails: View {
             currentBook.currentChapter = 1
             currentBook.bookOPFPath = try ebook!.opfFilePath.unwrap(variableName: "OPFPath")
             currentBook.bookOPFURL = try ebook!.opfFileURL.unwrap(variableName: "OPFFileURl")
-            currentBook.bookUID = try ebook!.bookUID.unwrap(variableName: "bookUID")
+            currentBook.bookUID = try ebook!.id.unwrap(variableName: "book id")
         } catch {
             // Handle the error here
             print("Error: \(error)")
@@ -250,9 +250,7 @@ struct BookDetails: View {
                     Button("No, go back"){
                         //No nothing just close this
                     }
-                })
-            //.alert(Text("Are you sure you want to proceed?"), isPresented: <#T##Binding<Bool>#>, actions: <#T##() -> View#>)
-            
+                })            
             
         }
 
@@ -523,7 +521,7 @@ struct TagView : View{
     
     let tagColumns = Array(repeating: GridItem(.flexible(minimum: 50, maximum: .infinity)), count: 2)
     
-    private func fetchData() {
+    private func fetchBooksWithTag() {
         do {
             let context = DataController.shared.container.viewContext
             let fetchRequest: NSFetchRequest<BookTags> = BookTags.fetchRequest()
@@ -559,7 +557,7 @@ struct TagView : View{
         ebook.addToTags(bookTagItem)
         bookTagItem.addToBookTagsRelationship(ebook)
         //fetchData()
-        fetchData()
+        fetchBooksWithTag()
     }
     
     var body: some View {
@@ -622,7 +620,7 @@ struct TagView : View{
                 }
             }
             .onAppear(perform: {
-                fetchData()
+                fetchBooksWithTag()
             })
         }
     }

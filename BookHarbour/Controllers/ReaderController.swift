@@ -111,32 +111,32 @@ struct HTMLView: UIViewRepresentable {
         """
         webView.evaluateJavaScript(script, completionHandler: nil)
     }
+}
 
-//    func updateUIView(_ uiView: WKWebView, context: Context) {
-//        print("updateUIView run")
-//        let htmlPath = chapterPath
-//        do {
-//            let chapterPathURL = URL(fileURLWithPath: chapterPath)
-//            let parentURL = chapterPathURL.deletingLastPathComponent()
-//            let nextParentURL = parentURL.deletingLastPathComponent()
-//            let script = """
-//            document.getElementsByTagName('html')[0].style.setProperty('font-size', readerSettings.fontSize + 'px', 'important');
-//            """
-//            uiView.evaluateJavaScript(script, completionHandler: nil)
-//            uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: nextParentURL)
-//
-//        } catch {
-//            print("Error loading HTML file: \(error)")
-//        }
-//    }
-    
-    // Function to change font size externally
-//    func changeFontSize(_ size: CGFloat, webView: WKWebView) {
-//        readerSettings.fontSize = size
-//        let script = """
-//        document.getElementsByTagName('body')[0].style.fontSize = '\(size)px';
-//        """
-//        webView.evaluateJavaScript(script, completionHandler: nil)
-//    }
+// have a function that is running keep track of time read and then when readview is closed, have it write that number to the ebook's time read section
+// will also need a button/ ability for a user to choose to remove or delete their tracking time
+// eventually, when the user finishes the book, have it give them the option to leave a review
+// also need a way for their reading time to be written to their book modal
+
+class CustStopwatch: ObservableObject {
+    // TODO: need to create the ability to save the FIRST first start date and then the stop date. Does this go here?
+    @Published var elapsedTime: TimeInterval = 0
+    private var startTime: Date?
+
+    func start() {
+        startTime = Date()
+    }
+
+    func stop() {
+        
+        guard let startTime = startTime else { return }
+        elapsedTime += Date().timeIntervalSince(startTime)
+        self.startTime = nil
+    }
+
+    func reset() {
+        startTime = nil
+        elapsedTime = 0
+    }
 }
 

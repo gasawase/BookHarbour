@@ -14,21 +14,21 @@ struct DataController{
     let container: NSPersistentContainer
     
     // A test configuration for SwiftUI previews
-    static var preview: DataController = {
-        let controller = DataController(inMemory: true)
-
-        // Create 10 example programming languages.
-        for _ in 0..<10 {
-            let testBook = Ebooks(context: controller.container.viewContext)
-            testBook.id = UUID()
-            testBook.title = "Testing Title"
-            testBook.author = "Testing Author"
-        }
-        
-            //get the files in here
-        
-        return controller
-    }()
+//    static var preview: DataController = {
+//        let controller = DataController(inMemory: true)
+//
+//        // Create 10 example programming languages.
+//        for _ in 0..<10 {
+//            let testBook = Ebooks(context: controller.container.viewContext)
+//            testBook.id = UUID()
+//            testBook.title = "Testing Title"
+//            testBook.author = "Testing Author"
+//        }
+//        
+//            //get the files in here
+//        
+//        return controller
+//    }()
     
     // An initializer to load Core Data, optionally able
     // to use an in-memory store.
@@ -73,6 +73,16 @@ struct DataController{
         }
     }
     
+    func deleteTagEntry(tag: BookTags){
+        container.viewContext.delete(tag)
+        do{
+            try container.viewContext.save()
+        } catch{
+            container.viewContext.rollback()
+            print("Failed to save context \(error)")
+        }
+    }
+    
     func getAllTitles() -> [Ebooks]{
         let fetchRequest : NSFetchRequest<Ebooks> = Ebooks.fetchRequest()
         do{
@@ -82,11 +92,28 @@ struct DataController{
         }
     }
     
+    func getAllTags() -> [BookTags]{
+        let fetchRequest : NSFetchRequest<BookTags> = BookTags.fetchRequest()
+        do{
+            return try container.viewContext.fetch(fetchRequest)
+        } catch{
+            return[]
+        }
+    }
+    
     func clearAllTitles(){
-        var allTitles = getAllTitles()
+        let allTitles = getAllTitles()
         
         for book in allTitles{
             deleteBookEntry(ebook: book)
+        }
+    }
+    
+    func clearAllTags(){
+        let allTags = getAllTags()
+        
+        for tag in allTags{
+            deleteTagEntry(tag: tag)
         }
     }
     
@@ -113,13 +140,6 @@ class BookTagsViewModel: ObservableObject {
             // Handle fetch errors
             print("Error fetching data: \(error.localizedDescription)")
         }
-        
-//        do {
-//            self.bookTags = try DataController.shared.container.viewContext.fetch(fetchRequest)
-//        } catch {
-//            // Handle error
-//            print("Error fetching data: \(error.localizedDescription)")
-//        }
     }
     
     func addTag(forBookUID bookUID: UUID, tagName: String) {

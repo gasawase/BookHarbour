@@ -7,6 +7,8 @@
 
 import SwiftUI
 import WebKit
+import CoreData
+
 
 struct ReaderView: View{
     //@State var readerController = ReaderController()
@@ -22,6 +24,8 @@ struct ReaderView: View{
     //@State private var fontFamily
     
     @State var isShowingReadingMenu : Bool = false
+    
+    @State var InstStopwatch : CustStopwatch = CustStopwatch()
     
     func previousChapter(){
         if currentChapterIndex > 0 {
@@ -54,6 +58,32 @@ struct ReaderView: View{
             return finalCoverURLPath
         }
         return "No chapter path"
+    }
+    
+    func saveToCoreData() {
+        let context = DataController.shared.container.viewContext
+        let fetchRequest: NSFetchRequest<Ebooks> = Ebooks.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id = %@", currentBook.bookUID as CVarArg)
+        do {
+            let ebooks = try context.fetch(fetchRequest)
+            if let ebook = ebooks.first {
+                ebook.currReadLoc = Int32(currentChapterIndex)
+                ebook.timeRead = Int32(currentBook.readingProgressSeconds)
+                print("this is your book location\(ebook.currReadLoc)")
+                print(ebook.timeRead)
+                try context.save()
+            }
+        } catch {
+            print("Error saving progress: \(error)")
+        }
+    }
+    
+    func getAllReferencedImagesOnPage(){
+        // parse the XHTML content and extract image references
+    }
+    
+    func getAllImagesInBooks(){
+        
     }
     
     var body: some View {
@@ -129,13 +159,20 @@ struct ReaderView: View{
         }
         .onAppear {
             chapterPath = getChapterPath(currentChapterIndex: currentChapterIndex)
+            InstStopwatch.start()
         }
         .onChange(of: currentChapterIndex) { _ in
+
             // Update the chapterPath when currentChapterIndex changes
             withAnimation {
                 chapterPath = getChapterPath(currentChapterIndex: currentChapterIndex)
             }
         }
+        .onDisappear(perform: {
+            InstStopwatch.stop()
+            currentBook.readingProgressSeconds += Int(InstStopwatch.elapsedTime)
+            saveToCoreData()
+        })
     }
 }
 

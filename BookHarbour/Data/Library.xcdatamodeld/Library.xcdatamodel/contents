@@ -3,27 +3,28 @@
     <entity name="BookTags" representedClassName="BookTags" syncable="YES">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="bookTagsRelationship" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Ebooks"/>
+        <relationship name="bookTagsRelationship" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Ebooks" inverseName="tags" inverseEntity="Ebooks"/>
     </entity>
     <entity name="Ebooks" representedClassName="Ebooks" syncable="YES">
         <attribute name="author" attributeType="String"/>
         <attribute name="bookUID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="coverImgPath" optional="YES" attributeType="String"/>
+        <attribute name="currReadLoc" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="epubPath" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="opfFilePath" optional="YES" attributeType="String"/>
         <attribute name="opfFileURL" optional="YES" attributeType="URI"/>
         <attribute name="synopsis" optional="YES" attributeType="String"/>
-        <attribute name="timeRead" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="timeRead" optional="YES" attributeType="Integer 32" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="title" attributeType="String"/>
-        <relationship name="reviewLink" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Reviews"/>
-        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BookTags"/>
+        <relationship name="reviewLink" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Reviews" inverseName="reviewToBook" inverseEntity="Reviews"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BookTags" inverseName="bookTagsRelationship" inverseEntity="BookTags"/>
     </entity>
     <entity name="Reviews" representedClassName="Reviews" syncable="YES">
         <attribute name="reviewContent" attributeType="String"/>
         <attribute name="reviewDateFinished" optional="YES" attributeType="String"/>
         <attribute name="reviewDateStarted" attributeType="String"/>
         <attribute name="reviewTitle" optional="YES" attributeType="String"/>
-        <relationship name="reviewToBook" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Ebooks"/>
+        <relationship name="reviewToBook" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Ebooks" inverseName="reviewLink" inverseEntity="Ebooks"/>
     </entity>
 </model>

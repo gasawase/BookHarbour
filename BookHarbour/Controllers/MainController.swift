@@ -33,7 +33,8 @@ class CurrentBook: ObservableObject {
     @Published var bookOPFPath : String = ""
     @Published var bookOPFURL : URL = URL(fileURLWithPath: "/path/to/file.txt")
     @Published var bookUID : UUID = UUID()
-    // current location
+    @Published var readingProgressSeconds : Int = 0
+    // current location in book
     
 }
 

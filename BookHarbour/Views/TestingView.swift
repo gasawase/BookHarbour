@@ -8,23 +8,42 @@ class TestingEbook : ObservableObject {
 }
 
 struct TestingView : View {
-    var books : [String] = ["title", "one", "two", "three", "four"]
+    let allTags : [String] = ["fantasy", "sci-fi", "romance"]
     var body: some View {
-        ZStack{
-            RoundedRectangle(cornerRadius: 12)
-                .foregroundColor(Color.gray)
-            VStack{
-                ForEach(books, id:\.self){ book in
-                    Text(book)
-                        .padding(12)
-                        .background(Color.red)
-                        .draggable(book)
+        VStack{
+            ForEach(allTags, id: \.self){ tag in
+                Section {
+                    TestingNewView()
+                } header: {
+                    HStack {
+                        Text(tag)
+                            .font(.title)
+                            .padding()
+                        Spacer(minLength: 10)
+                    }
                 }
                 
             }
         }
+
     }
 }
+
+struct TestingNewView : View {
+    var books : [String] = ["title", "one", "two", "three", "four"]
+    var body: some View {
+        ScrollView(.horizontal){
+            HStack{
+                // all of the rows on top of each other
+                // generate the amount of rows that there are tags
+                ForEach(books, id:\.self){ book in
+                    Color.black.frame(width: 160, height: 256)
+                }
+            }
+        }
+    }
+}
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         TestingView()
