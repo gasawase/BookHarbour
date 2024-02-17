@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import SWXMLHash
+
 class MainController: ObservableObject{
     let dataController = DataController.shared
-    
 }
 
 enum BookHarbourErrorType : Error{
@@ -18,6 +19,32 @@ enum BookHarbourErrorType : Error{
     case missingOPFURL
     case missingUID
     case missingInfo(String)
+}
+
+class OPFParser {
+    static func parseManifestItems(opfURL: URL) -> [String: String]? {
+        guard let opfXMLData = FileManager.default.contents(atPath: opfURL.path) else {
+            print("Failed to read OPF file at \(opfURL)")
+            return nil
+        }
+
+        do {
+            let opfXML = XMLHash.lazy(opfXMLData)
+            var manifestItems: [String: String] = [:]
+
+            for elem in opfXML["package"]["manifest"]["item"].all {
+                if let itemId = elem.element?.attribute(by: "id")?.text,
+                   let href = elem.element?.attribute(by: "href")?.text {
+                    manifestItems[itemId] = href
+                }
+            }
+
+            return manifestItems
+        } catch {
+            print("Error parsing OPF XML: \(error)")
+            return nil
+        }
+    }
 }
 
 class AppState: ObservableObject {
@@ -34,6 +61,7 @@ class CurrentBook: ObservableObject {
     @Published var bookOPFURL : URL = URL(fileURLWithPath: "/path/to/file.txt")
     @Published var bookUID : UUID = UUID()
     @Published var readingProgressSeconds : Int = 0
+    @Published var manifestDictionary : [String: String] = [:]
     // current location in book
     
 }
@@ -61,3 +89,5 @@ extension String {
         }
     }
 }
+
+

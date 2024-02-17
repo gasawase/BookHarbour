@@ -343,6 +343,7 @@ LOW PRIORITY:
 - the html is showing up a plain text and i need it to show up with all of its styling and images (going to have to use webview and then work in the editing for that)(maybe have the edited be the plain text that is a state and then when the save button is pressed, it refreshes the webview?)
 
 - some books don't have covers even though the covers exist
+	-Realm of Ash is no longer displaying its cover
 
 ----NOTES----
 

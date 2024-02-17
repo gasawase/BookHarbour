@@ -47,7 +47,7 @@ struct ReaderView: View{
         //let opfURL = URL(string: opfPath)!
         spineItems = OPFTryGetData().getSpineItems(opfURL)
         //print(spineItems.count)
-        manifestItems = OPFTryGetData().getManifestItems(opfURL)
+        manifestItems = currentBook.manifestDictionary
         if currentChapterIndex < spineItems.count, let chapterPath = manifestItems[spineItems[currentChapterIndex]]
         {
             let currentPath = chapterPath
@@ -131,7 +131,12 @@ struct ReaderView: View{
                         Button(action: {
                             readerSettings.fontSize += 2
                         }, label: {
-                            Text("Button")
+                            Text("Increase")
+                        })
+                        Button(action: {
+                            readerSettings.fontSize -= 2
+                        }, label: {
+                            Text("Decrease")
                         })
                     }
                     .padding()
@@ -162,7 +167,6 @@ struct ReaderView: View{
             InstStopwatch.start()
         }
         .onChange(of: currentChapterIndex) { _ in
-
             // Update the chapterPath when currentChapterIndex changes
             withAnimation {
                 chapterPath = getChapterPath(currentChapterIndex: currentChapterIndex)

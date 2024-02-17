@@ -127,6 +127,8 @@ struct DefaultView : View {
     let colSpacing : CGFloat = 10
     
     let dataController = DataController.shared
+    
+
     var body: some View {
         
         let rowCountEst : Int = colCount

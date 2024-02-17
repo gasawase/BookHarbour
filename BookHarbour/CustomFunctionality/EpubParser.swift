@@ -76,32 +76,6 @@ class EpubParser: NSObject, XMLParserDelegate{
         }
     }
     
-    
-//    private func parseOPFFile(_ opfURL: URL, completion: @escaping (URL?) -> Void) {
-//        if let containerOPFXMLData = FileManager.default.contents(atPath: opfURL.path()){
-//            // convert to XMLHash.lazy for better efficiency
-//            let opfXML = XMLHash.lazy(containerOPFXMLData)
-//            //let metadata = opfXML["package"]["metadata"]
-//            if let opfParser = XMLParser(contentsOf: opfURL){
-//                opfParser.delegate = self
-//                opfParser.parse()
-//            }
-//            else{
-//                completion(nil)
-//            }
-//            do {
-//                opfDataObj = try opfXML["package"].value()
-//                metadataObj = try opfDataObj.metadata.value()
-//                coverURL = getCoverURL(manifestItems: manifestItems, opfURL: opfURL)
-//                addToCoreData(opfURL: opfURL, metadata: metadataObj, manifestItems: manifestItems, epubPath: unzipDirectory, coverURL: coverURL)
-//                
-//            } catch {
-//                // Handle the error here
-//                print("An error occurred: \(error)")
-//            }
-//        }
-//    }
-    
     private func parseOPFFile(_ opfURL: URL, completion: @escaping (URL?) -> Void) {
         do {
             guard let containerOPFXMLData = FileManager.default.contents(atPath: opfURL.path()) else {
@@ -114,10 +88,6 @@ class EpubParser: NSObject, XMLParserDelegate{
             opfParser?.delegate = self
             opfParser?.parse()
 
-//            opfDataObj = try opfXML["package"].value()
-//            metadataObj = try opfDataObj.metadata.value()
-//            coverURL = getCoverURL(manifestItems: manifestItems, opfURL: opfURL)
-//            addToCoreData(opfURL: opfURL, metadata: metadataObj, manifestItems: manifestItems, epubPath: unzipDirectory, coverURL: coverURL)
             opfDataObj = try opfXML["package"].value()
             if opfDataObj != nil {
                 metadataObj = try opfDataObj.metadata.value()
@@ -194,12 +164,7 @@ class EpubParser: NSObject, XMLParserDelegate{
             if let itemId = attributeDict["id"], let href = attributeDict["href"] {
                 manifestItems[itemId] = href
             }
-//            if let properties = attributeDict["properties"]?.lowercased(), properties == "cover" || properties == "cover-image" || properties == "coverimg" || properties == "coverimage" || properties == "cover-img"{
-//                coverImagePath = attributeDict["href"] ?? ""
-//                itemCoverVal = properties
-//            } else if let itemId = attributeDict["id"]?.lowercased(), let href = attributeDict["href"] {
-//                manifestItems[itemId] = href
-//            }
+
         case "itemref":
             if let idref = attributeDict["idref"] {
                 spineItems.append(idref)
@@ -207,9 +172,7 @@ class EpubParser: NSObject, XMLParserDelegate{
         case "meta":
             if let metaName = attributeDict["name"]?.lowercased(), let metaContent = attributeDict["content"], (metaName == "cover" || metaName == "cover-image" || metaName == "coverimg" || metaName == "coverimage" || metaName == "cover-img"), let metaCover = attributeDict["content"] {
                 metaCoverVal = metaCover
-                metaContentVal = metaContent
-                print("MetaContent: \(metaContent)")
-            }
+                metaContentVal = metaContent            }
         case "navPoint":
             print("NavPoint detected, my liege.")
         default:
@@ -351,4 +314,3 @@ class OPFTryGetData : NSObject, XMLParserDelegate{
     }
     
 }
-

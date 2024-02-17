@@ -13,11 +13,12 @@ import SwiftSoup
 
 
 class ReaderController : ObservableObject{
-    @EnvironmentObject var currentBook : CurrentBook
+    //@EnvironmentObject var currentBook : CurrentBook
 }
 
 struct HTMLView: UIViewRepresentable {
 //    let htmlFileName: String
+    @EnvironmentObject var currentBook : CurrentBook
     @Binding var chapterPath : String
     @ObservedObject var readerSettings : ReaderSettings
     
@@ -32,29 +33,12 @@ struct HTMLView: UIViewRepresentable {
             print("Error listing files: \(error)")
         }
     }
-
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
         let preferences = WKWebpagePreferences()
         preferences.allowsContentJavaScript = true
         webView.configuration.defaultWebpagePreferences = preferences
-
-        // Inject JavaScript to set initial font size
-//        let script = """
-//        document.getElementsByTagName('body')[0].style.fontSize = '\(readerSettings.fontSize)px';
-//        """
-//        webView.evaluateJavaScript(script, completionHandler: nil)
-//        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-//        let customCSSFilePath = documentsDirectory.appendingPathComponent("defaultStylesheet.css")
-//        let trashString = "as;kldf;asldkfj"
-//        do{
-//            try trashString.write(to: customCSSFilePath, atomically: true, encoding: .utf8)
-//            print(try String(contentsOfFile: customCSSFilePath.path))
-//        } catch {
-//            print("Error exporting HTML: \(error)")
-//        }
-
-
+        webView.configuration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
         return webView
     }
     
@@ -62,26 +46,82 @@ struct HTMLView: UIViewRepresentable {
         print("updateUIView run")
         let htmlPath = chapterPath
         do {
-            let chapterPathURL = URL(fileURLWithPath: chapterPath)
-            let parentURL = chapterPathURL.deletingLastPathComponent()
-            let nextParentURL = parentURL.deletingLastPathComponent()
+            let htmlString = try String(contentsOfFile: htmlPath)
+            let doc : Document = try SwiftSoup.parse(htmlString)
+            let docOuter = try doc.outerHtml() // shows the outer HTML...duh
+            //let docText = try doc.text() // shows just the text as regular without formatting
 
-            uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: nextParentURL)
-                // Inject JavaScript to adjust font size after content is loaded
-                    let script = """
-                    console.log("Applying font size adjustment");
-                    var style = document.createElement('style');
-                    style.innerHTML = 'body { font-size: \(readerSettings.fontSize)px !important; }';
-                    document.head.appendChild(style);
-                    """
-            injectToPage(webView: uiView)
-                //uiView.evaluateJavaScript(script, completionHandler: nil)
-            //uiView.configuration.userContentController.addUserScript()
+            var imgRefs: Elements
+
+            // Try selecting "img" tags first
+            imgRefs = try doc.select("img")
+
+            // If no "img" tags found, try selecting "image" tags
+            if imgRefs.isEmpty() {
+                imgRefs = try doc.select("image")
+                print(imgRefs.array())
+            }
+            
+            let fontSize = readerSettings.fontSize
+            try doc.select("body").attr("style", "font-size: \(fontSize)px;")
+            // Create a mutable copy of the HTML string
+            var modifiedHtmlString = try doc.outerHtml()
+            // Iterate through each image reference
+            for imgRef in imgRefs {
+                var imgSrc = try imgRef.attr("src")
+                // find where the imgSrc matches the entry in the manifest
+//                print("Image Ref: \(imgRef)")
+//                print(currentBook.manifestDictionary)
+                if let matchingImg = (currentBook.manifestDictionary.first(where: {$0.value == imgSrc})?.value) {
+                    print(matchingImg)
+                    let chapterPathURL = URL(fileURLWithPath: chapterPath)
+                    let parentURL = chapterPathURL.deletingLastPathComponent()
+                    let imgNewURL = parentURL.appending(path: matchingImg)
+                    if let imageData = try? Data(contentsOf: imgNewURL) {
+                        // Convert the image data to a base64 string
+                        let base64Image = imageData.base64EncodedString()
+                        
+                        // Replace the image source in the HTML string with the base64 image data
+                        modifiedHtmlString = modifiedHtmlString.replacingOccurrences(of: imgSrc, with: "data:image/*;base64,\(base64Image)")
+                    }
+                }
+            }
+            
+            //print(currentBook.manifestDictionary)
+            uiView.loadHTMLString(modifiedHtmlString, baseURL: nil)
+
+//
+//            uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: nextParentURL)
 
         } catch {
             print("Error loading HTML file: \(error)")
         }
     }
+        
+    
+    // BASIC READING AND WORKS
+//    func makeUIView(context: Context) -> WKWebView {
+//        let webView = WKWebView()
+//        let preferences = WKWebpagePreferences()
+//        preferences.allowsContentJavaScript = true
+//        webView.configuration.defaultWebpagePreferences = preferences
+//        return webView
+//    }
+//    
+//    func updateUIView(_ uiView: WKWebView, context: Context) {
+//        print("updateUIView run")
+//        let htmlPath = chapterPath
+//        do {
+//            let chapterPathURL = URL(fileURLWithPath: chapterPath)
+//            let parentURL = chapterPathURL.deletingLastPathComponent()
+//            let nextParentURL = parentURL.deletingLastPathComponent()
+//
+//            uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: nextParentURL)
+//
+//        } catch {
+//            print("Error loading HTML file: \(error)")
+//        }
+//    }
     
     private func readFileBy(name: String, type: String) -> String {
         guard let path = Bundle.main.path(forResource: name, ofType: type) else {

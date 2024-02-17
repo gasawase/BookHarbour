@@ -50,12 +50,17 @@ struct BookDetails: View {
     
     func setBookDetails() {
         do {
-            currentBook.bookTitle = try ebook!.title.unwrap(variableName: "title")
-            currentBook.bookAuthor = try ebook!.author.unwrap(variableName: "author")
-            currentBook.currentChapter = 1
-            currentBook.bookOPFPath = try ebook!.opfFilePath.unwrap(variableName: "OPFPath")
-            currentBook.bookOPFURL = try ebook!.opfFileURL.unwrap(variableName: "OPFFileURl")
-            currentBook.bookUID = try ebook!.id.unwrap(variableName: "book id")
+            if let notNilEbook = ebook{
+                currentBook.bookTitle = try notNilEbook.title.unwrap(variableName: "title")
+                currentBook.bookAuthor = try notNilEbook.author.unwrap(variableName: "author")
+                currentBook.currentChapter = 1
+                currentBook.bookOPFPath = try notNilEbook.opfFilePath.unwrap(variableName: "OPFPath")
+                currentBook.bookOPFURL = try notNilEbook.opfFileURL.unwrap(variableName: "OPFFileURl")
+                currentBook.bookUID = try notNilEbook.id.unwrap(variableName: "book id")
+                if let manifestItems = OPFParser.parseManifestItems(opfURL: notNilEbook.opfFileURL!){
+                    currentBook.manifestDictionary = manifestItems
+                }
+            }
         } catch {
             // Handle the error here
             print("Error: \(error)")
@@ -253,7 +258,6 @@ struct BookDetails: View {
                 })            
             
         }
-
         .toolbar {
             ToolbarItemGroup(placement: .bottomBar) {
                 if isEditing{
