@@ -21,6 +21,7 @@ struct HTMLView: UIViewRepresentable {
     @EnvironmentObject var currentBook : CurrentBook
     @Binding var chapterPath : String
     @ObservedObject var readerSettings : ReaderSettings
+    //@State var base64Image : String = ""
     
     func listFilesInFolder(_ folderURL: URL) {
         do {
@@ -33,6 +34,7 @@ struct HTMLView: UIViewRepresentable {
             print("Error listing files: \(error)")
         }
     }
+    
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
         let preferences = WKWebpagePreferences()
@@ -42,9 +44,16 @@ struct HTMLView: UIViewRepresentable {
         return webView
     }
     
+    
     func updateUIView(_ uiView: WKWebView, context: Context) {
         print("updateUIView run")
+        var isSVG = false
         let htmlPath = chapterPath
+        print("chapter path \(chapterPath)")
+        let fileManager = FileManager.default
+        //var imgNewURL : URL = URL(filePath: "")
+        var base64Image : String = ""
+        var imgSrc : String = ""
         do {
             let htmlString = try String(contentsOfFile: htmlPath)
             let doc : Document = try SwiftSoup.parse(htmlString)
@@ -59,40 +68,64 @@ struct HTMLView: UIViewRepresentable {
             // If no "img" tags found, try selecting "image" tags
             if imgRefs.isEmpty() {
                 imgRefs = try doc.select("image")
-                print(imgRefs.array())
+                print("image")
+                isSVG = true
+                if imgRefs.isEmpty() {
+                    imgRefs = try doc.select("svg")
+                    isSVG = true
+                    print("svg")
+                }
             }
             
             let fontSize = readerSettings.fontSize
+            
             try doc.select("body").attr("style", "font-size: \(fontSize)px;")
             // Create a mutable copy of the HTML string
             var modifiedHtmlString = try doc.outerHtml()
             // Iterate through each image reference
             for imgRef in imgRefs {
-                var imgSrc = try imgRef.attr("src")
-                // find where the imgSrc matches the entry in the manifest
-//                print("Image Ref: \(imgRef)")
-//                print(currentBook.manifestDictionary)
-                if let matchingImg = (currentBook.manifestDictionary.first(where: {$0.value == imgSrc})?.value) {
-                    print(matchingImg)
-                    let chapterPathURL = URL(fileURLWithPath: chapterPath)
-                    let parentURL = chapterPathURL.deletingLastPathComponent()
-                    let imgNewURL = parentURL.appending(path: matchingImg)
-                    if let imageData = try? Data(contentsOf: imgNewURL) {
-                        // Convert the image data to a base64 string
-                        let base64Image = imageData.base64EncodedString()
-                        
-                        // Replace the image source in the HTML string with the base64 image data
-                        modifiedHtmlString = modifiedHtmlString.replacingOccurrences(of: imgSrc, with: "data:image/*;base64,\(base64Image)")
+                if isSVG == true{
+                    imgSrc = try imgRef.attr("xlink:href")
+                }
+                else{
+                    imgSrc = try imgRef.attr("src")
+
+                }
+                var newImgSrc = imgSrc
+                var brokenURL = URL(filePath: imgSrc).pathComponents
+                if brokenURL.count > 2{
+                    var deleteFirst = brokenURL.remove(at: 1)
+                    deleteFirst = brokenURL.remove(at: 0)
+                    let joinedPath = brokenURL.joined(separator: "/")
+                    newImgSrc = joinedPath
+                }
+                
+                /// find where the imgSrc matches the entry in the manifest
+                let searchResults = currentBook.manifestDictionary.filter({ $0.value.contains(newImgSrc) })
+                if searchResults.count != 0 {
+                    let firstSearchResult = searchResults.first?.value
+                    var imgNewURL = URL(filePath: "")
+                    if firstSearchResult != nil, let validSearch = firstSearchResult{
+                        if ReaderView().isPathValid(currentBook.bookEpubPath.appending(validSearch)){
+                            imgNewURL = URL(filePath: currentBook.bookEpubPath.appending(validSearch))
+
+                        }
+                        else{
+                            let parentOPF = currentBook.bookOPFURL
+                            let removeOPFRef = parentOPF.deletingLastPathComponent()
+                            let newFilePath = removeOPFRef.path()
+                            imgNewURL = URL(filePath: newFilePath.appending(validSearch))
+                        }
+                        if let imageData = try? Data(contentsOf: imgNewURL) {
+                            base64Image = imageData.base64EncodedString()
+                        }
                     }
                 }
+                // Replace the image source in the HTML string with the base64 image data
+                modifiedHtmlString = modifiedHtmlString.replacingOccurrences(of: imgSrc, with: "data:image/*;base64,\(base64Image)")
+
             }
-            
-            //print(currentBook.manifestDictionary)
             uiView.loadHTMLString(modifiedHtmlString, baseURL: nil)
-
-//
-//            uiView.loadFileURL(chapterPathURL, allowingReadAccessTo: nextParentURL)
-
         } catch {
             print("Error loading HTML file: \(error)")
         }

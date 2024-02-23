@@ -27,6 +27,11 @@ struct ReaderView: View{
     
     @State var InstStopwatch : CustStopwatch = CustStopwatch()
     
+    func isPathValid(_ path: String) -> Bool {
+        let fileManager = FileManager.default
+        return fileManager.fileExists(atPath: path)
+    }
+    
     func previousChapter(){
         if currentChapterIndex > 0 {
             currentChapterIndex -= 1
@@ -46,16 +51,22 @@ struct ReaderView: View{
         let opfURL : URL = currentBook.bookOPFURL
         //let opfURL = URL(string: opfPath)!
         spineItems = OPFTryGetData().getSpineItems(opfURL)
-        //print(spineItems.count)
         manifestItems = currentBook.manifestDictionary
         if currentChapterIndex < spineItems.count, let chapterPath = manifestItems[spineItems[currentChapterIndex]]
         {
             let currentPath = chapterPath
             let parentURL = opfURL
-            let parentFilePath = parentURL.deletingLastPathComponent()
-            let finalCoverURLPath = parentFilePath.appending(path: currentPath).path()
-            
-            return finalCoverURLPath
+//            let parentFilePath = parentURL.deletingLastPathComponent()
+            var parentFilePath = currentBook.bookEpubPath
+            // if the epubBookPath with the currentPath is not valid, then revert to the opfURL delete the last path component
+            if isPathValid(parentFilePath.appending(currentPath)) == false
+            {
+                parentFilePath = opfURL.path()
+                parentFilePath = parentURL.deletingLastPathComponent().path()
+
+            }
+            let finalChapterPath = parentFilePath.appending(currentPath)
+            return finalChapterPath
         }
         return "No chapter path"
     }
@@ -181,5 +192,5 @@ struct ReaderView: View{
 }
 
 class ReaderSettings: ObservableObject{
-    @Published var fontSize : CGFloat = 32
+    @Published var fontSize : CGFloat = 12
 }

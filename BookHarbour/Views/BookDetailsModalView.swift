@@ -57,6 +57,7 @@ struct BookDetails: View {
                 currentBook.bookOPFPath = try notNilEbook.opfFilePath.unwrap(variableName: "OPFPath")
                 currentBook.bookOPFURL = try notNilEbook.opfFileURL.unwrap(variableName: "OPFFileURl")
                 currentBook.bookUID = try notNilEbook.id.unwrap(variableName: "book id")
+                currentBook.bookEpubPath = try notNilEbook.epubPath.unwrap(variableName: "epubPath")
                 if let manifestItems = OPFParser.parseManifestItems(opfURL: notNilEbook.opfFileURL!){
                     currentBook.manifestDictionary = manifestItems
                 }

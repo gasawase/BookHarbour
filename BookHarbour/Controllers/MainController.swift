@@ -62,6 +62,7 @@ class CurrentBook: ObservableObject {
     @Published var bookUID : UUID = UUID()
     @Published var readingProgressSeconds : Int = 0
     @Published var manifestDictionary : [String: String] = [:]
+    @Published var bookEpubPath : String = ""
     // current location in book
     
 }

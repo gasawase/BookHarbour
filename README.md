@@ -268,9 +268,11 @@ Define the immediate next steps in the development process
 
 ----CURRENT TASK-----
 
-LAST UPDATED: 14/2/2024
+LAST UPDATED: 22/2/2024
 
 - implement the ability to change the font size
+	- need to find a function or universal way to load the images better
+		- maybe make it long an complicated first and then you can simplify it? That way you can at least get it working.
 - implement more of Jules' bookshelf idea
 - loading overlay PLEASE
 
