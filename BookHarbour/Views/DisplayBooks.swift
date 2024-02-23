@@ -8,6 +8,8 @@
 import SwiftUI
 import CoreData
 
+/// Your view layer consists of DisplayBooks, DefaultView, BookByTagView, and TagRowView. These SwiftUI views are responsible for displaying content to the user. In an MVC context, we aim to keep these views focused on presentation and user interaction, minimizing the business logic contained within.
+
 enum SortingTypes : String, CaseIterable, Identifiable{
     case alphabetic
     case author

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import WebKit
 
 struct BookDetailsModalView : View {
     //@ObservedObject var ebook: Ebooks
@@ -41,7 +42,7 @@ struct BookDetails: View {
     @State private var alertMessage = ""
     @State private var editedTitle: String = ""
     @State private var editedAuthor: String = ""
-    @State private var editedSynopsis: String = ""
+    @State var editedSynopsis: String = ""
     @State private var selectedImage: UIImage?
     @State private var selectedImagePath: String?
 
@@ -78,7 +79,7 @@ struct BookDetails: View {
         }
     }
     
-    private func saveChanges() {
+    public func saveChanges() {
         if let context = ebook?.managedObjectContext {
             do {
                 try context.save()
@@ -140,16 +141,31 @@ struct BookDetails: View {
     }
     
     var body: some View {
-        let rowLength: CGFloat = 300
-        let rowLayout = Array(repeating: GridItem(.fixed(rowLength)), count: 2)
-        
-        
-        LazyVGrid(columns: rowLayout) {
-            if isEditing {
-                Button(action: {
-                    isImagePickerPresented = true
-                }) {
-                    AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook!.coverImgPath ?? "")) { image in
+        if let ebook = ebook{
+            let rowLength: CGFloat = 300
+            let rowLayout = Array(repeating: GridItem(.fixed(rowLength)), count: 2)
+            
+            
+            LazyVGrid(columns: rowLayout) {
+                if isEditing {
+                    Button(action: {
+                        isImagePickerPresented = true
+                    }) {
+                        AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook.coverImgPath ?? "")) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        } placeholder: {
+                            Color.black
+                            // Replace this with a stand-in image later
+                        }
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .sheet(isPresented: $isImagePickerPresented, onDismiss: loadImage) {
+                        ImagePicker(image: $selectedImage)
+                    }
+                } else {
+                    AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook.coverImgPath ?? "")) { image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -158,171 +174,262 @@ struct BookDetails: View {
                         // Replace this with a stand-in image later
                     }
                 }
-                .buttonStyle(PlainButtonStyle())
-                .sheet(isPresented: $isImagePickerPresented, onDismiss: loadImage) {
-                    ImagePicker(image: $selectedImage)
-                }
-            } else {
-                AsyncImage(url: URL(fileURLWithPath: selectedImage != nil ? "" : ebook!.coverImgPath ?? "")) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                } placeholder: {
-                    Color.black
-                    // Replace this with a stand-in image later
-                }
-            }
-            
-            VStack {
-                if isEditing {
-                    VStack {
-                        TextField("Title", text: $editedTitle, onCommit: {
-                            //saveChanges()
-                            showAlert.toggle()
-                        })
-                            .font(.largeTitle)
-                            .multilineTextAlignment(.leading)
-                            .onChange(of: editedTitle) { newValue in
-                                ebook!.title = newValue
-                                saveChanges()
-                            }
-                        
-                        TextField("Author", text: $editedAuthor, onCommit: {
-                            //saveChanges()
-                            showAlert.toggle()
+                
+                VStack {
+                    if isEditing {
+                        VStack {
+                            TextField("Title", text: $editedTitle, onCommit: {
+                                //saveChanges()
+                                showAlert.toggle()
+                            })
+                                .font(.largeTitle)
+                                .multilineTextAlignment(.leading)
+                                .onChange(of: editedTitle) { newValue in
+                                    ebook.title = newValue
+                                    saveChanges()
+                                }
                             
-                        })
+                            TextField("Author", text: $editedAuthor, onCommit: {
+                                //saveChanges()
+                                showAlert.toggle()
+                                
+                            })
+                                .font(.title2)
+                                .multilineTextAlignment(.leading)
+                                .onChange(of: editedAuthor) { newValue in
+                                    ebook.author = newValue
+                                    saveChanges()
+                                }
+                            
+                            Divider()
+                            SynopsisView(isEditing: isEditing, editedSynopsis: editedSynopsis, ebook: ebook, showAlert: showAlert)
+    //                        ScrollView {
+    //                            VStack(alignment: .leading){
+    //                                TextField("Synopsis", text: $editedSynopsis, onCommit: {
+    //                                    //saveChanges()
+    //                                    showAlert.toggle()
+    //
+    //                                })
+    //                                .multilineTextAlignment(.leading)
+    //                                .onChange(of: editedSynopsis) { newValue in
+    //                                    ebook!.synopsis = newValue
+    //                                    saveChanges()
+    //                                }
+    //                            }
+    //                        }
+                            .padding()
+                            .frame(
+                                maxWidth: 300,
+                                maxHeight: 350
+                            )
+                        }
+                    } else {
+                        Text(ebook.title ?? "")
+                            .font(.largeTitle)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Text(ebook.author ?? "")
                             .font(.title2)
-                            .multilineTextAlignment(.leading)
-                            .onChange(of: editedAuthor) { newValue in
-                                ebook!.author = newValue
-                                saveChanges()
-                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         
                         Divider()
                         
-                        ScrollView {
-                            VStack(alignment: .leading){
-                                TextField("Synopsis", text: $editedSynopsis, onCommit: {
-                                    //saveChanges()
-                                    showAlert.toggle()
-                                    
-                                })
-                                .multilineTextAlignment(.leading)
-                                .onChange(of: editedSynopsis) { newValue in
-                                    ebook!.synopsis = newValue
-                                    saveChanges()
-                                }
-                            }
+    //                    ScrollView {
+    //                        Text(ebook!.synopsis ?? "")
+    //                            .multilineTextAlignment(.leading)
+    //                    }
+                        SynopsisView(isEditing: isEditing, editedSynopsis: editedSynopsis, ebook: ebook,
+                            showAlert: showAlert)
+                    }
+                }
+                // right now, this just handles deleting
+                .alert(
+                    Text("Are you sure you want to proceed?"),
+                    isPresented: $showAlert,
+                    actions: {
+                        Button("Yes, I'm sure") {
+                            deleteBook()
+                            dismiss()
+                            
                         }
-                        .padding()
-                        .frame(
-                            maxWidth: 300,
-                            maxHeight: 350
-                        )
-                    }
-                } else {
-                    Text(ebook!.title ?? "")
-                        .font(.largeTitle)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    Text(ebook!.author ?? "")
-                        .font(.title2)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    Divider()
-                    
-                    ScrollView {
-                        Text(ebook!.synopsis ?? "")
-                            .multilineTextAlignment(.leading)
-                    }
-                    .padding()
-                    .frame(
-                        maxWidth: 300,
-                        maxHeight: 350
-                    )
-                }
+                        Button("No, go back"){
+                            //No nothing just close this
+                        }
+                    })
+                
             }
-            // right now, this just handles deleting
-            .alert(
-                Text("Are you sure you want to proceed?"),
-                isPresented: $showAlert,
-                actions: {
-                    Button("Yes, I'm sure") {
-                        deleteBook()
-                        dismiss()
-                        
+            .toolbar {
+                ToolbarItemGroup(placement: .bottomBar) {
+                    if isEditing{
+                        Button {
+                            print("Delete Button Pressed")
+                            showAlert.toggle()
+                        } label: {
+                            Text("Delete")
+                        }
                     }
-                    Button("No, go back"){
-                        //No nothing just close this
-                    }
-                })            
-            
-        }
-        .toolbar {
-            ToolbarItemGroup(placement: .bottomBar) {
-                if isEditing{
-                    Button {
-                        print("Delete Button Pressed")
-                        showAlert.toggle()
-                    } label: {
-                        Text("Delete")
+                    else{
+                        Button {
+                            print("Read Button Pressed")
+                            setBookDetails()
+                            appState.showReaderView.toggle()
+                            dismiss()
+                        } label: {
+                            Text("Read")
+                        }
                     }
                 }
-                else{
-                    Button {
-                        print("Read Button Pressed")
-                        setBookDetails()
-                        appState.showReaderView.toggle()
-                        dismiss()
-                    } label: {
-                        Text("Read")
-                    }
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button(action: {
+                        print("Edit button pressed")
+                        isEditing.toggle()
+                        if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty {
+                            editedTitle = ebook.title ?? ""
+                            editedAuthor = ebook.author ?? ""
+                            editedSynopsis = ebook.synopsis ?? ""
+                        }
+                    }, label: {
+                        if isEditing {
+                            Image(systemName: "square.and.arrow.down")
+                        } else {
+                            Image(systemName: "book.and.wrench")
+                        }
+                    })
+                }
+                ToolbarItemGroup(placement: .topBarLeading) {
+                    Button(action: {
+                        print("Back button pressed")
+                        isEditing = false
+                        appState.showBookDetails = false
+                    }, label: {
+                        Image(systemName: "arrowshape.turn.up.backward")
+                    })
                 }
             }
-            ToolbarItemGroup(placement: .topBarTrailing) {
-                Button(action: {
-                    print("Edit button pressed")
-                    isEditing.toggle()
-                    if editedTitle.isEmpty || editedAuthor.isEmpty || editedSynopsis.isEmpty {
-                        editedTitle = ebook!.title ?? ""
-                        editedAuthor = ebook!.author ?? ""
-                        editedSynopsis = ebook!.synopsis ?? ""
+            .aspectRatio(contentMode: .fill)
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("Confirm"),
+                    message: Text(alertMessage),
+                    primaryButton: .default(Text("Yes, save")) {
+                        // Handle primary button action here
+                        saveChanges()
+                    },
+                    secondaryButton: .cancel(Text("No, go back")) {
+                        // Handle secondary button action here
                     }
-                }, label: {
-                    if isEditing {
-                        Image(systemName: "square.and.arrow.down")
-                    } else {
-                        Image(systemName: "book.and.wrench")
-                    }
-                })
+                )
             }
-            ToolbarItemGroup(placement: .topBarLeading) {
-                Button(action: {
-                    print("Back button pressed")
-                    isEditing = false
-                    appState.showBookDetails = false
-                }, label: {
-                    Image(systemName: "arrowshape.turn.up.backward")
-                })
-            }
-        }
-        .aspectRatio(contentMode: .fill)
-        .alert(isPresented: $showAlert) {
-            Alert(
-                title: Text("Confirm"),
-                message: Text(alertMessage),
-                primaryButton: .default(Text("Yes, save")) {
-                    // Handle primary button action here
-                    saveChanges()
-                },
-                secondaryButton: .cancel(Text("No, go back")) {
-                    // Handle secondary button action here
-                }
-            )
         }
     }
 }
+
+struct SynopsisView: View {
+    @State var isEditing: Bool
+    @State var editedSynopsis: String
+    @State var ebook: Ebooks
+    @State var showAlert : Bool
+
+    public func saveChanges() {
+        if let context = ebook.managedObjectContext {
+            do {
+                try context.save()
+                print("Changes saved successfully")
+            } catch {
+                print("Error saving changes: \(error)")
+            }
+        }
+    }
+
+    var body: some View {
+        if isEditing {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    WebView(htmlString: $editedSynopsis)
+                        .padding()
+//                        .frame(
+//                            maxWidth: 300,
+//                            maxHeight: 350
+//                        )
+                        .frame(height: 300)
+                        //.padding()
+                        .background(Color.gray.opacity(0.1))
+                        //.cornerRadius(10)
+                }
+            }
+        } else {
+            ScrollView {
+                WebView(htmlString: Binding.constant(ebook.synopsis ?? ""))
+                    .padding()
+//                    .frame(
+//                        maxWidth: 300,
+//                        maxHeight: 350
+//                    )
+                    .frame(height: 300)
+                    //.padding()
+                    .background(Color.gray.opacity(0.1))
+                    //.cornerRadius(10)
+            }
+        }
+    }
+}
+
+struct WebView: UIViewRepresentable {
+    @Binding var htmlString: String
+
+    func makeUIView(context: Context) -> WKWebView {
+        let webView = WKWebView()
+        return webView
+    }
+
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        uiView.loadHTMLString(htmlString, baseURL: nil)
+    }
+}
+
+
+//struct SynopsisView :View {
+//    @State var isEditing : Bool
+//    @State var showAlert : Bool
+//    @State var editedSynopsis : String
+//    @State var ebook : Ebooks
+//    
+//    public func saveChanges() {
+//        if let context = ebook.managedObjectContext {
+//            do {
+//                try context.save()
+//                print("Changes saved successfully")
+//            } catch {
+//                print("Error saving changes: \(error)")
+//            }
+//        }
+//    }
+//    
+//    var body: some View {
+//        if isEditing == true{
+//            ScrollView {
+//                VStack(alignment: .leading){
+//                    TextField("Synopsis", text: $editedSynopsis, onCommit: {
+//                        //saveChanges()
+//                        showAlert.toggle()
+//                        
+//                    })
+//                    .multilineTextAlignment(.leading)
+//                    .onChange(of: editedSynopsis) { newValue in
+//                        ebook.synopsis = newValue
+//                        saveChanges()
+//                    }
+//                }
+//            }
+//        }
+//        else {
+//            ScrollView {
+//                Text(ebook.synopsis ?? "")
+//                    .multilineTextAlignment(.leading)
+//            }
+//        }
+//    }
+//}
 
 // maybe try doing a function here that will get the stupid value and then calling the funciton above?
 

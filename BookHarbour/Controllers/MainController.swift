@@ -7,6 +7,8 @@
 
 import Foundation
 import SWXMLHash
+import UIKit
+import SwiftUI
 
 class MainController: ObservableObject{
     let dataController = DataController.shared
@@ -70,6 +72,71 @@ class CurrentBook: ObservableObject {
 class NumOfBooks : ObservableObject {
     @Published var numOFBooks : Int = 0
 }
+
+class LoadingScreenManagerViewModel {
+    
+    static let shared = LoadingScreenManagerViewModel()
+    
+    private var isShowing = false
+    
+    private init() {} // Private initialization to ensure singleton usage
+    
+    func showLoadingScreen<Content: View>(content: Content) -> some View {
+        isShowing = true
+        return ZStack {
+            content
+            if isShowing {
+                VStack {
+                    Spacer()
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .padding()
+                }
+                .background(Color.black.opacity(0.3).edgesIgnoringSafeArea(.all))
+            }
+        }
+    }
+    
+    func hideLoadingScreen() {
+        isShowing = false
+    }
+}
+
+
+class LoadingScreenManagerViewController {
+    
+    static let shared = LoadingScreenManagerViewController()
+    
+    private var backdropView: UIView?
+    private var activityIndicator: UIActivityIndicatorView?
+    
+    private init() {} // Private initialization to ensure singleton usage
+    
+    func showLoadingScreen(over viewController: UIViewController?) {
+        guard let viewController = viewController else { return }
+        
+        DispatchQueue.main.async {
+            self.backdropView = UIView(frame: viewController.view.bounds)
+            self.backdropView?.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+            
+            self.activityIndicator = UIActivityIndicatorView(style: .large)
+            self.activityIndicator?.center = self.backdropView!.center
+            self.activityIndicator?.startAnimating()
+            
+            self.backdropView?.addSubview(self.activityIndicator!)
+            viewController.view.addSubview(self.backdropView!)
+        }
+    }
+    
+    func hideLoadingScreen() {
+        DispatchQueue.main.async {
+            self.activityIndicator?.stopAnimating()
+            self.backdropView?.removeFromSuperview()
+        }
+    }
+}
+    
+
 
 extension Optional {
     func unwrap( variableName: String) throws -> Wrapped {

@@ -13,6 +13,7 @@
 		8E4BC8F82B440F9F006D2403 /* BookHarbourApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4BC8F72B440F9F006D2403 /* BookHarbourApp.swift */; };
 		8E4BC8FC2B440FA1006D2403 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E4BC8FB2B440FA1006D2403 /* Assets.xcassets */; };
 		8E4BC8FF2B440FA1006D2403 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E4BC8FE2B440FA1006D2403 /* Preview Assets.xcassets */; };
+		8E9C67772B8866CB006070B3 /* DisplayBooksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C67762B8866CB006070B3 /* DisplayBooksViewController.swift */; };
 		8EB357EF2B441143004ACDA8 /* MainHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB357EE2B441143004ACDA8 /* MainHomeView.swift */; };
 		8EB357F12B441176004ACDA8 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB357F02B441176004ACDA8 /* MainController.swift */; };
 		8EB357F32B441187004ACDA8 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB357F22B441187004ACDA8 /* DataController.swift */; };
@@ -45,6 +46,7 @@
 		8E4BC8F72B440F9F006D2403 /* BookHarbourApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookHarbourApp.swift; sourceTree = "<group>"; };
 		8E4BC8FB2B440FA1006D2403 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E4BC8FE2B440FA1006D2403 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8E9C67762B8866CB006070B3 /* DisplayBooksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayBooksViewController.swift; sourceTree = "<group>"; };
 		8EB357EE2B441143004ACDA8 /* MainHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeView.swift; sourceTree = "<group>"; };
 		8EB357F02B441176004ACDA8 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		8EB357F22B441187004ACDA8 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				8EB357F42B4411B9004ACDA8 /* ReaderController.swift */,
 				8EB357FF2B44136E004ACDA8 /* FileSelectorController.swift */,
 				8E0BE4F72B512F05003892F0 /* AppSettings.swift */,
+				8E9C67762B8866CB006070B3 /* DisplayBooksViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				8E4BC8F82B440F9F006D2403 /* BookHarbourApp.swift in Sources */,
 				8E0BE4F82B512F05003892F0 /* AppSettings.swift in Sources */,
 				8EF7F9CA2B457F4700A0963E /* TestingView.swift in Sources */,
+				8E9C67772B8866CB006070B3 /* DisplayBooksViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -268,14 +268,9 @@ Define the immediate next steps in the development process
 
 ----CURRENT TASK-----
 
-LAST UPDATED: 22/2/2024
+LAST UPDATED: 23/2/2024
 
-- implement the ability to change the font size
-	- need to find a function or universal way to load the images better
-		- maybe make it long an complicated first and then you can simplify it? That way you can at least get it working.
 - implement more of Jules' bookshelf idea
-- loading overlay PLEASE
-
 
 ----TODO----
 
@@ -287,7 +282,6 @@ HIGH PRIORITY:
 
 MEDIUM PRIORITY:
 - how to group books of the same series
-- marking and sorting by tags (pausing until I figure out how I want to display this)
 - some books are not loading in (they might be throwing errors but are not being tracked)
 
 
@@ -331,6 +325,10 @@ LOW PRIORITY:
 - tracking reading time (add a timer to the ReaderController and or ReadingView)
 - create the view for sorting the books by tag
 	- eventually reorganize DefaultView so that the actual view, excluding the toolbar is the thing that is changed and have the fetched results happen on DisplayBooks and feeds into the DisplayBooks view
+- implement the ability to change the font size
+- marking and sorting by tags (pausing until I figure out how I want to display this)
+
+
 
 ----FEATURES I'D LIKE----
 - move original bookbinder parsing from kanna to swiftsoup
@@ -339,6 +337,7 @@ LOW PRIORITY:
 - delete books from the book shelf when you click on them
 - book reading stats (total books read, books you need to read, total time read this year, etc.)
 - tap the image to look at the book cover bigger
+- reorganize to MVC schema for efficiency and cleanliness
 
 
 ----KNOWN BUGS----
