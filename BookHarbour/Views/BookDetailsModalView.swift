@@ -182,8 +182,8 @@ struct BookDetails: View {
                                 //saveChanges()
                                 showAlert.toggle()
                             })
-                                .font(.largeTitle)
-                                .multilineTextAlignment(.leading)
+                            .font(Font.custom("EBGaramond", size: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize))
+                                //.multilineTextAlignment(.leading)
                                 .onChange(of: editedTitle) { newValue in
                                     ebook.title = newValue
                                     saveChanges()
@@ -194,7 +194,7 @@ struct BookDetails: View {
                                 showAlert.toggle()
                                 
                             })
-                                .font(.title2)
+                            .font(Font.custom("EBGaramond", size: UIFont.preferredFont(forTextStyle: .title2).pointSize))
                                 .multilineTextAlignment(.leading)
                                 .onChange(of: editedAuthor) { newValue in
                                     ebook.author = newValue
@@ -202,22 +202,19 @@ struct BookDetails: View {
                                 }
                             
                             Divider()
-                            SynopsisView(isEditing: isEditing, editedSynopsis: editedSynopsis, ebook: ebook, showAlert: showAlert)
-    //                        ScrollView {
-    //                            VStack(alignment: .leading){
-    //                                TextField("Synopsis", text: $editedSynopsis, onCommit: {
-    //                                    //saveChanges()
-    //                                    showAlert.toggle()
-    //
-    //                                })
-    //                                .multilineTextAlignment(.leading)
-    //                                .onChange(of: editedSynopsis) { newValue in
-    //                                    ebook!.synopsis = newValue
-    //                                    saveChanges()
-    //                                }
-    //                            }
-    //                        }
-                            .padding()
+//                            SynopsisView(isEditing: isEditing, editedSynopsis: editedSynopsis, ebook: ebook, showAlert: showAlert)
+                            ScrollView {
+                                VStack(alignment: .leading){
+                                    TextEditor(text: $editedSynopsis)
+                                        .font(.custom("EBGaramond", size: 14))
+                                        .multilineTextAlignment(.leading)
+                                        .frame(minHeight: 500) // Set a minimum height
+                                        .onChange(of: editedSynopsis) { newValue in
+                                            ebook.synopsis = newValue
+                                            saveChanges()
+                                        }
+                                }
+                            }
                             .frame(
                                 maxWidth: 300,
                                 maxHeight: 350
@@ -225,11 +222,11 @@ struct BookDetails: View {
                         }
                     } else {
                         Text(ebook.title ?? "")
-                            .font(.largeTitle)
+                            .font(Font.custom("EBGaramond", size: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize))
                             .frame(maxWidth: .infinity, alignment: .leading)
                         
                         Text(ebook.author ?? "")
-                            .font(.title2)
+                            .font(Font.custom("EBGaramond", size: UIFont.preferredFont(forTextStyle: .title2).pointSize))
                             .frame(maxWidth: .infinity, alignment: .leading)
                         
                         Divider()
@@ -342,35 +339,23 @@ struct SynopsisView: View {
     }
 
     var body: some View {
-        if isEditing {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    WebView(htmlString: $editedSynopsis)
-                        .padding()
-//                        .frame(
-//                            maxWidth: 300,
-//                            maxHeight: 350
-//                        )
-                        .frame(height: 300)
-                        //.padding()
-                        .background(Color.gray.opacity(0.1))
-                        //.cornerRadius(10)
-                }
-            }
-        } else {
-            ScrollView {
-                WebView(htmlString: Binding.constant(ebook.synopsis ?? ""))
-                    .padding()
-//                    .frame(
-//                        maxWidth: 300,
-//                        maxHeight: 350
-//                    )
-                    .frame(height: 300)
-                    //.padding()
-                    .background(Color.gray.opacity(0.1))
-                    //.cornerRadius(10)
-            }
+        ScrollView {
+            WebView(htmlString: Binding.constant(ebook.synopsis ?? ""))
+                .frame(height: 350)
         }
+//        if isEditing {
+//            ScrollView {
+//                VStack(alignment: .leading) {
+//                    WebView(htmlString: $editedSynopsis)
+//                        .frame(height: 300)
+//                }
+//            }
+//        } else {
+//            ScrollView {
+//                WebView(htmlString: Binding.constant(ebook.synopsis ?? ""))
+//                    .frame(height: 300)
+//            }
+//        }
     }
 }
 
@@ -383,8 +368,10 @@ struct WebView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        uiView.loadHTMLString(htmlString, baseURL: nil)
-    }
+        //let styledHtmlString = "<html><head><style>body { font-size: 50px; }</style></head><body>\(htmlString)</body></html>"
+        let updatedHtmlString = MainController().updateFontInHTMLString(htmlString, withFontSize: 50, fontFamily: "EB Garamond") 
+        let styledHtmlString = "<html><head><style>body { font-size: 50px; font-family: 'EB Garamond', serif; }</style></head><body>\(updatedHtmlString)</body></html>"
+        uiView.loadHTMLString(styledHtmlString, baseURL: nil)    }
 }
 
 

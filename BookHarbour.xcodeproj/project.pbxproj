@@ -14,6 +14,7 @@
 		8E4BC8FC2B440FA1006D2403 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E4BC8FB2B440FA1006D2403 /* Assets.xcassets */; };
 		8E4BC8FF2B440FA1006D2403 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E4BC8FE2B440FA1006D2403 /* Preview Assets.xcassets */; };
 		8E9C67772B8866CB006070B3 /* DisplayBooksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C67762B8866CB006070B3 /* DisplayBooksViewController.swift */; };
+		8E9C677A2B8AFA27006070B3 /* EBGaramond-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8E9C67792B8AFA27006070B3 /* EBGaramond-Regular.ttf */; };
 		8EB357EF2B441143004ACDA8 /* MainHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB357EE2B441143004ACDA8 /* MainHomeView.swift */; };
 		8EB357F12B441176004ACDA8 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB357F02B441176004ACDA8 /* MainController.swift */; };
 		8EB357F32B441187004ACDA8 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB357F22B441187004ACDA8 /* DataController.swift */; };
@@ -47,6 +48,8 @@
 		8E4BC8FB2B440FA1006D2403 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E4BC8FE2B440FA1006D2403 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8E9C67762B8866CB006070B3 /* DisplayBooksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayBooksViewController.swift; sourceTree = "<group>"; };
+		8E9C67792B8AFA27006070B3 /* EBGaramond-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "EBGaramond-Regular.ttf"; path = "BookHarbour/ExternalAssets/fonts/EBGaramond-Regular.ttf"; sourceTree = SOURCE_ROOT; };
+		8EA622A62B8AFC9E006ACBFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8EB357EE2B441143004ACDA8 /* MainHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeView.swift; sourceTree = "<group>"; };
 		8EB357F02B441176004ACDA8 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		8EB357F22B441187004ACDA8 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
@@ -118,6 +121,8 @@
 		8E4BC8F62B440F9F006D2403 /* BookHarbour */ = {
 			isa = PBXGroup;
 			children = (
+				8EA622A62B8AFC9E006ACBFD /* Info.plist */,
+				8E9C67782B8AF9EB006070B3 /* ExternalAssets */,
 				8E4892822B49739000C2F89D /* ViewModels */,
 				8EB357ED2B441114004ACDA8 /* Views */,
 				8EB357EC2B441103004ACDA8 /* ExternalPrograms */,
@@ -137,6 +142,22 @@
 				8E4BC8FE2B440FA1006D2403 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		8E9C67782B8AF9EB006070B3 /* ExternalAssets */ = {
+			isa = PBXGroup;
+			children = (
+				8EA622A72B8AFD26006ACBFD /* fonts */,
+			);
+			path = ExternalAssets;
+			sourceTree = "<group>";
+		};
+		8EA622A72B8AFD26006ACBFD /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				8E9C67792B8AFA27006070B3 /* EBGaramond-Regular.ttf */,
+			);
+			path = fonts;
 			sourceTree = "<group>";
 		};
 		8EB357E92B4410D3004ACDA8 /* Controllers */ = {
@@ -266,6 +287,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E4BC8FF2B440FA1006D2403 /* Preview Assets.xcassets in Resources */,
+				8E9C677A2B8AFA27006070B3 /* EBGaramond-Regular.ttf in Resources */,
 				8E4BC8FC2B440FA1006D2403 /* Assets.xcassets in Resources */,
 				8E3E6DFE2B763BB300B0D50B /* defaultStylesheet.css in Resources */,
 			);
@@ -481,6 +503,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BookHarbour/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -513,6 +536,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BookHarbour/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

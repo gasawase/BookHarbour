@@ -193,4 +193,5 @@ struct ReaderView: View{
 
 class ReaderSettings: ObservableObject{
     @Published var fontSize : CGFloat = 12
+    @Published var fontFamily : String = "EB Garamond"
 }

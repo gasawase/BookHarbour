@@ -9,9 +9,50 @@ import Foundation
 import SWXMLHash
 import UIKit
 import SwiftUI
+import SwiftSoup
 
 class MainController: ObservableObject{
     let dataController = DataController.shared
+
+    func updateFontInHTMLString(_ htmlString: String, withFontSize newSize: Int, fontFamily newFamily: String) -> String {
+        do {
+            let doc: Document = try SwiftSoup.parse(htmlString)
+            
+            // Find elements with a 'style' attribute
+            let elementsWithStyle: Elements = try doc.select("[style]")
+            // Exit if no elements with 'style' attribute
+            if elementsWithStyle.isEmpty() {
+                // Check for <font> tags before deciding to exit early
+                let fontElements: Elements = try doc.select("font[size]")
+                if fontElements.isEmpty() {
+                    return htmlString // No elements to update, return original string
+                }
+            } else {
+                // Update font size in elements with 'style' attribute
+                for element in elementsWithStyle.array() {
+                    let style = try element.attr("style")
+                    let updatedStyleWithSize = style.replacingOccurrences(of: "font-size:\\s*\\d+\\s*(px|em|%|pt);?", with: "font-size: \(newSize)px;", options: .regularExpression, range: nil)
+                    let updatedStyleWithFamily = updatedStyleWithSize.replacingOccurrences(of: "font-family:[^;]+;", with: "font-family: '\(newFamily)', serif;", options: .regularExpression, range: nil)
+
+                    try element.attr("style", updatedStyleWithFamily)
+                }
+            }
+            
+            // Update 'size' attribute in <font> tags if they exist
+            let fontElements: Elements = try doc.select("font[size]")
+            for fontElement in fontElements.array() {
+                try fontElement.attr("size", "\(newSize)")
+            }
+            
+            return try doc.outerHtml()
+        } catch Exception.Error(let type, let message) {
+            print("SwiftSoup error: \(type) \(message)")
+        } catch {
+            print("error: \(error)")
+        }
+        return htmlString
+    }
+
 }
 
 enum BookHarbourErrorType : Error{

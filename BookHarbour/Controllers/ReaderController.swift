@@ -78,8 +78,10 @@ struct HTMLView: UIViewRepresentable {
             }
             
             let fontSize = readerSettings.fontSize
+            let fontFamily = readerSettings.fontFamily
             
             try doc.select("body").attr("style", "font-size: \(fontSize)px;")
+            try doc.select("body").attr("style", "font-family: '\(fontFamily)', serif;")
             // Create a mutable copy of the HTML string
             var modifiedHtmlString = try doc.outerHtml()
             // Iterate through each image reference

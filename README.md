@@ -268,7 +268,7 @@ Define the immediate next steps in the development process
 
 ----CURRENT TASK-----
 
-LAST UPDATED: 23/2/2024
+LAST UPDATED: 23/02/2024
 
 - implement more of Jules' bookshelf idea
 
@@ -327,7 +327,7 @@ LOW PRIORITY:
 	- eventually reorganize DefaultView so that the actual view, excluding the toolbar is the thing that is changed and have the fetched results happen on DisplayBooks and feeds into the DisplayBooks view
 - implement the ability to change the font size
 - marking and sorting by tags (pausing until I figure out how I want to display this)
-
+- the html is showing up a plain text and i need it to show up with all of its styling and images (going to have to use webview and then work in the editing for that)(maybe have the edited be the plain text that is a state and then when the save button is pressed, it refreshes the webview?)
 
 
 ----FEATURES I'D LIKE----
@@ -340,9 +340,10 @@ LOW PRIORITY:
 - reorganize to MVC schema for efficiency and cleanliness
 
 
-----KNOWN BUGS----
-- the html is showing up a plain text and i need it to show up with all of its styling and images (going to have to use webview and then work in the editing for that)(maybe have the edited be the plain text that is a state and then when the save button is pressed, it refreshes the webview?)
 
+----KNOWN BUGS----
+- be able to edit the synopsis (i can't at the moment)
+	- maybe i put it back to the plain text and then update the binding based on that?)
 - some books don't have covers even though the covers exist
 	-Realm of Ash is no longer displaying its cover
 
