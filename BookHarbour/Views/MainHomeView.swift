@@ -26,7 +26,6 @@ struct MainHomeView: View {
     var fileHaveBeenSelected = false
     
     var body: some View {
-        
         HoldingView(isShowingReader: $isShowingReader, isShowingBookDetails: $isShowingBookDetails)
     }
 }
@@ -91,6 +90,7 @@ struct NavBarView : View{
                         // close the navigation stack
                     } label: {
                         Text("Select a Folder...")
+                        .foregroundStyle(.black)
                     }
                     Button {
                         print("reset books clicked")
@@ -98,6 +98,7 @@ struct NavBarView : View{
                         fileLocArr.removeAll()
                     } label: {
                         Text("Reset Books")
+                        .foregroundStyle(.black)
                     }
                 }
             }

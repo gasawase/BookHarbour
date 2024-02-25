@@ -8,7 +8,6 @@ class TestingEbook : ObservableObject {
 }
 
 struct TestingView : View {
-
     let allTags : [String] = ["fantasy", "sci-fi", "romance"]
     var body: some View {
         VStack{
