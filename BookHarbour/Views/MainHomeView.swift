@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import UIKit
+
 
 struct MainHomeView: View {
     
@@ -32,7 +34,6 @@ struct MainHomeView: View {
 struct HoldingView : View{
     @Environment (\.dismiss) private var dismiss
 
-    
     @Binding public var isShowingReader : Bool
     @Binding public var isShowingBookDetails : Bool
     var body: some View {
@@ -40,16 +41,21 @@ struct HoldingView : View{
             NavBarView()
         } detail: {
             ZStack{
-                Color("MainBackground").ignoresSafeArea(.all)
+                //Color("MainBackground").ignoresSafeArea(.all)
+                Image(uiImage: #imageLiteral(resourceName: "woodBackground.jpg"))
+//                    .aspectRatio(contentMode: .fill)
+//                    .zIndex(0)
+                .resizable()
+                .scaledToFill()
+                .edgesIgnoringSafeArea(.all)
+                .blur(radius: 1)
                 DisplayBooks(isShowingBookDetails: $isShowingBookDetails, isShowingReader: $isShowingReader)
 
             }
-
             // this \/ only fills the middle column of the screen -_-
                 //.background(Color.green, ignoresSafeAreaEdges: .all)
         }
-        .background(Color("MainBackground")).ignoresSafeArea(.all)
-        
+        //.background(Color("MainBackground")).ignoresSafeArea(.all)
     }
 }
 

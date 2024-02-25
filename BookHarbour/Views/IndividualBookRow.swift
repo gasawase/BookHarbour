@@ -14,15 +14,25 @@ struct IndividualBookRow: View {
     @ObservedObject var ebook : Ebooks
     
     var body: some View {
-        AsyncImage(url: URL(fileURLWithPath: ebook.coverImgPath ?? "")){ image in
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-          } placeholder: {
-              Color.black
-              //replace this with a stand-in image later
-          }
-          .frame(width: 160, height: 256)
+        ZStack {
+            AsyncImage(url: URL(fileURLWithPath: ebook.coverImgPath ?? "")){ image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            } placeholder: {
+                Color.black
+                //replace this with a stand-in image later
+            }
+            .frame(width: 160, height: 256)
+            
+            Rectangle()
+                .fill(Color.black.opacity(0.4))
+                .frame(width: 160, height: 20)
+                .offset(y: 128)
+                .blur(radius: 10)
+        }
+        .shadow(radius: 5) // Add shadow effect
     }
 }
+
 

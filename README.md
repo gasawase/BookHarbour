@@ -340,6 +340,7 @@ LOW PRIORITY:
 - tap the image to look at the book cover bigger
 - reorganize to MVC schema for efficiency and cleanliness
 - make more customizations to the style of the actual books and reading experience (maybe find a way to use the original stylesheet??)
+- tracking read and unread books
 
 
 ----KNOWN BUGS----

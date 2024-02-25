@@ -79,6 +79,8 @@ struct DisplayBooks: View {
         ZStack{
             if selectedSorting != .tags{
                 DefaultView(filteredBooks: filteredBooks, isShowingBookDetails: $isShowingBookDetails, isShowingReader: $isShowingReader)
+                    .padding(.top, 60)
+                    .padding(.bottom, 100)
             }
             else {
                 BookByTagView(filteredBooks: filteredBooks, isShowingBookDetails: $isShowingBookDetails, isShowingReader: $isShowingReader)
@@ -101,6 +103,8 @@ struct DisplayBooks: View {
                 .pickerStyle(.menu)
             }
         }
+//        .padding(.top, 100)
+//        .padding(.bottom, 100)
     }
 }
 
@@ -163,7 +167,7 @@ struct DefaultView : View {
             BookDetailsModalView(ebook: $locEbook)
                 .zIndex(1)
         }
-        .background(Color("MainBackground"))
+        //.background(Color("MainBackground"))
     }
 }
 
