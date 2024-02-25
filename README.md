@@ -275,7 +275,6 @@ LAST UPDATED: 23/02/2024
 ----TODO----
 
 HIGH PRIORITY:
-- have the description show how it was supposed to in html
 - loading pop up for when the books are loading in
 - save position that reader was last at in the book
 
@@ -283,7 +282,6 @@ HIGH PRIORITY:
 MEDIUM PRIORITY:
 - how to group books of the same series
 - some books are not loading in (they might be throwing errors but are not being tracked)
-
 
 
 LOW PRIORITY:
@@ -297,6 +295,7 @@ LOW PRIORITY:
 - be able to have a drop down with all of the tags that the user can auto select to prevent overwriting
 - have it search through the list of tags to see if they're writing anything that is already there
 - a way to delete tags
+- redesign reading menu in reader to make more sense
 
 
 ----DONE----
@@ -328,6 +327,8 @@ LOW PRIORITY:
 - implement the ability to change the font size
 - marking and sorting by tags (pausing until I figure out how I want to display this)
 - the html is showing up a plain text and i need it to show up with all of its styling and images (going to have to use webview and then work in the editing for that)(maybe have the edited be the plain text that is a state and then when the save button is pressed, it refreshes the webview?)
+- have the description show how it was supposed to in html
+
 
 
 ----FEATURES I'D LIKE----
@@ -338,7 +339,7 @@ LOW PRIORITY:
 - book reading stats (total books read, books you need to read, total time read this year, etc.)
 - tap the image to look at the book cover bigger
 - reorganize to MVC schema for efficiency and cleanliness
-
+- make more customizations to the style of the actual books and reading experience (maybe find a way to use the original stylesheet??)
 
 
 ----KNOWN BUGS----
