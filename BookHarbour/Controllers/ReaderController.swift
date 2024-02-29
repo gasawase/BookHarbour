@@ -46,7 +46,7 @@ struct HTMLView: UIViewRepresentable {
     
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        injectCSS(uiView: uiView, cssFileName: "defaultStylesheet")
+        //injectCSS(uiView: uiView, cssFileName: "defaultStylesheet")
 
         print("updateUIView run")
         var isSVG = false
@@ -82,9 +82,9 @@ struct HTMLView: UIViewRepresentable {
             let fontSize = readerSettings.fontSize
             let fontFamily = readerSettings.fontFamily
             
-            try doc.select("body").attr("style", "font-size: \(fontSize)px; !important")
-            try doc.select("body").attr("style", "font-family: '\(fontFamily)', serif; !important")
-            try doc.select("body").attr("style", "padding: 5pt;")
+            try doc.select("body").attr("style", "font-size: \(fontSize)px; font-family: '\(fontFamily)', serif; padding: 5pt;")
+//            try doc.select("body").attr("style", "font-family: '\(fontFamily)', serif;")
+//            try doc.select("body").attr("style", "padding: 5pt;")
             // Create a mutable copy of the HTML string
             var modifiedHtmlString = try doc.outerHtml()
             // Iterate through each image reference
@@ -132,7 +132,7 @@ struct HTMLView: UIViewRepresentable {
             }
             uiView.loadHTMLString(modifiedHtmlString, baseURL: nil)
             
-            injectCSS(uiView: uiView, cssFileName: "defaultStylesheet")
+            //injectCSS(uiView: uiView, cssFileName: "defaultStylesheet")
         } catch {
             print("Error loading HTML file: \(error)")
         }
@@ -175,22 +175,22 @@ struct HTMLView: UIViewRepresentable {
         }
     }
     
-    func injectCSS(uiView: WKWebView, cssFileName: String) {
-        guard let cssPath = Bundle.main.path(forResource: cssFileName, ofType: "css"),
-              let cssString = try? String(contentsOfFile: cssPath, encoding: .utf8) else {
-            print("Failed to load CSS file")
-            return
-        }
-        
-        let formattedCSS = cssString.replacingOccurrences(of: "\n", with: "")
-        let jsString = """
-            var style = document.createElement('style');
-            style.innerHTML = '\(formattedCSS)';
-            document.head.appendChild(style);
-            """
-        
-        uiView.evaluateJavaScript(jsString, completionHandler: nil)
-    }
+//    func injectCSS(uiView: WKWebView, cssFileName: String) {
+//        guard let cssPath = Bundle.main.path(forResource: cssFileName, ofType: "css"),
+//              let cssString = try? String(contentsOfFile: cssPath, encoding: .utf8) else {
+//            print("Failed to load CSS file")
+//            return
+//        }
+//        
+//        let formattedCSS = cssString.replacingOccurrences(of: "\n", with: "")
+//        let jsString = """
+//            var style = document.createElement('style');
+//            style.innerHTML = '\(formattedCSS)';
+//            document.head.appendChild(style);
+//            """
+//        
+//        uiView.evaluateJavaScript(jsString, completionHandler: nil)
+//    }
     
     func injectToPage(webView: WKWebView) {
         let cssFile = readFileBy(name: "defaultStylesheet", type: "css")

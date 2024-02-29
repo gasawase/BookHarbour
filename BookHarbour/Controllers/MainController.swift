@@ -62,6 +62,7 @@ enum BookHarbourErrorType : Error{
     case missingOPFURL
     case missingUID
     case missingInfo(String)
+    case ebookNil
 }
 
 class OPFParser {

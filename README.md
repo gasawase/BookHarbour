@@ -268,9 +268,11 @@ Define the immediate next steps in the development process
 
 ----CURRENT TASK-----
 
-LAST UPDATED: 23/02/2024
+LAST UPDATED: 29/02/2024
 
 - implement more of Jules' bookshelf idea
+- add new type of menu for filtering and sorting
+- find out how to save a spot in reading
 
 ----TODO----
 
@@ -295,7 +297,15 @@ LOW PRIORITY:
 - be able to have a drop down with all of the tags that the user can auto select to prevent overwriting
 - have it search through the list of tags to see if they're writing anything that is already there
 - a way to delete tags
+	- tap again to delete
 - redesign reading menu in reader to make more sense
+
+FROM Desgin Doc:
+- sort by genre
+	- maybe add the genre to a tag so you can also add it to other books?
+- sort by rating
+- sort by reading status
+- display reading status/total read time on book details modal
 
 
 ----DONE----

@@ -441,10 +441,14 @@ struct ReviewView : View {
     
     func fetchReviewData(){
         do{
+            guard let book = ebook else{
+                throw BookHarbourErrorType.ebookNil
+            }
+            
             let context = DataController.shared.container.viewContext
             let fetchRequest: NSFetchRequest<Reviews> = Reviews.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Reviews.reviewDateStarted, ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "ANY reviewToBook == %@", ebook!)
+            fetchRequest.predicate = NSPredicate(format: "ANY reviewToBook == %@", book)
             
             arrReviews = try context.fetch(fetchRequest)
             for review in arrReviews {
@@ -454,7 +458,6 @@ struct ReviewView : View {
             }
         }catch{
             print("Error fetching data: \(error.localizedDescription)")
-            
         }
     }
     
@@ -622,12 +625,14 @@ struct TagView : View{
     
     private func fetchBooksWithTag() {
         do {
-            let context = DataController.shared.container.viewContext
-            let fetchRequest: NSFetchRequest<BookTags> = BookTags.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \BookTags.name, ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "ANY bookTagsRelationship == %@", ebook!)
-
-            arrTags = try context.fetch(fetchRequest)
+            if let book = ebook{
+                let context = DataController.shared.container.viewContext
+                let fetchRequest: NSFetchRequest<BookTags> = BookTags.fetchRequest()
+                fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \BookTags.name, ascending: true)]
+                fetchRequest.predicate = NSPredicate(format: "ANY bookTagsRelationship == %@", book)
+                
+                arrTags = try context.fetch(fetchRequest)
+            }
         } catch {
             print("Error fetching data: \(error.localizedDescription)")
         }
@@ -635,11 +640,13 @@ struct TagView : View{
     
     private func fetchAllTagsNotHere() {
         do {
-            let context = DataController.shared.container.viewContext
-            let fetchRequest: NSFetchRequest<BookTags> = BookTags.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \BookTags.name, ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "ANY bookTagsRelationship != %@", ebook!)
-            suggestTags = try context.fetch(fetchRequest)
+            if let book = ebook{
+                let context = DataController.shared.container.viewContext
+                let fetchRequest: NSFetchRequest<BookTags> = BookTags.fetchRequest()
+                fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \BookTags.name, ascending: true)]
+                fetchRequest.predicate = NSPredicate(format: "ANY bookTagsRelationship != %@", book)
+                suggestTags = try context.fetch(fetchRequest)
+            }
         } catch {
             print("Error fetching data: \(error.localizedDescription)")
         }

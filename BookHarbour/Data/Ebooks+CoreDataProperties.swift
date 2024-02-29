@@ -27,6 +27,7 @@ extension Ebooks {
     @NSManaged public var synopsis: String?
     @NSManaged public var timeRead: Int32
     @NSManaged public var title: String?
+    @NSManaged public var genre: String?
     @NSManaged public var reviewLink: NSSet?
     @NSManaged public var tags: NSSet?
     

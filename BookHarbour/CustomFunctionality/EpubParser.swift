@@ -30,7 +30,7 @@ class EpubParser: NSObject, XMLParserDelegate{
     private var metaContentVal : String = ""
     
     private var coverImagePath : String = ""
-    private var metadataObj : XMLBasicMetadata = XMLBasicMetadata(title: "", author: "", synopsis: "")
+    private var metadataObj : XMLBasicMetadata = XMLBasicMetadata(title: "", author: "", synopsis: "", genre: [""])
     private var opfDataObj : XMLOPFData!
     //private var ncxDataObj : XMLNCXData!
     private var ncxDict : [String:String] = [:]
@@ -182,11 +182,11 @@ class EpubParser: NSObject, XMLParserDelegate{
     
     func addToCoreData(opfURL: URL, metadata: XMLBasicMetadata, manifestItems: [String:String], epubPath: URL, coverURL: String) {
         // Check if a book with the same title already exists
-        let fetchRequest: NSFetchRequest<Ebooks> = Ebooks.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title == %@ AND author == %@", metadata.title, metadata.author)
+        let ebookFetchRequest: NSFetchRequest<Ebooks> = Ebooks.fetchRequest()
+        ebookFetchRequest.predicate = NSPredicate(format: "title == %@ AND author == %@", metadata.title, metadata.author)
 
         do {
-            let existingBooks = try DataController.shared.container.viewContext.fetch(fetchRequest)
+            let existingBooks = try DataController.shared.container.viewContext.fetch(ebookFetchRequest)
             
             // If a book with the same title already exists, don't save the duplicate
             if let existingBook = existingBooks.first {
@@ -194,17 +194,44 @@ class EpubParser: NSObject, XMLParserDelegate{
                 return
             }
             
-            let newBook = Ebooks(context: DataController.shared.container.viewContext)
-            newBook.id = UUID()
-            newBook.title = metadata.title
-            newBook.author = metadata.author
-            newBook.coverImgPath = coverURL
-            newBook.opfFilePath = opfURL.path()
-            newBook.opfFileURL = opfURL
-            newBook.epubPath = epubPath.path()
-            newBook.synopsis = metadata.synopsis
-
-            try DataController.shared.container.viewContext.save()
+            else{
+                
+                let newBook = Ebooks(context: DataController.shared.container.viewContext)
+                newBook.id = UUID()
+                newBook.title = metadata.title
+                newBook.author = metadata.author
+                newBook.coverImgPath = coverURL
+                newBook.opfFilePath = opfURL.path()
+                newBook.opfFileURL = opfURL
+                newBook.epubPath = epubPath.path()
+                newBook.synopsis = metadata.synopsis
+                newBook.genre = metadata.genre.first
+                
+                // if there is a genre, create a tag and add a relationship to it
+                if newBook.genre != nil{
+                    // also somehow parse for if they are divided by ;
+                    for genre in metadata.genre {
+                        let tagFetchRequest : NSFetchRequest<BookTags> = BookTags.fetchRequest()
+                        tagFetchRequest.predicate = NSPredicate(format: "name == %@", genre)
+                        
+                        let existingTags = try DataController.shared.container.viewContext.fetch(tagFetchRequest)
+                        //print("existing tags \(existingTags.count)")
+                        if existingTags.count > 0, let existingTag = existingTags[0].name{
+                            print("Duplicate tag found with name: \(existingTag ?? "") Adding to list but not creating a new tag")
+                            newBook.addToTags(existingTags[0])
+                            return
+                        }
+                        let genreTag = BookTags(context: DataController.shared.container.viewContext)
+                        genreTag.id = UUID()
+                        genreTag.name = genre
+                        newBook.addToTags(genreTag)
+                        genreTag.addToBookTagsRelationship(newBook)
+                        //print(genre)
+                    }
+                    
+                }
+                try DataController.shared.container.viewContext.save()
+            }
         } catch let error as NSError {
             print("Error saving to CoreData: \(error.localizedDescription)")
         }
@@ -244,6 +271,8 @@ struct XMLBasicMetadata : XMLObjectDeserialization{
     let synopsis : String
     //let language : String
     //let datePublished : String
+    let genre : [String]
+    //let genre : String
     
     static func deserialize(_ element: XMLIndexer) throws -> XMLBasicMetadata {
         let dcDescription: String? = try? element["dc:description"].value()
@@ -255,10 +284,23 @@ struct XMLBasicMetadata : XMLObjectDeserialization{
         let creator: String? = try? element["creator"].value()
         let creatorValue = dcCreator ?? creator ?? "Author Not Found"
 
+        var genreValue: [String] = []
+
+        if let dcSubject: String = try? element["dc:subject"].value() {
+            if dcSubject.contains(";") {
+                genreValue = dcSubject.components(separatedBy: ";").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            } else {
+                genreValue.append(dcSubject)
+            }
+        }
+//        let dcGenre : String? = try? element["dc:subject"].value()
+//        let genreValue = dcGenre ?? ""
+        
         return try XMLBasicMetadata(
             title: element["dc:title"].value() ?? "Title not found",
             author: creatorValue,
-            synopsis: synopsisValue
+            synopsis: synopsisValue,
+            genre: genreValue
 //            language: element["dc:language"].value() ?? "Language not found",
 //            datePublished: element["dc:date"].value() ?? "Original Published Date not found",
 //            publisher: element["dc:publisher"].value() ?? "Publisher information not found",
