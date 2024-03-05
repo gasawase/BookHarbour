@@ -82,7 +82,7 @@ struct HTMLView: UIViewRepresentable {
             let fontSize = readerSettings.fontSize
             let fontFamily = readerSettings.fontFamily
             
-            try doc.select("body").attr("style", "font-size: \(fontSize)px; font-family: '\(fontFamily)', serif; padding: 5pt;")
+            try doc.select("body").attr("style", "font-size: \(fontSize)px; font-family: '\(fontFamily)', serif; padding: 5pt; img{ display: block; text-align: center; text-indent: 0; margin: 0}")
 //            try doc.select("body").attr("style", "font-family: '\(fontFamily)', serif;")
 //            try doc.select("body").attr("style", "padding: 5pt;")
             // Create a mutable copy of the HTML string

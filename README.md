@@ -277,6 +277,8 @@ LAST UPDATED: 29/02/2024
 ----TODO----
 
 HIGH PRIORITY:
+- write report and submit to prof
+	- read essays and figure out which fits best
 - loading pop up for when the books are loading in
 - save position that reader was last at in the book
 
@@ -338,11 +340,12 @@ FROM Desgin Doc:
 - marking and sorting by tags (pausing until I figure out how I want to display this)
 - the html is showing up a plain text and i need it to show up with all of its styling and images (going to have to use webview and then work in the editing for that)(maybe have the edited be the plain text that is a state and then when the save button is pressed, it refreshes the webview?)
 - have the description show how it was supposed to in html
+- move original bookbinder parsing from kanna to swiftsoup
+
 
 
 
 ----FEATURES I'D LIKE----
-- move original bookbinder parsing from kanna to swiftsoup
 - change layout of library to just see the spine
 - make a customizable bookshelf where you can have a list of your books and design your bookshelf, drag and drop
 - delete books from the book shelf when you click on them
@@ -351,6 +354,8 @@ FROM Desgin Doc:
 - reorganize to MVC schema for efficiency and cleanliness
 - make more customizations to the style of the actual books and reading experience (maybe find a way to use the original stylesheet??)
 - tracking read and unread books
+- split the chapters into pages so the text goes to the next page rather than is scrollable
+- maybe convert from SwiftUI to UIKit?
 
 
 ----KNOWN BUGS----
