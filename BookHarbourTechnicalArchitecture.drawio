@@ -1,9 +1,42 @@
-<mxfile host="app.diagrams.net" modified="2024-03-16T07:07:28.223Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" version="24.0.5" etag="tJfaqwCLIfeOJ_eHGPBh" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-16T07:13:30.592Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" etag="Q9xxk-EkyCf5DM1dXYrT" version="24.0.5" type="github">
   <diagram name="Page-1" id="PQTq-7J9Ds2hCh4qdPXN">
-    <mxGraphModel>
+    <mxGraphModel dx="1194" dy="606" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="U9mxY7Sg6a8gVNxgS64S-3" value="" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="70" y="310" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="U9mxY7Sg6a8gVNxgS64S-5" value="User" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.user;" vertex="1" parent="1">
+          <mxGeometry x="86" y="318" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="U9mxY7Sg6a8gVNxgS64S-6" value="" style="rounded=0;whiteSpace=wrap;html=1;rotation=90;" vertex="1" parent="1">
+          <mxGeometry x="70" y="270" width="540" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="U9mxY7Sg6a8gVNxgS64S-7" value="" style="rounded=0;whiteSpace=wrap;html=1;rotation=90;" vertex="1" parent="1">
+          <mxGeometry x="470" y="270" width="540" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="U9mxY7Sg6a8gVNxgS64S-8" value="" style="rounded=0;whiteSpace=wrap;html=1;rotation=90;" vertex="1" parent="1">
+          <mxGeometry x="270" y="270" width="540" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="U9mxY7Sg6a8gVNxgS64S-9" value="File System" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="290" y="100" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="U9mxY7Sg6a8gVNxgS64S-10" value="Epub Parser" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="490" y="100" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="U9mxY7Sg6a8gVNxgS64S-11" value="CoreData" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="690" y="100" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="U9mxY7Sg6a8gVNxgS64S-12" value="Select Files" style="text;strokeColor=#2BC230;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="160" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="U9mxY7Sg6a8gVNxgS64S-13" value="Get Chapter List" style="text;strokeColor=#2BC230;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="420" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="U9mxY7Sg6a8gVNxgS64S-14" value="Change Chapter" style="text;strokeColor=#2BC230;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="490" width="80" height="40" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
