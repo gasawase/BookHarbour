@@ -93,6 +93,7 @@ struct DisplayBooks: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
                     .frame(minWidth: 300)
+                // drop down menu type
                 Picker("Sort",selection: $selectedSorting) {
                     ForEach(SortingTypes.allCases, id: \.self)
                     {

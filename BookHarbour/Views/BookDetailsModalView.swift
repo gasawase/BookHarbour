@@ -681,6 +681,8 @@ struct TagView : View{
                     .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
                     .padding()
             }
+            // TODO: need to fix this because it's showing all on top of each other; convert to a scrollable drop down list?
+            // TODO: add tapping again or other way to remove tags
             if addTagPressed{
                 VStack{
                     TextField("Enter tag name", text: $newTagName)
