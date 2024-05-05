@@ -8,17 +8,30 @@ class TestingEbook : ObservableObject {
 }
 
 struct TestingView : View {
-    let allTags : [String] = ["fantasy", "sci-fi", "romance"]
+    
     var body: some View {
-        VStack{
-            Text(TestingEbook().synopsis)
-                .font(.custom("EBGaramond", size: 14))
+        Text(readTextFromFile("defaultCss.css") ?? "File not found or could not be read")
+            .padding()
+    }
+
+    func readTextFromFile(_ fileName: String) -> String? {
+        guard let path = Bundle.main.path(forResource: fileName, ofType: nil) else {
+            print("Failed to find the path for \(fileName)")
+            return nil
+        }
+        
+        do {
+            let text = try String(contentsOfFile: path, encoding: .utf8)
+            return text
+        } catch {
+            print("Failed to read text from \(fileName): \(error)")
+            return nil
         }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        TestingView()
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        TestingView()
+//    }
+//}

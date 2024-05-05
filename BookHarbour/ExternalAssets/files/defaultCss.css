@@ -1,0 +1,46 @@
+/* Resetting default margin and padding */
+body, h1, p {
+  margin: 0;
+  padding: 0;
+}
+
+/* Styling the body */
+body {
+    /* font-family: Arial, sans-serif;*/
+  background-color: #f0f0f0;
+  color: #FF0000;
+}
+
+/* Styling headings */
+h1 {
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+/* Styling paragraphs */
+p {
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* Styling links */
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Styling div containers */
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+

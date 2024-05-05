@@ -18,6 +18,7 @@ struct ReaderView: View{
     @State private var currentChapterIndex: Int = 0
     @EnvironmentObject var currentBook: CurrentBook
     @StateObject var readerSettings = ReaderSettings()
+    
 
     @State private var manifestItems: [String: String] = [:]
     @State private var spineItems: [String] = []
@@ -194,4 +195,5 @@ struct ReaderView: View{
 class ReaderSettings: ObservableObject{
     @Published var fontSize : CGFloat = 12
     @Published var fontFamily : String = "EB Garamond"
+    //@Published var fontFamily : String = "Comic Sans"
 }

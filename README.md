@@ -270,15 +270,14 @@ Define the immediate next steps in the development process
 
 LAST UPDATED: 29/02/2024
 
-- implement more of Jules' bookshelf idea
 - add new type of menu for filtering and sorting
-- find out how to save a spot in reading
+- find out how to save a spot in reading (maybe fixed with page reading implementation?)
+- display content in one page and change pages like book instead of by chapters 
+- figure out how to display the css that was built in with the epub
 
 ----TODO----
 
 HIGH PRIORITY:
-- write report and submit to prof
-	- read essays and figure out which fits best
 - loading pop up for when the books are loading in
 - save position that reader was last at in the book
 
@@ -302,12 +301,6 @@ LOW PRIORITY:
 	- tap again to delete
 - redesign reading menu in reader to make more sense
 
-FROM Desgin Doc:
-- sort by genre
-	- maybe add the genre to a tag so you can also add it to other books?
-- sort by rating
-- sort by reading status
-- display reading status/total read time on book details modal
 
 
 ----DONE----
